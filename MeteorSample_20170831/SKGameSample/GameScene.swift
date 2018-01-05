@@ -30,6 +30,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var startNode: SKSpriteNode!
     var start0Node: SKSpriteNode!
     let scoreLabel = SKLabelNode()                                  //スコア表示ラベル
+    let score = 0                                                   //スコア
     
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
@@ -185,7 +186,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 let names = ["stand01","stand02"]
                 self.startStandTextureAnimation(player, names: names)
 			})
-            self.scoreLabel.text = "score"
+            self.scoreLabel.text = String( self.score )
             self.scoreLabel.position = CGPoint(x: self.player.size.width, y: self.player.size.height)
             self.scoreLabel.xScale = 1 / self.player.xScale
             self.scoreLabel.yScale = 1 / self.player.yScale
