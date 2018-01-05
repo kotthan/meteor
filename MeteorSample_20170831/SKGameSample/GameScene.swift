@@ -30,7 +30,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var start0Node: SKSpriteNode!
     let scoreLabel = SKLabelNode()                                  //スコア表示ラベル
     var score = 0                                                   //スコア
-    let ultraButton = SKSpriteNode(imageNamed: "zan.png")
+    var ultraButtonString: String = "zan.png"
+    var ultraButton: SKSpriteNode!
     
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
@@ -204,6 +205,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //===================
             //MARK: 必殺技ボタン
             //===================
+            ultraButton = SKSpriteNode(imageNamed: ultraButtonString)
             self.ultraButton.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
                 x: self.player.size.width - 250,
                 y: self.player.size.height + 50
@@ -350,7 +352,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let yPos = beganPos.y - endPos.y
             endPyPos = player.position.y
             movePyPos = endPyPos - beganPyPos
-            var moveY = beganPos.y + movePyPos - endPos.y
+            let moveY = beganPos.y + movePyPos - endPos.y
             print("---beganPos.y=\(beganPos.y),movePyPos=\(movePyPos),endPos.y=\(endPos.y),moveY=\(moveY)---")
             print("---xPos=\(xPos),yPos=\(yPos)---")
             if (self.player.position.y > self.oneScreenSize.height/2) && (canMoveFlg == true)
@@ -607,7 +609,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //playBgm(soundName: "bgmn")
     }
     
-    func fallMeteor()
+    @objc func fallMeteor()
     {
         if gameFlg == false
         {
@@ -701,6 +703,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 meteores.remove(at: 0)
                 UltraPower += 1
                 print("---UltraPowerは\(UltraPower)です---")
+                if UltraPower >= 10
+                {
+                    ultraButtonString = "renzan.png"
+                }
                 playSound(soundName: "hakai")
             }
             if meteores.isEmpty == true
