@@ -30,7 +30,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var startNode: SKSpriteNode!
     var start0Node: SKSpriteNode!
     let scoreLabel = SKLabelNode()                                  //スコア表示ラベル
-    let score = 0                                                   //スコア
+    var score = 0                                                   //スコア
     
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
@@ -678,6 +678,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
                 buildFlg = true
                 print("---meteoresが空だったのでビルドフラグON---")
+                //スコア
+                self.score += 1;
+                self.scoreLabel.text = String( self.score )
             }
         }
     }
