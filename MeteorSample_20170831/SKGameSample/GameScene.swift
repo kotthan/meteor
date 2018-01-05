@@ -59,6 +59,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	var playerAcceleration: CGFloat = 50.0                          //移動加速値
 	var playerMaxVelocity: CGFloat = 300.0                          //MAX移動値
 	var jumpForce: CGFloat = 60.0                                   //ジャンプ力
+    var guardForce: CGFloat = -60.0                                  //ガード反発力
 	var charXOffset: CGFloat = 0                                    //X位置のオフセット
 	var charYOffset: CGFloat = 0                                    //Y位置のオフセット
     var guardPower : Int = 500                                      //ガード可否判定用
@@ -758,8 +759,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let move2 = SKAction.wait(forDuration: 0.4)
             let move3 = SKAction.moveBy(x: 0, y: -2300, duration: 10.0)
             let move4 = SKAction.sequence([move1,move2,move3])
+            player.physicsBody!.applyImpulse(CGVector(dx: 0.0, dy: self.guardForce))
             playSound(soundName: "bougyo")
-            guardPower -= 250
+            //guardPower -= 250
             for i in meteores
             {
                 i.removeAllActions()
