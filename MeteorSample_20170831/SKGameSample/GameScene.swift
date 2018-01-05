@@ -72,6 +72,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let leftPosition = CGPoint(x: 93.75, y: 243.733)                //左位置
     let rightPosition = CGPoint(x: 281.25, y: 243.733)              //右位置
     
+    //MARK: 隕石・プレイヤー動作プロパティ
+    var playerSpeed : CGFloat = 0.0                                 //プレイヤーの速度
+    var playerAcc   : CGFloat = 0.0                                 //プレイヤーの加速度
+    let gravity     : CGFloat = -9.8 * 150                          //重力 9.8 [m/s^2] * 150 [pixels/m]
+    var meteorSpeed : CGFloat = 0.0                                 //隕石のスピード[pixels/s]
+    var meteorPos             = 1500.0                              //隕石の初期位置
+    
     //MARK: タッチ関係プロパティ
     var beganPos: CGPoint = CGPoint.zero
 	var tapPoint: CGPoint = CGPoint.zero
@@ -101,7 +108,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //MARK: 設定関係
         self.backgroundColor = SKColor.clear                        //背景色
         self.physicsWorld.contactDelegate = self                    //接触デリゲート
-        self.physicsWorld.gravity = CGVector(dx:0, dy:-9.8)         //重力設定
+        self.physicsWorld.gravity = CGVector(dx:0, dy:0)         //重力設定
         
 		//MARK: 背景
         self.addChild(self.baseNode)
@@ -280,6 +287,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //MARK: シーンのアップデート時に呼ばれる関数
     override func update(_ currentTime: TimeInterval) {
+        if ( !meteores.isEmpty ){
+            self.meteorSpeed += self.gravity / 60 / 5
+            for m in meteores{
+                m.position.y += self.meteorSpeed / 60
+            }
+        }
+        if (jumping == true || falling == true){
+            // 次の位置を計算する
+            self.playerAcc += gravity / 60
+            self.playerSpeed += playerAcc / 60   // [pixcel/s^2] / 60[fps]
+            var posY = self.player.position.y + CGFloat( playerSpeed / 60 ) // [pixcel/s] / 60[fps]
+            //　隕石と接触する場合は隕石の位置にする
+            if( !meteores.isEmpty ){
+                let meteor = self.meteores.last as! SKSpriteNode //いちばん外側の隕石
+                let meteorY = meteor.position.y - ( meteor.size.height/2 )
+                if( meteorY < ( self.player.position.y + self.player.size.height/2) ){
+                    posY = meteorY - self.player.size.height/2
+                }
+            }
+            self.player.position.y = posY
+        }
         if (jumping == true || falling == true) && (self.player.position.y > self.oneScreenSize.height/2)
         {
             self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.player.position.y);
@@ -531,7 +559,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if (jumping == false) && (falling == false) {
             moving = false
             jumping = true
-            player.physicsBody!.applyImpulse(CGVector(dx: 0.0, dy: self.jumpForce))
+            playerSpeed = -self.gravity
             playSound(soundName: "jump")
         }
     }
@@ -568,7 +596,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             jumping = false
             falling = false
             playSound(soundName: "tyakuti")
-            self.moveStop()
+            self.playerSpeed = 0.0
+            self.playerAcc = 0.0
         }
         else if (bitA == 0b0100 || bitB == 0b0100) && (bitA == 0b1000 || bitB == 0b1000)
         {
@@ -599,7 +628,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         buildFlg = false
         let texture = SKTexture(imageNamed: meteorString)
         let meteor = SKSpriteNode(texture: texture)
-        meteor.position = CGPoint(x: 187, y: 3000)
+        meteor.position = CGPoint(x: 187, y: self.meteorPos)
         meteor.zPosition = CGFloat(meteorZ)
         meteor.size = CGSize(width: texture.size().width, height: texture.size().height)
         meteor.physicsBody = SKPhysicsBody(texture: texture, size: meteor.size)
@@ -611,8 +640,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(meteor)
         print("---meteor\(meteorString)を生成しました---")
         self.meteores.append(meteor)
+        /*
         let moveG = SKAction.moveBy(x: 0, y: -3500, duration: 10.0)
         meteor.run(moveG)
+        */
         print("---meteor\(meteorString)がmoveGを開始しました---")
     }
     func startButtonAction()
@@ -643,6 +674,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 meteorInt += 1
             }
             meteorDouble = 70.0
+            self.meteorSpeed = 0.0
             for i in (0...meteorInt).reversed()
             {
                 meteorDouble -= 1.0
@@ -782,17 +814,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if (guardFlg == true)
         {
             print("---隕石をガード---")
+            /*
             let move1 = SKAction.moveBy(x: 0, y: 80, duration: 0.4)
             let move2 = SKAction.wait(forDuration: 0.4)
             let move3 = SKAction.moveBy(x: 0, y: -2300, duration: 10.0)
             let move4 = SKAction.sequence([move1,move2,move3])
-            player.physicsBody!.applyImpulse(CGVector(dx: 0.0, dy: self.guardForce))
+            */
             playSound(soundName: "bougyo")
             //guardPower -= 50
             for i in meteores
             {
                 i.removeAllActions()
-                i.run(move4)
+                self.playerSpeed += self.meteorSpeed
+                self.meteorSpeed = 0
+                //i.run(move4)
                 print("---隕石がガードされたモーションを実行---")
             }
         }
