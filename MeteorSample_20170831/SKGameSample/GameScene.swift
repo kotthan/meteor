@@ -706,6 +706,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 if UltraPower >= 10
                 {
                     ultraButtonString = "renzan.png"
+                    self.ultraButton.removeFromParent()
+                    self.baseNode.addChild(ultraButton)
                 }
                 playSound(soundName: "hakai")
             }
