@@ -59,7 +59,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	var playerAcceleration: CGFloat = 50.0                          //移動加速値
 	var playerMaxVelocity: CGFloat = 300.0                          //MAX移動値
 	var jumpForce: CGFloat = 60.0                                   //ジャンプ力
-    var guardForce: CGFloat = -60.0                                  //ガード反発力
+    var guardForce: CGFloat = -10.0                                  //ガード反発力
 	var charXOffset: CGFloat = 0                                    //X位置のオフセット
 	var charYOffset: CGFloat = 0                                    //Y位置のオフセット
     var guardPower : Int = 500                                      //ガード可否判定用
@@ -194,7 +194,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //===================
             self.scoreLabel.text = String( self.score )         //スコアを表示する
             self.scoreLabel.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
-                x: self.player.size.width,
+                x: self.player.size.width + 100,
                 y: self.player.size.height
             )
             self.scoreLabel.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
@@ -205,8 +205,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //MARK: 必殺技ボタン
             //===================
             self.ultraButton.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
-                x: self.player.size.width,
-                y: self.player.size.height
+                x: self.player.size.width - 250,
+                y: self.player.size.height + 50
             )
             self.ultraButton.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
             self.ultraButton.yScale = 1 / self.player.yScale
@@ -768,7 +768,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let move4 = SKAction.sequence([move1,move2,move3])
             player.physicsBody!.applyImpulse(CGVector(dx: 0.0, dy: self.guardForce))
             playSound(soundName: "bougyo")
-            guardPower -= 50
+            //guardPower -= 50
             for i in meteores
             {
                 i.removeAllActions()
