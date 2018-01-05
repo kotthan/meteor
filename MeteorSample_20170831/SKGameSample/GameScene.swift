@@ -26,11 +26,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var lowestShape: SKShapeNode!                                   //落下判定シェイプノード
     var attackShape: SKShapeNode!                                   //攻撃判定シェイプノード
     var guardShape: SKShapeNode!                                    //防御判定シェイプノード
-    var ultraShape: SKShapeNode!                                    //必殺技シェイプノード
     var startNode: SKSpriteNode!
     var start0Node: SKSpriteNode!
     let scoreLabel = SKLabelNode()                                  //スコア表示ラベル
     var score = 0                                                   //スコア
+    var ultraButtonString: String = "zan.png"
+    var ultraButton: SKSpriteNode!
+    var ultraOkButton: SKSpriteNode!
     
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
@@ -59,6 +61,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	var playerAcceleration: CGFloat = 50.0                          //移動加速値
 	var playerMaxVelocity: CGFloat = 300.0                          //MAX移動値
 	var jumpForce: CGFloat = 60.0                                   //ジャンプ力
+    var guardForce: CGFloat = -10.0                                  //ガード反発力
 	var charXOffset: CGFloat = 0                                    //X位置のオフセット
 	var charYOffset: CGFloat = 0                                    //Y位置のオフセット
     var guardPower : Int = 500                                      //ガード可否判定用
@@ -193,13 +196,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //===================
             self.scoreLabel.text = String( self.score )         //スコアを表示する
             self.scoreLabel.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
-                x: self.player.size.width,
+                x: self.player.size.width + 100,
                 y: self.player.size.height
             )
             self.scoreLabel.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
             self.scoreLabel.yScale = 1 / self.player.yScale
             self.player.addChild(self.scoreLabel)               //playerにaddchiledすることでplayerに追従させる
-			//===================
+			
+            //===================
+            //MARK: 必殺技ボタン
+            //===================
+            ultraButton = SKSpriteNode(imageNamed: ultraButtonString)
+            self.ultraButton.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
+                x: self.player.size.width - 250,
+                y: self.player.size.height + 50
+            )
+            self.ultraButton.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
+            self.ultraButton.yScale = 1 / self.player.yScale
+            self.player.addChild(self.ultraButton)               //playerにaddchiledすることでplayerに追従させる
+            
+            ultraOkButton = SKSpriteNode(imageNamed: "renzan.png")
+            self.ultraOkButton.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
+                x: self.player.size.width - 400,
+                y: self.player.size.height + 50
+            )
+            self.ultraOkButton.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
+            self.ultraOkButton.yScale = 1 / self.player.yScale
+            ultraOkButton.removeFromParent()
+            self.player.addChild(self.ultraOkButton)               //playerにaddchiledすることでplayerに追従させる
+            self.ultraOkButton.isHidden = true
+            
+            //===================
 			//MARK: 壁あたり
 			//===================
 			let wallFrameNode = SKNode()
@@ -208,6 +235,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 			wallFrameNode.physicsBody = SKPhysicsBody(edgeLoopFrom: CGRect(x: 0, y: 0, width: scene.size.width, height: scene.size.height))
 			wallFrameNode.physicsBody!.categoryBitMask = 0b0000             //接触判定用マスク設定
 			wallFrameNode.physicsBody!.usesPreciseCollisionDetection = true //詳細物理判定
+            
             //===================
             //MARK: startNode
             //===================
@@ -270,10 +298,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.player!.position.y = meteores.last!.position.y - meteores.last!.size.height/2
         }
         */
-        if UltraPower >= 10
-        {
-           ultraShapeMake()
-        }
         if (guardPower < 500)
         { guardPower += 1
         }
@@ -341,7 +365,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let yPos = beganPos.y - endPos.y
             endPyPos = player.position.y
             movePyPos = endPyPos - beganPyPos
-            var moveY = beganPos.y + movePyPos - endPos.y
+            let moveY = beganPos.y + movePyPos - endPos.y
             print("---beganPos.y=\(beganPos.y),movePyPos=\(movePyPos),endPos.y=\(endPos.y),moveY=\(moveY)---")
             print("---xPos=\(xPos),yPos=\(yPos)---")
             if (self.player.position.y > self.oneScreenSize.height/2) && (canMoveFlg == true)
@@ -568,7 +592,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var meteores: [SKSpriteNode] = []
     var attackShapes: [SKShapeNode] = []
     var guardShapes: [SKShapeNode] = []
-    var ultraShapes: [SKShapeNode] = []
     
     //MARK: 隕石落下
     func buildMeteor(meteorString: String, meteorZ: Double){
@@ -599,7 +622,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //playBgm(soundName: "bgmn")
     }
     
-    func fallMeteor()
+    @objc func fallMeteor()
     {
         if gameFlg == false
         {
@@ -693,15 +716,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 meteores.remove(at: 0)
                 UltraPower += 1
                 print("---UltraPowerは\(UltraPower)です---")
+                //スコア
+                self.score += 1;
+                self.scoreLabel.text = String( self.score )
+                if UltraPower >= 10
+                {
+                    ultraButton.isHidden = true
+                    ultraOkButton.isHidden = false
+                }
                 playSound(soundName: "hakai")
             }
             if meteores.isEmpty == true
             {
                 buildFlg = true
                 print("---meteoresが空だったのでビルドフラグON---")
-                //スコア
-                self.score += 1;
-                self.scoreLabel.text = String( self.score )
             }
         }
     }
@@ -758,8 +786,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let move2 = SKAction.wait(forDuration: 0.4)
             let move3 = SKAction.moveBy(x: 0, y: -2300, duration: 10.0)
             let move4 = SKAction.sequence([move1,move2,move3])
+            player.physicsBody!.applyImpulse(CGVector(dx: 0.0, dy: self.guardForce))
             playSound(soundName: "bougyo")
-            guardPower -= 250
+            //guardPower -= 50
             for i in meteores
             {
                 i.removeAllActions()
@@ -772,26 +801,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             print("---guardShapeとmeteorが衝突したけどフラグOFFでした---")
             return
         }
-    }
-    
-    //MARK: 必殺技
-    func ultraShapeMake()
-    {
-        let ultraShape = SKShapeNode(rect: CGRect(x: 0.0 - self.player.size.width/2, y: 0.0 - self.player.size.height/2, width: self.player.size.width, height: self.player.size.height))
-        ultraShape.name = "attackShape"
-        let physicsBody = SKPhysicsBody(rectangleOf: ultraShape.frame.size)
-        ultraShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
-        ultraShape.fillColor = UIColor.clear
-        ultraShape.zPosition = 7.0
-        ultraShape.physicsBody = physicsBody
-        ultraShape.physicsBody?.affectedByGravity = false      //重力判定を無視
-        ultraShape.physicsBody?.isDynamic = false              //固定物に設定
-        ultraShape.physicsBody?.categoryBitMask = 0b10000      //接触判定用マスク設定
-        ultraShape.physicsBody?.collisionBitMask = 0b0000      //接触対象をなしに設定
-        ultraShape.physicsBody?.contactTestBitMask = 0b1000    //接触対象をmeteorに設定
-        self.addChild(ultraShape)
-        print("---ultraShapeを生成しました---")
-        self.ultraShapes.append(ultraShape)
     }
     //MARK: ゲームオーバー処理
     func makeStartNode()
