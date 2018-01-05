@@ -32,6 +32,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var score = 0                                                   //スコア
     var ultraButtonString: String = "zan.png"
     var ultraButton: SKSpriteNode!
+    var ultraOkButton: SKSpriteNode!
     
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
@@ -214,6 +215,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.ultraButton.yScale = 1 / self.player.yScale
             self.player.addChild(self.ultraButton)               //playerにaddchiledすることでplayerに追従させる
             
+            ultraOkButton = SKSpriteNode(imageNamed: "renzan.png")
+            self.ultraOkButton.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
+                x: self.player.size.width - 400,
+                y: self.player.size.height + 50
+            )
+            self.ultraOkButton.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
+            self.ultraOkButton.yScale = 1 / self.player.yScale
+            ultraOkButton.removeFromParent()
+            self.player.addChild(self.ultraOkButton)               //playerにaddchiledすることでplayerに追従させる
+            self.ultraOkButton.isHidden = true
+            
             //===================
 			//MARK: 壁あたり
 			//===================
@@ -223,6 +235,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 			wallFrameNode.physicsBody = SKPhysicsBody(edgeLoopFrom: CGRect(x: 0, y: 0, width: scene.size.width, height: scene.size.height))
 			wallFrameNode.physicsBody!.categoryBitMask = 0b0000             //接触判定用マスク設定
 			wallFrameNode.physicsBody!.usesPreciseCollisionDetection = true //詳細物理判定
+            
             //===================
             //MARK: startNode
             //===================
@@ -703,11 +716,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 meteores.remove(at: 0)
                 UltraPower += 1
                 print("---UltraPowerは\(UltraPower)です---")
+                //スコア
+                self.score += 1;
+                self.scoreLabel.text = String( self.score )
                 if UltraPower >= 10
                 {
-                    ultraButtonString = "renzan.png"
-                    self.ultraButton.removeFromParent()
-                    self.baseNode.addChild(ultraButton)
+                    ultraButton.isHidden = true
+                    ultraOkButton.isHidden = false
                 }
                 playSound(soundName: "hakai")
             }
@@ -715,9 +730,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
                 buildFlg = true
                 print("---meteoresが空だったのでビルドフラグON---")
-                //スコア
-                self.score += 1;
-                self.scoreLabel.text = String( self.score )
             }
         }
     }
