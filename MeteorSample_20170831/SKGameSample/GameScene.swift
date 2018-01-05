@@ -60,7 +60,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	var jumpForce: CGFloat = 60.0                                   //ジャンプ力
 	var charXOffset: CGFloat = 0                                    //X位置のオフセット
 	var charYOffset: CGFloat = 0                                    //Y位置のオフセット
-    var guardPower : Int = 500                                        //ガード可否判定用
+    var guardPower : Int = 500                                      //ガード可否判定用
+    var UltraPower : Int = 0                                        //必殺技可否判定用
     
     //MARK: ポジションプロパティ
     let centerPosition = CGPoint(x: 187.5, y: 243.733)              //中央位置
@@ -268,7 +269,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.player!.position.y = meteores.last!.position.y - meteores.last!.size.height/2
         }
         */
-        print(guardPower)
         if (guardPower < 500)
         { guardPower += 1
         }
@@ -591,7 +591,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameFlg = true
         play()
         //playBgm(soundName: "bgmn")
-        
     }
     
     func fallMeteor()
@@ -686,6 +685,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 meteores[0].removeFromParent()
                 print("---消すノードは\(meteores[0])です---")
                 meteores.remove(at: 0)
+                UltraPower += 1
+                print("---UltraPowerは\(UltraPower)です---")
                 playSound(soundName: "hakai")
             }
             if meteores.isEmpty == true
