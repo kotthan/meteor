@@ -1,7 +1,7 @@
 //
 //  GameScene.swift
 //
-// tamiwo
+// tamiwo 見ました
 import UIKit
 import SpriteKit
 import AVFoundation
