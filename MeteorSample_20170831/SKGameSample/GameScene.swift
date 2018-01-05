@@ -186,7 +186,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.startStandTextureAnimation(player, names: names)
 			})
             self.scoreLabel.text = "score"
-            self.scoreLabel.position = CGPoint(x: frame.midX, y: frame.midY)
+            self.scoreLabel.position = CGPoint(x: self.player.size.width, y: self.player.size.height)
             self.scoreLabel.xScale = 1 / self.player.xScale
             self.scoreLabel.yScale = 1 / self.player.yScale
             self.player.addChild(self.scoreLabel)
