@@ -185,12 +185,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 //アニメーション
                 let names = ["stand01","stand02"]
                 self.startStandTextureAnimation(player, names: names)
-			})
-            self.scoreLabel.text = String( self.score )
-            self.scoreLabel.position = CGPoint(x: self.player.size.width, y: self.player.size.height)
-            self.scoreLabel.xScale = 1 / self.player.xScale
+            })
+            //===================
+            //MARK: スコア
+            //===================
+            self.scoreLabel.text = String( self.score )         //スコアを表示する
+            self.scoreLabel.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
+                x: self.player.size.width,
+                y: self.player.size.height
+            )
+            self.scoreLabel.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
             self.scoreLabel.yScale = 1 / self.player.yScale
-            self.player.addChild(self.scoreLabel)
+            self.player.addChild(self.scoreLabel)               //playerにaddchiledすることでplayerに追従させる
 			//===================
 			//MARK: 壁あたり
 			//===================
