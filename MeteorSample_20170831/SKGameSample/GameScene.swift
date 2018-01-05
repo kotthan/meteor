@@ -29,8 +29,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var guardShape: SKShapeNode!                                    //防御判定シェイプノード
     var startNode: SKSpriteNode!
     var start0Node: SKSpriteNode!
-    var scoreLavel: SKLabelNode!                                    //スコア表示ラベル
-    var score: Int = 0                                              //スコア
     
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
@@ -182,17 +180,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 				self.baseNode.addChild(player)
                 self.player = player
                 print("---SKSファイルよりプレイヤー＝\(player)を読み込みました---")
-                //scoreラベル
-                let label = player.childNode(withName: "score") as? SKLabelNode
-                if label != nil{
-                    self.scoreLavel = label
-                    print("---SKSファイルよりラベル＝\(String(describing: label))を読み込みました---")
-                }
-                else
-                {
-                    print("---SKSファイルよりラベルの読み込みに失敗しました--")
-                }
-                self.scoreLavel.text = String(self.score)
                 //アニメーション
                 let names = ["stand01","stand02"]
                 self.startStandTextureAnimation(player, names: names)
@@ -684,9 +671,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
                 buildFlg = true
                 print("---meteoresが空だったのでビルドフラグON---")
-                //スコアを更新
-                self.score += 1
-                self.scoreLavel.text = String( self.score )
             }
         }
     }
