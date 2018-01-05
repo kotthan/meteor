@@ -31,7 +31,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var start0Node: SKSpriteNode!
     let scoreLabel = SKLabelNode()                                  //スコア表示ラベル
     var score = 0                                                   //スコア
-    var ultraOkNode: SKSpriteNode!                                  //必殺技用ノード
     
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
@@ -201,22 +200,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.scoreLabel.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
             self.scoreLabel.yScale = 1 / self.player.yScale
             self.player.addChild(self.scoreLabel)               //playerにaddchiledすることでplayerに追従させる
-			
-            //===================
-            //MARK: 必殺技ボタン
-            //===================
-            scene.enumerateChildNodes(withName: "ultraOkNode", using: { (node, stop) -> Void in
-             let ultraOkNode = node as! SKSpriteNode
-             ultraOkNode.name = "ultraOkNode"
-                self.ultraOkNode.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
-                x: self.player.size.width - 100,
-                y: self.player.size.height + 100
-            )
-            self.ultraOkNode.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
-            self.ultraOkNode.yScale = 1 / self.player.yScale
-            self.player.addChild(self.ultraOkNode)               //playerにaddchiledすることでplayerに追従させる
-            })
-            //===================
+			//===================
 			//MARK: 壁あたり
 			//===================
 			let wallFrameNode = SKNode()
