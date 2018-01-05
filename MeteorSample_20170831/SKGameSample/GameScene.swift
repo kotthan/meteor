@@ -20,6 +20,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	//MARK: - 基本構成
     //MARK: ノード
     let baseNode = SKNode()                                         //ゲームベースノード
+    let playerBaseNode = SKNode()                                   //プレイヤーのベースノード
     let backScrNode = SKNode()                                      //背景ノード
     var player: SKSpriteNode!                                       //プレイヤーノード
     var ground: SKSpriteNode!                                       //地面
@@ -105,6 +106,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 		//MARK: 背景
         self.addChild(self.baseNode)
         self.addChild(self.backScrNode)                             //背景追加
+        self.baseNode.addChild(self.playerBaseNode)                 //プレイヤーのベース追加
  
         //MARK: ゲーム進行関係
         self.meteorTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(GameScene.fallMeteor), userInfo: nil, repeats: true)                                          //タイマー生成
