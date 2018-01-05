@@ -1,7 +1,6 @@
 //
 //  GameScene.swift
 //
-// tamiwo 見ました
 import UIKit
 import SpriteKit
 import AVFoundation
@@ -24,7 +23,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let backScrNode = SKNode()                                      //背景ノード
     var player: SKSpriteNode!                                       //プレイヤーノード
     var ground: SKSpriteNode!                                       //地面
-    var lowestShape: SKShapeNode!                                     //落下判定シェイプノード
+    var lowestShape: SKShapeNode!                                   //落下判定シェイプノード
     var attackShape: SKShapeNode!                                   //攻撃判定シェイプノード
     var guardShape: SKShapeNode!                                    //防御判定シェイプノード
     var startNode: SKSpriteNode!
@@ -61,6 +60,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	var jumpForce: CGFloat = 60.0                                   //ジャンプ力
 	var charXOffset: CGFloat = 0                                    //X位置のオフセット
 	var charYOffset: CGFloat = 0                                    //Y位置のオフセット
+    var guardPower : Int = 500                                        //ガード可否判定用
     
     //MARK: ポジションプロパティ
     let centerPosition = CGPoint(x: 187.5, y: 243.733)              //中央位置
@@ -268,6 +268,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.player!.position.y = meteores.last!.position.y - meteores.last!.size.height/2
         }
         */
+        print(guardPower)
+        if (guardPower < 500)
+        { guardPower += 1
+        }
+        else
+        {
+         return
+        }
     }
     
     //MARK: すべてのアクションと物理シミュレーション処理後、1フレーム毎に呼び出される
@@ -713,7 +721,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func guardAction()
     {
-        if canMoveFlg == true
+        if (canMoveFlg == true && guardPower >= 500)
         {
             print("---ガードフラグをON---")
             guardFlg = true
@@ -736,7 +744,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func guardMeteor()
     {
-        if guardFlg == true
+        if (guardFlg == true)
         {
             print("---隕石をガード---")
             let move1 = SKAction.moveBy(x: 0, y: 80, duration: 0.4)
@@ -744,6 +752,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let move3 = SKAction.moveBy(x: 0, y: -2300, duration: 10.0)
             let move4 = SKAction.sequence([move1,move2,move3])
             playSound(soundName: "bougyo")
+            guardPower -= 250
             for i in meteores
             {
                 i.removeAllActions()
