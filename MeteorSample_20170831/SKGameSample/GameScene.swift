@@ -187,7 +187,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 			})
             self.scoreLabel.text = "score"
             self.scoreLabel.position = CGPoint(x: frame.midX, y: frame.midY)
-            self.baseNode.addChild(self.scoreLabel)
+            self.player.addChild(self.scoreLabel)
 			//===================
 			//MARK: 壁あたり
 			//===================
