@@ -26,11 +26,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var lowestShape: SKShapeNode!                                   //落下判定シェイプノード
     var attackShape: SKShapeNode!                                   //攻撃判定シェイプノード
     var guardShape: SKShapeNode!                                    //防御判定シェイプノード
-    var ultraShape: SKShapeNode!                                    //必殺技シェイプノード
     var startNode: SKSpriteNode!
     var start0Node: SKSpriteNode!
     let scoreLabel = SKLabelNode()                                  //スコア表示ラベル
     var score = 0                                                   //スコア
+    let ultraButton = SKSpriteNode(imageNamed: "zan.png")
     
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
@@ -200,7 +200,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.scoreLabel.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
             self.scoreLabel.yScale = 1 / self.player.yScale
             self.player.addChild(self.scoreLabel)               //playerにaddchiledすることでplayerに追従させる
-			//===================
+			
+            //===================
+            //MARK: 必殺技ボタン
+            //===================
+            self.ultraButton.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
+                x: self.player.size.width,
+                y: self.player.size.height
+            )
+            self.ultraButton.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
+            self.ultraButton.yScale = 1 / self.player.yScale
+            self.player.addChild(self.ultraButton)               //playerにaddchiledすることでplayerに追従させる
+            
+            //===================
 			//MARK: 壁あたり
 			//===================
 			let wallFrameNode = SKNode()
@@ -271,10 +283,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.player!.position.y = meteores.last!.position.y - meteores.last!.size.height/2
         }
         */
-        if UltraPower >= 10
-        {
-           ultraShapeMake()
-        }
         if (guardPower < 500)
         { guardPower += 1
         }
@@ -569,7 +577,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var meteores: [SKSpriteNode] = []
     var attackShapes: [SKShapeNode] = []
     var guardShapes: [SKShapeNode] = []
-    var ultraShapes: [SKShapeNode] = []
     
     //MARK: 隕石落下
     func buildMeteor(meteorString: String, meteorZ: Double){
@@ -761,7 +768,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let move4 = SKAction.sequence([move1,move2,move3])
             player.physicsBody!.applyImpulse(CGVector(dx: 0.0, dy: self.guardForce))
             playSound(soundName: "bougyo")
-            //guardPower -= 250
+            guardPower -= 50
             for i in meteores
             {
                 i.removeAllActions()
@@ -774,26 +781,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             print("---guardShapeとmeteorが衝突したけどフラグOFFでした---")
             return
         }
-    }
-    
-    //MARK: 必殺技
-    func ultraShapeMake()
-    {
-        let ultraShape = SKShapeNode(rect: CGRect(x: 0.0 - self.player.size.width/2, y: 0.0 - self.player.size.height/2, width: self.player.size.width, height: self.player.size.height))
-        ultraShape.name = "attackShape"
-        let physicsBody = SKPhysicsBody(rectangleOf: ultraShape.frame.size)
-        ultraShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
-        ultraShape.fillColor = UIColor.clear
-        ultraShape.zPosition = 7.0
-        ultraShape.physicsBody = physicsBody
-        ultraShape.physicsBody?.affectedByGravity = false      //重力判定を無視
-        ultraShape.physicsBody?.isDynamic = false              //固定物に設定
-        ultraShape.physicsBody?.categoryBitMask = 0b10000      //接触判定用マスク設定
-        ultraShape.physicsBody?.collisionBitMask = 0b0000      //接触対象をなしに設定
-        ultraShape.physicsBody?.contactTestBitMask = 0b1000    //接触対象をmeteorに設定
-        self.addChild(ultraShape)
-        print("---ultraShapeを生成しました---")
-        self.ultraShapes.append(ultraShape)
     }
     //MARK: ゲームオーバー処理
     func makeStartNode()
