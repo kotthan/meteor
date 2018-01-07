@@ -17,7 +17,7 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 
 @available(iOS 9.0, *)
 class GameScene: SKScene, SKPhysicsContactDelegate {
-    let debug = true   //デバッグフラグ
+    let debug = false   //デバッグフラグ
 	//MARK: - 基本構成
     //MARK: ノード
     let baseNode = SKNode()                                         //ゲームベースノード
@@ -31,6 +31,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var start0Node: SKSpriteNode!
     let scoreLabel = SKLabelNode()                                  //スコア表示ラベル
     var score = 0                                                   //スコア
+    let highScoreLabel = SKLabelNode()                              //ハイスコア表示ラベル
+    var highScore = 0                                               //ハイスコア
     var ultraButtonString: String = "zan.png"
     var ultraButton: SKSpriteNode!
     var ultraOkButton: SKSpriteNode!
@@ -293,6 +295,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.view!.addSubview(myButton);
  */
 		}
+        //ハイスコアラベル
+        self.highScoreLabel.text = String( self.highScore ) //ハイスコアを表示する
+        self.highScoreLabel.position = CGPoint(             //表示位置は適当
+            x: 280.0,
+            y: 85.0
+        )
+        self.highScoreLabel.zPosition = 4 //プレイヤーの後ろ
+        self.baseNode.addChild(self.highScoreLabel)               //playerにaddchiledすることでplayerに追従させる
 	}
     
     //MARK: シーンのアップデート時に呼ばれる関数
