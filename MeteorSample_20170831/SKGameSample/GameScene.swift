@@ -80,12 +80,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var meteorSpeed : CGFloat = 0.0                                 //隕石のスピード[pixels/s]
     //調整用パラメータ
     var gravity : CGFloat = -9.8 * 150                  //重力 9.8 [m/s^2] * 150 [pixels/m]
-    let meteorPos = 1500.0                              //隕石の初期位置
-    let meteorGravityCoefficient: CGFloat = 1/5         //隕石が受ける重力の影響を調整する係数
-    let pleyerJumpSpeed : CGFloat = 9.8 * 150 * 1.2     //プレイヤーのジャンプ時の初速
-    let playerGravityCoefficient: CGFloat = 1           //隕石が受ける重力の影響を調整する係数
-    let MeteorSpeedAtGuard: CGFloat = 9.8 * 150 / 10    //隕石が防御された時の速度
-    let playerFromMeteorAtGuard : CGFloat = 1.0         //隕石を防御した時にプレイヤーが受ける隕石の速度の割合
+    var meteorPos :CGFloat = 1500.0                     //隕石の初期位置
+    var meteorGravityCoefficient: CGFloat = 1/5         //隕石が受ける重力の影響を調整する係数
+    var pleyerJumpSpeed : CGFloat = 9.8 * 150 * 1.2     //プレイヤーのジャンプ時の初速
+    var playerGravityCoefficient: CGFloat = 1           //隕石が受ける重力の影響を調整する係数
+    var meteorSpeedAtGuard: CGFloat = 9.8 * 150 / 10    //隕石が防御された時の速度
+    var speedFromMeteorAtGuard : CGFloat = 1.0         //隕石を防御した時にプレイヤーが受ける隕石の速度の割合
     
     //MARK: タッチ関係プロパティ
     var beganPos: CGPoint = CGPoint.zero
@@ -354,7 +354,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         if( debug ){
             playerPosLabel.text = "x : \(self.player.position.x) \ny : \(self.player.position.y)"
-            playerPosLabel.sizeToFit()
         }
     }
     
@@ -665,7 +664,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         print("---meteor\(meteorString)を生成しました---")
         self.meteores.append(meteor)
         if( debug ){    //デバッグ用
-            addBodyFrame(node: meteor)  //枠を表示
+            //addBodyFrame(node: meteor)  //枠を表示
         }
         /*
         let moveG = SKAction.moveBy(x: 0, y: -3500, duration: 10.0)
@@ -843,8 +842,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             for i in meteores
             {
                 i.removeAllActions()
-                self.playerSpeed += self.meteorSpeed * self.playerFromMeteorAtGuard //ガード隕石の速度分プレイヤーの速度が上がる
-                self.meteorSpeed = self.MeteorSpeedAtGuard //上に持ちあげる
+                self.playerSpeed += self.meteorSpeed * self.speedFromMeteorAtGuard //ガード隕石の速度分プレイヤーの速度が上がる
+                self.meteorSpeed = self.meteorSpeedAtGuard //上に持ちあげる
                 print("---隕石がガードされたモーションを実行---")
             }
         }
@@ -986,34 +985,87 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //デバッグ表示用view
     var debugView = UIView()
     let playerPosLabel = UILabel()                                  //プレイヤーの座標表示用ラベル
+    let paramNames = ["gravity[m/s^2]",
+                      "meteorPos[m]",
+                      "meteorGravityCoefficient[%]",
+                      "pleyerJumpSpeed[m/s]",
+                      "playerGravityCoefficient[%]",
+                      "meteorSpeedAtGuard[m/s]",
+                      "speedFromMeteorAtGuard[%]"]
+    var params = [UnsafeMutablePointer<CGFloat>]()
+    let paramMin:[Float] = [0,      //gravity
+                            0,      //meteorPos
+                            0,      //meteorGravityCoefficient
+                            0,      //pleyerJumpSpeed
+                            0,      //playerGravityCoefficient
+                            0,      //meteorSpeedAtGuard
+                            0]      //speedFromMeteorOnGuard
+    let paramMax:[Float] = [1000,   //gravity
+                            400,    //meteorPos
+                            100,    //meteorGravityCoefficient
+                            1000,   //pleyerJumpSpeed
+                            100,    //playerGravityCoefficient
+                            10,     //meteorSpeedAtGuard
+                            100]    //speedFromMeteorOnGuard
+    let paramTrans = [ {(a: Float) -> CGFloat in return -CGFloat((Int(a) * 15)) },
+                       {(a: Float) -> CGFloat in return CGFloat((Int(a) * 15)) },
+                       {(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 100) },
+                       {(a: Float) -> CGFloat in return CGFloat((Int(a) * 15)) },
+                       {(a: Float) -> CGFloat in return CGFloat(Float(Int(a) / 100)) },
+                       {(a: Float) -> CGFloat in return CGFloat((Int(a) * 15)) },
+                       {(a: Float) -> CGFloat in return CGFloat(Float(Int(a) / 100)) }
+    ]
+    let paramInv = [ {(a: CGFloat) -> Float in return -Float(a / 150) },
+                     {(a: CGFloat) -> Float in return Float(a / 150) },
+                     {(a: CGFloat) -> Float in return Float(a * 100) },
+                     {(a: CGFloat) -> Float in return Float(a / 150) },
+                     {(a: CGFloat) -> Float in return Float(a * 100) },
+                     {(a: CGFloat) -> Float in return Float(a / 150) },
+                     {(a: CGFloat) -> Float in return Float(a * 100) }
+    ]
     //調整用スライダー
     var paramSliders = [UISlider]()
     var paramLabals = [SKLabelNode]()
     //追加
     func addParamSlider(){
+        //デバッグ表示関連はすべてdebugViewに追加する
         debugView.frame.size = self.frame.size
         self.view!.addSubview(debugView)
-        
-        let slider = UISlider()
-        slider.center = CGPoint(x: 100, y: frame.midY)
-        slider.frame.size.width = frame.size.width - 100
-        slider.sizeToFit()
-        slider.addTarget(self, action: #selector(self.sliderOnChange), for: .valueChanged)
-        slider.minimumValue = 0     // 最小値
-        slider.maximumValue = 100    // 最大値
-        slider.setValue( -Float(self.gravity) / 15, animated: true)  // デフォルト値の設定
-        debugView.addSubview(slider)
-        
-        let label = UILabel()
-        label.text = "gravity: " + String( describing: self.gravity / 150 )
-        label.sizeToFit()
-        label.textColor = UIColor.white
-        label.layer.position.y -= 10
-        slider.addSubview(label)
-        
+        //
+        params.append(&gravity)
+        params.append(&meteorPos)
+        params.append(&meteorGravityCoefficient)
+        params.append(&pleyerJumpSpeed)
+        params.append(&playerGravityCoefficient)
+        params.append(&meteorSpeedAtGuard)
+        params.append(&speedFromMeteorAtGuard)
+        //パラメータ調整用スライダー
+        var ix = 0;
+        for p in paramNames {
+            let slider = UISlider()
+            slider.center = CGPoint(x: 100, y: frame.midY - 50 + (CGFloat(ix)*50) )
+            slider.frame.size.width = frame.size.width - 100
+            slider.sizeToFit()
+            slider.addTarget(self, action: #selector(self.sliderOnChange), for: .valueChanged)
+            slider.minimumValue = paramMin[ix]     // 最小値
+            slider.maximumValue = paramMax[ix]    // 最大値
+            slider.setValue( paramInv[ix](params[ix].pointee), animated: true)  // デフォルト値の設定
+            paramSliders.append(slider)     //検索につかうので配列にも入れておく
+            debugView.addSubview(slider)
+            //値表示用ラベル
+            let label = UILabel()
+            label.text = p + ": " + String( describing: paramInv[ix](params[ix].pointee) )
+            label.sizeToFit()
+            label.textColor = UIColor.white
+            label.layer.position.y -= 10
+            slider.addSubview(label)
+            ix += 1
+        }
         playerPosLabel.layer.position = CGPoint(x: 10, y:10)
         playerPosLabel.numberOfLines = 2
         playerPosLabel.textColor = UIColor.white
+        playerPosLabel.frame.size.width = frame.size.width
+        playerPosLabel.frame.size.height = 50
         debugView.addSubview(playerPosLabel)
     }
     //削除
@@ -1022,10 +1074,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     // スライダーの値が変更された時の処理
     @objc func sliderOnChange(_ sender: UISlider) {
-        self.gravity = -CGFloat(Int(sender.value) * 15)
-        print("set gravity = \(self.gravity)")
+        //変更されたスライダーの配列のindex
+        let index = paramSliders.index(of: sender)
+        //
+        params[index!].pointee = paramTrans[index!](sender.value)
+        print("###set \(paramNames[index!]) = \(params[index!].pointee)")
         let label = sender.subviews.last as! UILabel
-        label.text = "gravity: " + String( describing: self.gravity / 150 )
+        label.text = paramNames[index!] + ": " + String( paramInv[index!](params[index!].pointee) )
         label.sizeToFit()
     }
 }
