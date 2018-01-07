@@ -77,7 +77,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //MARK: 隕石・プレイヤー動作プロパティ
     var playerSpeed : CGFloat = 0.0                                 //プレイヤーの速度
-    var playerAcc   : CGFloat = 0.0                                 //プレイヤーの加速度
     var meteorSpeed : CGFloat = 0.0                                 //隕石のスピード[pixels/s]
     //調整用パラメータ
     var gravity : CGFloat = -9.8 * 150                  //重力 9.8 [m/s^2] * 150 [pixels/m]
@@ -224,7 +223,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.scoreLabel.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
             self.scoreLabel.yScale = 1 / self.player.yScale
             self.player.addChild(self.scoreLabel)               //playerにaddchiledすることでplayerに追従させる
-			
             //===================
             //MARK: 必殺技ボタン
             //===================
@@ -310,9 +308,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         )
         self.highScoreLabel.zPosition = 4 //プレイヤーの後ろ
         self.baseNode.addChild(self.highScoreLabel) //背景に固定のつもりでbaseNodeに追加
-        //パラメータ調整用スライダー
+        
         if(debug){
-            addParamSlider()
+            addParamSlider()    //パラメータ調整用スライダー
         }
 	}
     
@@ -352,7 +350,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         else
         {
-         return
+         //return
+        }
+        if( debug ){
+            playerPosLabel.text = "x : \(self.player.position.x) \ny : \(self.player.position.y)"
+            playerPosLabel.sizeToFit()
         }
     }
     
@@ -618,7 +620,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             falling = false
             playSound(soundName: "tyakuti")
             self.playerSpeed = 0.0
-            self.playerAcc = 0.0
         }
         else if (bitA == 0b0100 || bitB == 0b0100) && (bitA == 0b1000 || bitB == 0b1000)
         {
@@ -982,11 +983,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         frameRect.name = "frame"
         node.addChild( frameRect )
     }
+    //デバッグ表示用view
+    var debugView = UIView()
+    let playerPosLabel = UILabel()                                  //プレイヤーの座標表示用ラベル
     //調整用スライダー
     var paramSliders = [UISlider]()
     var paramLabals = [SKLabelNode]()
     //追加
     func addParamSlider(){
+        self.view!.addSubview(debugView)
+        
         let slider = UISlider()
         slider.center = CGPoint(x: 100, y: frame.midY)
         slider.frame.size.width = frame.size.width - 100
@@ -995,20 +1001,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         slider.minimumValue = 0     // 最小値
         slider.maximumValue = 100    // 最大値
         slider.setValue( -Float(self.gravity) / 15, animated: true)  // デフォルト値の設定
-        self.view!.addSubview(slider)
+        debugView.addSubview(slider)
+        
         let label = UILabel()
         label.text = "gravity: " + String( describing: self.gravity / 150 )
         label.sizeToFit()
         label.textColor = UIColor.white
         label.layer.position.y -= 10
         slider.addSubview(label)
-        paramSliders.append(slider)
+        
+        playerPosLabel.layer.position = CGPoint(x: 10, y:10)
+        playerPosLabel.numberOfLines = 2
+        playerPosLabel.textColor = UIColor.white
+        debugView.addSubview(playerPosLabel)
     }
     //削除
     func removeParamSlider(){
-        for s in paramSliders{
-            s.removeFromSuperview()
-        }
+        debugView.removeFromSuperview()
     }
     // スライダーの値が変更された時の処理
     @objc func sliderOnChange(_ sender: UISlider) {
@@ -1018,5 +1027,4 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         label.text = "gravity: " + String( describing: self.gravity / 150 )
         label.sizeToFit()
     }
-    
 }
