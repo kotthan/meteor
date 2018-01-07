@@ -84,8 +84,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let meteorGravityCoefficient: CGFloat = 1/5         //隕石が受ける重力の影響を調整する係数
     let pleyerJumpSpeed : CGFloat = 9.8 * 150 * 1.2     //プレイヤーのジャンプ時の初速
     let playerGravityCoefficient: CGFloat = 1           //隕石が受ける重力の影響を調整する係数
-    let meteorGuardSpeed: CGFloat = 9.8 * 150 / 10      //隕石が防御された時の速度
-    let playerGuardMeteorSpeed : CGFloat = 1.0          //隕石を防御した時にプレイヤーが受ける隕石の速度の割合
+    let MeteorSpeedAtGuard: CGFloat = 9.8 * 150 / 10    //隕石が防御された時の速度
+    let playerFromMeteorAtGuard : CGFloat = 1.0         //隕石を防御した時にプレイヤーが受ける隕石の速度の割合
     
     //MARK: タッチ関係プロパティ
     var beganPos: CGPoint = CGPoint.zero
@@ -843,8 +843,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             for i in meteores
             {
                 i.removeAllActions()
-                self.playerSpeed += self.meteorSpeed * self.playerGuardMeteorSpeed //ガード隕石の速度分プレイヤーの速度が上がる
-                self.meteorSpeed = self.meteorGuardSpeed //上に持ちあげる
+                self.playerSpeed += self.meteorSpeed * self.playerFromMeteorAtGuard //ガード隕石の速度分プレイヤーの速度が上がる
+                self.meteorSpeed = self.MeteorSpeedAtGuard //上に持ちあげる
                 print("---隕石がガードされたモーションを実行---")
             }
         }
