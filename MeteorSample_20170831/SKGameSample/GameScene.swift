@@ -627,7 +627,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var guardShapes: [SKShapeNode] = []
     
     //MARK: 隕石落下
-    func buildMeteor(meteorString: String, meteorZ: Double){
+    func buildMeteor(size: Double, meteorString: String, meteorZ: Double){
         firstBuildFlg = false
         buildFlg = false
         let texture = SKTexture(imageNamed: meteorString)
@@ -635,6 +635,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         meteor.position = CGPoint(x: 187, y: self.meteorPos)
         meteor.zPosition = CGFloat(meteorZ)
         meteor.size = CGSize(width: texture.size().width, height: texture.size().height)
+        meteor.xScale = CGFloat(size / 150)
+        meteor.yScale = CGFloat(size / 150)
         meteor.physicsBody = SKPhysicsBody(texture: texture, size: meteor.size)
         meteor.physicsBody?.affectedByGravity = false
         meteor.physicsBody?.categoryBitMask = 0b1000                         //接触判定用マスク設定
@@ -668,7 +670,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         else if firstBuildFlg == true
         {
-            buildMeteor(meteorString: "150", meteorZ: 6.0)
+            buildMeteor(size: 150.0, meteorString: "150", meteorZ: 6.0)
         }
         else if buildFlg == false
         {
@@ -685,7 +687,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             for i in (0...meteorInt).reversed()
             {
                 meteorDouble -= 1.0
-                buildMeteor(meteorString: meteorNames[i], meteorZ: meteorDouble)
+                buildMeteor(size: Double(150 + (i * 100)),meteorString: meteorNames[0], meteorZ: meteorDouble)
                 print("---meteorInt = \(i)です-----")
             }
         }
