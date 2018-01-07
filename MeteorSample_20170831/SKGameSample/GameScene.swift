@@ -76,10 +76,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: 隕石・プレイヤー動作プロパティ
     var playerSpeed : CGFloat = 0.0                                 //プレイヤーの速度
     var playerAcc   : CGFloat = 0.0                                 //プレイヤーの加速度
-    let gravity     : CGFloat = -9.8 * 150                          //重力 9.8 [m/s^2] * 150 [pixels/m]
     var meteorSpeed : CGFloat = 0.0                                 //隕石のスピード[pixels/s]
-    var meteorPos             = 1500.0                              //隕石の初期位置
-    
+    //調整用パラメータ
+    let gravity : CGFloat = -9.8 * 150                  //重力 9.8 [m/s^2] * 150 [pixels/m]
+    let meteorPos = 1500.0                              //隕石の初期位置
+    let meteorGravityCoefficient: CGFloat = 1/5         //隕石が受ける重力の影響を調整する係数
+    let pleyerJumpSpeed : CGFloat = 9.8 * 150 * 1.2     //プレイヤーのジャンプ時の初速
+    let playerGravityCoefficient: CGFloat = 1           //隕石が受ける重力の影響を調整する係数
+    let meteorGuardSpeed: CGFloat = 9.8 * 150 / 10      //隕石が防御された時の速度
+    let playerGuardMeteorSpeed : CGFloat = 1.0          //隕石を防御した時にプレイヤーが受ける隕石の速度の割合
+
     //MARK: タッチ関係プロパティ
     var beganPos: CGPoint = CGPoint.zero
 	var tapPoint: CGPoint = CGPoint.zero
@@ -292,17 +298,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: シーンのアップデート時に呼ばれる関数
     override func update(_ currentTime: TimeInterval) {
         if ( !meteores.isEmpty ){
-            self.meteorSpeed += self.gravity / 60 / 5
+            self.meteorSpeed += self.gravity * meteorGravityCoefficient / 60
             for m in meteores{
                 m.position.y += self.meteorSpeed / 60
             }
         }
         if (jumping == true || falling == true){
             // 次の位置を計算する
-            self.playerAcc += gravity / 60
-            self.playerSpeed += playerAcc / 60   // [pixcel/s^2] / 60[fps]
-            var posY = self.player.position.y + CGFloat( playerSpeed / 60 ) // [pixcel/s] / 60[fps]
-            self.player.position.y = posY
+            self.playerSpeed += self.gravity * self.playerGravityCoefficient / 60   // [pixcel/s^2] / 60[fps]
+            self.player.position.y = self.player.position.y + CGFloat( playerSpeed / 60 ) // [pixcel/s] / 60[fps]
         }
         if (jumping == true || falling == true) && (self.player.position.y > self.oneScreenSize.height/2)
         {
@@ -555,7 +559,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if (jumping == false) && (falling == false) {
             moving = false
             jumping = true
-            playerSpeed = -self.gravity
+            playerSpeed = pleyerJumpSpeed
             playSound(soundName: "jump")
         }
     }
@@ -812,20 +816,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if (guardFlg == true)
         {
             print("---隕石をガード---")
-            /*
-            let move1 = SKAction.moveBy(x: 0, y: 80, duration: 0.4)
-            let move2 = SKAction.wait(forDuration: 0.4)
-            let move3 = SKAction.moveBy(x: 0, y: -2300, duration: 10.0)
-            let move4 = SKAction.sequence([move1,move2,move3])
-            */
             playSound(soundName: "bougyo")
             //guardPower -= 50
             for i in meteores
             {
                 i.removeAllActions()
-                self.playerSpeed += self.meteorSpeed
-                self.meteorSpeed = -(self.gravity / 10) //ちょっと上にあげる
-                //i.run(move4)
+                self.playerSpeed += self.meteorSpeed * self.playerGuardMeteorSpeed //ガード隕石の速度分プレイヤーの速度が上がる
+                self.meteorSpeed = self.meteorGuardSpeed //上に持ちあげる
                 print("---隕石がガードされたモーションを実行---")
             }
         }
