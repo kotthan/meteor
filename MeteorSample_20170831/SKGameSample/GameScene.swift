@@ -17,6 +17,7 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 
 @available(iOS 9.0, *)
 class GameScene: SKScene, SKPhysicsContactDelegate {
+    let debug = true   //デバッグフラグ
 	//MARK: - 基本構成
     //MARK: ノード
     let baseNode = SKNode()                                         //ゲームベースノード
@@ -198,6 +199,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 let names = ["stand01","stand02"]
                 self.startStandTextureAnimation(player, names: names)
             })
+            if( debug ){ //デバッグ用
+                addBodyFrame(node: player)  //枠表示
+            }
             //===================
             //MARK: スコア
             //===================
@@ -640,6 +644,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(meteor)
         print("---meteor\(meteorString)を生成しました---")
         self.meteores.append(meteor)
+        if( debug ){    //デバッグ用
+            addBodyFrame(node: meteor)  //枠を表示
+        }
         /*
         let moveG = SKAction.moveBy(x: 0, y: -3500, duration: 10.0)
         meteor.run(moveG)
@@ -940,5 +947,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         let action = SKAction.animate(with: ary, timePerFrame: 0.1, resize: false, restore: false)
         node.run(SKAction.repeat(action, count:1), withKey: "textureAnimation")
+    }
+    
+    //MARK:デバッグ用
+    //SKShapeNodeのサイズの四角を追加する
+    func addBodyFrame(node: SKSpriteNode){
+        let frameRect = SKShapeNode(rect: CGRect(x: -node.size.width / 2,
+                                                 y: -node.size.height / 2,
+                                                 width: node.size.width,
+                                                 height: node.size.height))
+        frameRect.fillColor = UIColor.clear
+        frameRect.lineWidth = 2.0
+        frameRect.xScale = 1 / node.xScale  //縮小されている場合はその分拡大する
+        frameRect.yScale = 1 / node.yScale  //縮小されている場合はその分拡大する
+        frameRect.zPosition = 1000          //とにかく手前
+        frameRect.name = "frame"
+        node.addChild( frameRect )
     }
 }
