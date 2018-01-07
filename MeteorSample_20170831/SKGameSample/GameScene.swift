@@ -17,7 +17,7 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 
 @available(iOS 9.0, *)
 class GameScene: SKScene, SKPhysicsContactDelegate {
-    let debug = false   //デバッグフラグ
+    let debug = true   //デバッグフラグ
 	//MARK: - 基本構成
     //MARK: ノード
     let baseNode = SKNode()                                         //ゲームベースノード
@@ -80,14 +80,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var playerAcc   : CGFloat = 0.0                                 //プレイヤーの加速度
     var meteorSpeed : CGFloat = 0.0                                 //隕石のスピード[pixels/s]
     //調整用パラメータ
-    let gravity : CGFloat = -9.8 * 150                  //重力 9.8 [m/s^2] * 150 [pixels/m]
+    var gravity : CGFloat = -9.8 * 150                  //重力 9.8 [m/s^2] * 150 [pixels/m]
     let meteorPos = 1500.0                              //隕石の初期位置
     let meteorGravityCoefficient: CGFloat = 1/5         //隕石が受ける重力の影響を調整する係数
     let pleyerJumpSpeed : CGFloat = 9.8 * 150 * 1.2     //プレイヤーのジャンプ時の初速
     let playerGravityCoefficient: CGFloat = 1           //隕石が受ける重力の影響を調整する係数
     let meteorGuardSpeed: CGFloat = 9.8 * 150 / 10      //隕石が防御された時の速度
     let playerGuardMeteorSpeed : CGFloat = 1.0          //隕石を防御した時にプレイヤーが受ける隕石の速度の割合
-
+    
     //MARK: タッチ関係プロパティ
     var beganPos: CGPoint = CGPoint.zero
 	var tapPoint: CGPoint = CGPoint.zero
@@ -211,7 +211,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.startStandTextureAnimation(player, names: names)
             })
             if( debug ){ //デバッグ用
-                addBodyFrame(node: player)  //枠表示
+                //addBodyFrame(node: player)  //枠表示
             }
             //===================
             //MARK: スコア
@@ -309,7 +309,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             y: 85.0
         )
         self.highScoreLabel.zPosition = 4 //プレイヤーの後ろ
-        self.baseNode.addChild(self.highScoreLabel)               //playerにaddchiledすることでplayerに追従させる
+        self.baseNode.addChild(self.highScoreLabel) //背景に固定のつもりでbaseNodeに追加
+        //パラメータ調整用スライダー
+        if(debug){
+            addParamSlider()
+        }
 	}
     
     //MARK: シーンのアップデート時に呼ばれる関数
@@ -871,6 +875,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         print("------------gameover------------")
         stop()
+        removeParamSlider()
         newGame()
     }
     
@@ -977,4 +982,41 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         frameRect.name = "frame"
         node.addChild( frameRect )
     }
+    //調整用スライダー
+    var paramSliders = [UISlider]()
+    var paramLabals = [SKLabelNode]()
+    //追加
+    func addParamSlider(){
+        let slider = UISlider()
+        slider.center = CGPoint(x: 100, y: frame.midY)
+        slider.frame.size.width = frame.size.width - 100
+        slider.sizeToFit()
+        slider.addTarget(self, action: #selector(self.sliderOnChange), for: .valueChanged)
+        slider.minimumValue = 0     // 最小値
+        slider.maximumValue = 100    // 最大値
+        slider.setValue( -Float(self.gravity) / 15, animated: true)  // デフォルト値の設定
+        self.view!.addSubview(slider)
+        let label = UILabel()
+        label.text = "gravity: " + String( describing: self.gravity / 150 )
+        label.sizeToFit()
+        label.textColor = UIColor.white
+        label.layer.position.y -= 10
+        slider.addSubview(label)
+        paramSliders.append(slider)
+    }
+    //削除
+    func removeParamSlider(){
+        for s in paramSliders{
+            s.removeFromSuperview()
+        }
+    }
+    // スライダーの値が変更された時の処理
+    @objc func sliderOnChange(_ sender: UISlider) {
+        self.gravity = -CGFloat(Int(sender.value) * 15)
+        print("set gravity = \(self.gravity)")
+        let label = sender.subviews.last as! UILabel
+        label.text = "gravity: " + String( describing: self.gravity / 150 )
+        label.sizeToFit()
+    }
+    
 }
