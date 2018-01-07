@@ -824,7 +824,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
                 i.removeAllActions()
                 self.playerSpeed += self.meteorSpeed
-                self.meteorSpeed = 0
+                self.meteorSpeed = -(self.gravity / 10) //ちょっと上にあげる
                 //i.run(move4)
                 print("---隕石がガードされたモーションを実行---")
             }
