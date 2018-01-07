@@ -104,6 +104,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: BGM
     var audioPlayer: AVAudioPlayer!
     
+    //MARK: データ保存
+    var keyHighScore = "highScore"
+    
     //MARK: - 関数定義 シーン関係
 	//MARK: シーンが表示されたときに呼ばれる関数
 	override func didMove(to view: SKView)
@@ -296,6 +299,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
  */
 		}
         //ハイスコアラベル
+        if ( UserDefaults.standard.object(forKey: keyHighScore) != nil ){
+            self.highScore = UserDefaults.standard.integer(forKey: self.keyHighScore) //保存したデータの読み出し
+            print("--------------read data\(keyHighScore) = \(self.highScore)----------------")
+        }
         self.highScoreLabel.text = String( self.highScore ) //ハイスコアを表示する
         self.highScoreLabel.position = CGPoint(             //表示位置は適当
             x: 280.0,
@@ -860,6 +867,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.highScore = self.score
             self.highScoreLabel.text = String(self.highScore)
             print("------------hidh score!------------")
+            UserDefaults.standard.set(self.highScore, forKey: self.keyHighScore) //データの保存
         }
         print("------------gameover------------")
         stop()
