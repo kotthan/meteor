@@ -991,6 +991,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var paramLabals = [SKLabelNode]()
     //追加
     func addParamSlider(){
+        debugView.frame.size = self.frame.size
         self.view!.addSubview(debugView)
         
         let slider = UISlider()
