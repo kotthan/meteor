@@ -854,6 +854,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         startNode.zPosition = 6
         self.isPaused = true
         self.meteorTimer?.invalidate()
+        //ハイスコア更新
+        print("------------score:\(self.score) high:\(self.highScore)------------")
+        if( self.score > self.highScore ){
+            self.highScore = self.score
+            self.highScoreLabel.text = String(self.highScore)
+            print("------------hidh score!------------")
+        }
         print("------------gameover------------")
         stop()
         newGame()
