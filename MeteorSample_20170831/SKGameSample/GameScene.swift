@@ -302,14 +302,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.playerAcc += gravity / 60
             self.playerSpeed += playerAcc / 60   // [pixcel/s^2] / 60[fps]
             var posY = self.player.position.y + CGFloat( playerSpeed / 60 ) // [pixcel/s] / 60[fps]
-            //　隕石と接触する場合は隕石の位置にする
-            if( !meteores.isEmpty ){
-                let meteor = self.meteores.last as! SKSpriteNode //いちばん外側の隕石
-                let meteorY = meteor.position.y - ( meteor.size.height/2 )
-                if( meteorY < ( self.player.position.y + self.player.size.height/2) ){
-                    posY = meteorY - self.player.size.height/2
-                }
-            }
             self.player.position.y = posY
         }
         if (jumping == true || falling == true) && (self.player.position.y > self.oneScreenSize.height/2)
@@ -605,7 +597,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         else if (bitA == 0b0100 || bitB == 0b0100) && (bitA == 0b1000 || bitB == 0b1000)
         {
-            self.player.physicsBody!.velocity = CGVector(dx: 0, dy: 0)
+            self.playerSpeed = self.meteorSpeed
         }
     }
 
@@ -642,7 +634,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         meteor.physicsBody?.categoryBitMask = 0b1000                         //接触判定用マスク設定
         meteor.physicsBody?.collisionBitMask = 0b0000                        //接触対象をなしに設定
         meteor.physicsBody?.contactTestBitMask = 0b0010 | 0b10000 | 0b100000 | 0b0100 //接触対象を各Shapeとプレイヤーに設定
-        meteor.name = meteorString
+        meteor.name = "meteor"//meteorString
         self.addChild(meteor)
         print("---meteor\(meteorString)を生成しました---")
         self.meteores.append(meteor)
