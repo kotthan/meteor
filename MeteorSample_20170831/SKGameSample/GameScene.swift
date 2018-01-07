@@ -670,10 +670,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         else if buildFlg == true
         {
-            if meteorInt < 3
-            {
-                meteorInt += 1
-            }
+            meteorInt += 1
             meteorDouble = 70.0
             self.meteorSpeed = 0.0
             for i in (0...meteorInt).reversed()
