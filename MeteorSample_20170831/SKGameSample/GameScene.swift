@@ -85,7 +85,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var pleyerJumpSpeed : CGFloat = 9.8 * 150 * 1.2     //プレイヤーのジャンプ時の初速
     var playerGravityCoefficient: CGFloat = 1           //隕石が受ける重力の影響を調整する係数
     var meteorSpeedAtGuard: CGFloat = 9.8 * 150 / 10    //隕石が防御された時の速度
-    var speedFromMeteorAtGuard : CGFloat = 350          //隕石を防御した時にプレイヤーが受ける隕石の速度の割合
+    var speedFromMeteorAtGuard : CGFloat = 1.0         //隕石を防御した時にプレイヤーが受ける隕石の速度の割合
     
     //MARK: タッチ関係プロパティ
     var beganPos: CGPoint = CGPoint.zero
@@ -863,7 +863,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             for i in meteores
             {
                 i.removeAllActions()
-                self.playerSpeed -= self.speedFromMeteorAtGuard //一定速度で反発する際のスピード
+                /*
+                self.playerSpeed += self.meteorSpeed * self.speedFromMeteorAtGuard //ガード隕石の速度分プレイヤーの速度が上がる
+                */
+                self.playerSpeed -= 350.0   //一定速度で反発する際のスピード
                 self.meteorSpeed = self.meteorSpeedAtGuard //上に持ちあげる
                 print("---隕石がガードされたモーションを実行---")
             }
@@ -1012,7 +1015,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                       "pleyerJumpSpeed[m/s]",
                       "playerGravityCoefficient[%]",
                       "meteorSpeedAtGuard[m/s]",
-                      "speedFromMeteorAtGuard[m/s]"]
+                      "speedFromMeteorAtGuard[%]"]
     var params = [UnsafeMutablePointer<CGFloat>]()
     let paramMin:[Float] = [0,      //gravity
                             0,      //meteorPos
@@ -1027,14 +1030,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                             1000,   //pleyerJumpSpeed
                             1000,   //playerGravityCoefficient
                             10,     //meteorSpeedAtGuard
-                            200]    //speedFromMeteorOnGuard
+                            1000]   //speedFromMeteorOnGuard
     let paramTrans = [ {(a: Float) -> CGFloat in return -CGFloat((Float(Int(a)) / 10 * 150)) },
                        {(a: Float) -> CGFloat in return CGFloat((Float(Int(a)) / 10 * 150)) },
                        {(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 10 / 100) },
                        {(a: Float) -> CGFloat in return CGFloat((Float(Int(a)) * 15)) },
                        {(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 10 / 100) },
                        {(a: Float) -> CGFloat in return CGFloat((Float(Int(a)) * 15)) },
-                       {(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 10 * 150) }
+                       {(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 10 / 100) }
     ]
     let paramInv = [ {(a: CGFloat) -> Float in return -Float(a / 150 * 10) },
                      {(a: CGFloat) -> Float in return Float(a / 150 * 10) },
@@ -1042,7 +1045,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                      {(a: CGFloat) -> Float in return Float(a / 150 * 10 ) },
                      {(a: CGFloat) -> Float in return Float(a * 100 * 10) },
                      {(a: CGFloat) -> Float in return Float(a / 150 * 10 ) },
-                     {(a: CGFloat) -> Float in return Float(a / 150 * 10) }
+                     {(a: CGFloat) -> Float in return Float(a * 100 * 10) }
     ]
     //調整用スライダー
     var paramSliders = [UISlider]()
@@ -1098,15 +1101,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                                      y: frame.maxY - btn.frame.size.height)
         btn.addTarget(self, action: #selector(self.setDefaultParam), for: .touchUpInside)
         debugView.addSubview(btn)
-        //スライダー表示、非表示ボタン
-        let btn2 = UIButton(type: UIButtonType.roundedRect)
-        btn2.setTitle("Slider", for: .normal)
-        btn2.sizeToFit()
-        btn2.backgroundColor = UIColor.blue
-        btn2.layer.position = CGPoint(x: frame.maxX - btn2.frame.size.width - 10,
-                                     y: frame.maxY - btn2.frame.size.height)
-        btn2.addTarget(self, action: #selector(self.sliderSwitchHidden), for: .touchUpInside)
-        self.view!.addSubview(btn2)
     }
     //削除
     func removeParamSlider(){
@@ -1120,20 +1114,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pleyerJumpSpeed = 9.8 * 150 * 1.2   //プレイヤーのジャンプ時の初速
         playerGravityCoefficient = 1        //隕石が受ける重力の影響を調整する係数
         meteorSpeedAtGuard = 9.8 * 150 / 10 //隕石が防御された時の速度
-        speedFromMeteorAtGuard = 350        //隕石を防御した時にプレイヤーが受ける隕石の速度の割合
+        speedFromMeteorAtGuard = 1.0        //隕石を防御した時にプレイヤーが受ける隕石の速度の割合
         var ix = 0
         for slider in paramSliders {
             slider.setValue( paramInv[ix](params[ix].pointee), animated: true)  // デフォルト値の設定
             let label = slider.subviews.last as! UILabel
             label.text = paramNames[ix] + ": " + String( paramInv[ix](params[ix].pointee)/10 )
-            label.sizeToFit()
             ix += 1
         }
-    }
-    var sliderHidden: Bool = true
-    @objc func sliderSwitchHidden( ){
-        debugView.isHidden = sliderHidden
-        sliderHidden = !sliderHidden
     }
     // スライダーの値が変更された時の処理
     @objc func sliderOnChange(_ sender: UISlider) {
