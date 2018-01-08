@@ -719,13 +719,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let physicsBody = SKPhysicsBody(rectangleOf: attackShape.frame.size)
         if jumping == true
         {
-            attackShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
+            attackShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y + 1000)
+            print("---attackShapeをjumping位置に生成---")
         } else if falling == true
         {
             attackShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
-        } else
+            print("---attackShapeをfalling位置に生成---")
+        } else if (jumping == false && falling == false)
         {
             attackShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
+            print("---attackShapeをplayerと同位置に生成---")
         }
         attackShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
         attackShape.fillColor = UIColor.clear
@@ -737,7 +740,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         attackShape.physicsBody?.collisionBitMask = 0b0000      //接触対象をなしに設定
         attackShape.physicsBody?.contactTestBitMask = 0b1000    //接触対象をmeteorに設定
         self.addChild(attackShape)
-        print("---attackShapeを生成しました---")
+        //print("---attackShapeを生成しました---")
         self.attackShapes.append(attackShape)
     }
     
@@ -1107,7 +1110,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     @objc func setDefaultParam(){
         //調整用パラメータ
         gravity = -9.8 * 150                //重力 9.8 [m/s^2] * 150 [pixels/m]
-        meteorPos = 1500.0                  //隕石の初期位置
+        meteorPos = 1320.0                  //隕石の初期位置(1500)
         meteorGravityCoefficient = 1/5      //隕石が受ける重力の影響を調整する係数
         pleyerJumpSpeed = 9.8 * 150 * 1.2   //プレイヤーのジャンプ時の初速
         playerGravityCoefficient = 1        //隕石が受ける重力の影響を調整する係数
