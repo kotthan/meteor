@@ -1061,7 +1061,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             slider.addSubview(label)
             ix += 1
         }
-        playerPosLabel.layer.position = CGPoint(x: 10, y:30)
+        playerPosLabel.layer.position = CGPoint(x: 10, y:10)
         playerPosLabel.numberOfLines = 2
         playerPosLabel.textColor = UIColor.white
         playerPosLabel.frame.size.width = frame.size.width
