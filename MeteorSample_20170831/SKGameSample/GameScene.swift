@@ -842,7 +842,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             for i in meteores
             {
                 i.removeAllActions()
+                /*
                 self.playerSpeed += self.meteorSpeed * self.speedFromMeteorAtGuard //ガード隕石の速度分プレイヤーの速度が上がる
+                */
+                self.playerSpeed += 100.0
                 self.meteorSpeed = self.meteorSpeedAtGuard //上に持ちあげる
                 print("---隕石がガードされたモーションを実行---")
             }
