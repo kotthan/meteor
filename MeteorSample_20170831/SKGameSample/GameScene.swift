@@ -1065,7 +1065,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             ix += 1
         }
         //プレイヤー座標
-        playerPosLabel.layer.position = CGPoint(x: 10, y:10)
+        playerPosLabel.layer.position = CGPoint(x: 10, y:30)
         playerPosLabel.numberOfLines = 2
         playerPosLabel.textColor = UIColor.white
         playerPosLabel.frame.size.width = frame.size.width
