@@ -1080,6 +1080,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                                      y: frame.maxY - btn.frame.size.height)
         btn.addTarget(self, action: #selector(self.setDefaultParam), for: .touchUpInside)
         debugView.addSubview(btn)
+        //スライダー表示、非表示ボタン
+        let btn2 = UIButton(type: UIButtonType.roundedRect)
+        btn2.setTitle("Slider", for: .normal)
+        btn2.sizeToFit()
+        btn2.backgroundColor = UIColor.blue
+        btn2.layer.position = CGPoint(x: frame.maxX - btn2.frame.size.width - 10,
+                                     y: frame.maxY - btn2.frame.size.height)
+        btn2.addTarget(self, action: #selector(self.sliderSwitchHidden), for: .touchUpInside)
+        self.view!.addSubview(btn2)
     }
     //削除
     func removeParamSlider(){
@@ -1101,6 +1110,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             label.text = paramNames[ix] + ": " + String( paramInv[ix](params[ix].pointee)/10 )
             ix += 1
         }
+    }
+    var sliderHidden: Bool = true
+    @objc func sliderSwitchHidden( ){
+        debugView.isHidden = sliderHidden
+        sliderHidden = !sliderHidden
     }
     // スライダーの値が変更された時の処理
     @objc func sliderOnChange(_ sender: UISlider) {
