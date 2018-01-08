@@ -719,7 +719,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let physicsBody = SKPhysicsBody(rectangleOf: attackShape.frame.size)
         if jumping == true
         {
-            attackShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y + 1000)
+            attackShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y + 100)
             print("---attackShapeをjumping位置に生成---")
         } else if falling == true
         {
@@ -730,7 +730,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             attackShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
             print("---attackShapeをplayerと同位置に生成---")
         }
-        attackShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
         attackShape.fillColor = UIColor.clear
         attackShape.zPosition = 7.0
         attackShape.physicsBody = physicsBody
