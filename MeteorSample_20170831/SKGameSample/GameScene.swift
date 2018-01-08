@@ -1061,16 +1061,43 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             slider.addSubview(label)
             ix += 1
         }
+        //プレイヤー座標
         playerPosLabel.layer.position = CGPoint(x: 10, y:10)
         playerPosLabel.numberOfLines = 2
         playerPosLabel.textColor = UIColor.white
         playerPosLabel.frame.size.width = frame.size.width
         playerPosLabel.frame.size.height = 50
         debugView.addSubview(playerPosLabel)
+        //デフォルトボタン
+        let btn = UIButton(type: UIButtonType.roundedRect)
+        btn.setTitle("Default", for: .normal)
+        btn.sizeToFit()
+        btn.backgroundColor = UIColor.green
+        btn.layer.position = CGPoint(x: btn.frame.size.width,
+                                     y: frame.maxY - btn.frame.size.height)
+        btn.addTarget(self, action: #selector(self.setDefaultParam), for: .touchUpInside)
+        debugView.addSubview(btn)
     }
     //削除
     func removeParamSlider(){
         debugView.removeFromSuperview()
+    }
+    @objc func setDefaultParam(){
+        //調整用パラメータ
+        gravity = -9.8 * 150                //重力 9.8 [m/s^2] * 150 [pixels/m]
+        meteorPos = 1500.0                  //隕石の初期位置
+        meteorGravityCoefficient = 1/5      //隕石が受ける重力の影響を調整する係数
+        pleyerJumpSpeed = 9.8 * 150 * 1.2   //プレイヤーのジャンプ時の初速
+        playerGravityCoefficient = 1        //隕石が受ける重力の影響を調整する係数
+        meteorSpeedAtGuard = 9.8 * 150 / 10 //隕石が防御された時の速度
+        speedFromMeteorAtGuard = 1.0        //隕石を防御した時にプレイヤーが受ける隕石の速度の割合
+        var ix = 0
+        for slider in paramSliders {
+            slider.setValue( paramInv[ix](params[ix].pointee), animated: true)  // デフォルト値の設定
+            let label = slider.subviews.last as! UILabel
+            label.text = paramNames[ix] + ": " + String( paramInv[ix](params[ix].pointee)/10 )
+            ix += 1
+        }
     }
     // スライダーの値が変更された時の処理
     @objc func sliderOnChange(_ sender: UISlider) {
