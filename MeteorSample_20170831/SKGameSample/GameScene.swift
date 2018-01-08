@@ -1002,26 +1002,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                             0]      //speedFromMeteorOnGuard
     let paramMax:[Float] = [1000,   //gravity
                             400,    //meteorPos
-                            100,    //meteorGravityCoefficient
+                            1000,   //meteorGravityCoefficient
                             1000,   //pleyerJumpSpeed
-                            100,    //playerGravityCoefficient
+                            1000,   //playerGravityCoefficient
                             10,     //meteorSpeedAtGuard
-                            100]    //speedFromMeteorOnGuard
-    let paramTrans = [ {(a: Float) -> CGFloat in return -CGFloat((Int(a) * 15)) },
-                       {(a: Float) -> CGFloat in return CGFloat((Int(a) * 15)) },
-                       {(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 100) },
-                       {(a: Float) -> CGFloat in return CGFloat((Int(a) * 15)) },
-                       {(a: Float) -> CGFloat in return CGFloat(Float(Int(a) / 100)) },
-                       {(a: Float) -> CGFloat in return CGFloat((Int(a) * 15)) },
-                       {(a: Float) -> CGFloat in return CGFloat(Float(Int(a) / 100)) }
+                            1000]   //speedFromMeteorOnGuard
+    let paramTrans = [ {(a: Float) -> CGFloat in return -CGFloat((Float(Int(a)) / 10 * 150)) },
+                       {(a: Float) -> CGFloat in return CGFloat((Float(Int(a)) / 10 * 150)) },
+                       {(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 10 / 100) },
+                       {(a: Float) -> CGFloat in return CGFloat((Float(Int(a)) * 15)) },
+                       {(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 10 / 100) },
+                       {(a: Float) -> CGFloat in return CGFloat((Float(Int(a)) * 15)) },
+                       {(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 10 / 100) }
     ]
-    let paramInv = [ {(a: CGFloat) -> Float in return -Float(a / 150) },
-                     {(a: CGFloat) -> Float in return Float(a / 150) },
-                     {(a: CGFloat) -> Float in return Float(a * 100) },
-                     {(a: CGFloat) -> Float in return Float(a / 150) },
-                     {(a: CGFloat) -> Float in return Float(a * 100) },
-                     {(a: CGFloat) -> Float in return Float(a / 150) },
-                     {(a: CGFloat) -> Float in return Float(a * 100) }
+    let paramInv = [ {(a: CGFloat) -> Float in return -Float(a / 150 * 10) },
+                     {(a: CGFloat) -> Float in return Float(a / 150 * 10) },
+                     {(a: CGFloat) -> Float in return Float(a * 100 * 10) },
+                     {(a: CGFloat) -> Float in return Float(a / 150 * 10 ) },
+                     {(a: CGFloat) -> Float in return Float(a * 100 * 10) },
+                     {(a: CGFloat) -> Float in return Float(a / 150 * 10 ) },
+                     {(a: CGFloat) -> Float in return Float(a * 100 * 10) }
     ]
     //調整用スライダー
     var paramSliders = [UISlider]()
@@ -1054,7 +1054,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             debugView.addSubview(slider)
             //値表示用ラベル
             let label = UILabel()
-            label.text = p + ": " + String( describing: paramInv[ix](params[ix].pointee) )
+            label.text = p + ": " + String( paramInv[ix](params[ix].pointee)/10 )
             label.sizeToFit()
             label.textColor = UIColor.white
             label.layer.position.y -= 10
@@ -1078,9 +1078,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let index = paramSliders.index(of: sender)
         //
         params[index!].pointee = paramTrans[index!](sender.value)
-        print("###set \(paramNames[index!]) = \(params[index!].pointee)")
+        print("###set \(paramNames[index!]): \(sender.value) -> \(params[index!].pointee)")
         let label = sender.subviews.last as! UILabel
-        label.text = paramNames[index!] + ": " + String( paramInv[index!](params[index!].pointee) )
+        label.text = paramNames[index!] + ": " + String( paramInv[index!](params[index!].pointee)/10 )
         label.sizeToFit()
     }
 }
