@@ -717,6 +717,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let attackShape = SKShapeNode(rect: CGRect(x: 0.0 - self.player.size.width/2, y: 0.0 - self.player.size.height/2, width: self.player.size.width, height: self.player.size.height))
         attackShape.name = "attackShape"
         let physicsBody = SKPhysicsBody(rectangleOf: attackShape.frame.size)
+        if jumping == true
+        {
+            attackShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
+        } else if falling == true
+        {
+            attackShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
+        } else
+        {
+            attackShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
+        }
         attackShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
         attackShape.fillColor = UIColor.clear
         attackShape.zPosition = 7.0
@@ -795,7 +805,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let guardShape = SKShapeNode(rect: CGRect(x: 0.0 - self.player.size.width/2, y: 0.0 - self.player.size.height/2, width: self.player.size.width, height: self.player.size.height))
         guardShape.name = "guardShape"
         let physicsBody = SKPhysicsBody(rectangleOf: guardShape.frame.size)
-        guardShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
+        if jumping == true
+        {
+            guardShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
+        } else if falling == true
+        {
+            guardShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
+        } else
+        {
+            guardShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
+        }
         guardShape.fillColor = UIColor.clear
         guardShape.zPosition = 7.0
         guardShape.physicsBody = physicsBody
