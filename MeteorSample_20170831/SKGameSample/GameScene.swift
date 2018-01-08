@@ -311,6 +311,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if(debug){
             addParamSlider()    //パラメータ調整用スライダー
+            view.showsPhysics = true
         }
 	}
     
