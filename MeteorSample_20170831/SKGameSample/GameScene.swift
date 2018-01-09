@@ -901,7 +901,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         print("------------gameover------------")
         stop()
         removeParamSlider()
-        newGame()
+        gameOverView()
+        //newGame()
+    }
+    
+    func gameOverView(){
+        let backGroundView = UIView(frame: CGRect(x: self.view!.frame.size.width * 0.05,
+                                                  y: self.view!.frame.size.height * 0.05,
+                                                  width: self.view!.frame.size.width * 0.9,
+                                                  height: self.view!.frame.size.height * 0.9))
+        backGroundView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        self.view!.addSubview(backGroundView)
     }
     
     func newGame()
