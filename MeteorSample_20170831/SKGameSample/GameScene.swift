@@ -905,13 +905,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //newGame()
     }
     
+    var backGroundView: UIView!
     func gameOverView(){
-        let backGroundView = UIView(frame: CGRect(x: self.view!.frame.size.width * 0.05,
+        print("gameOverViewCreate")
+        backGroundView = UIView(frame: CGRect(x: self.view!.frame.size.width * 0.05,
                                                   y: self.view!.frame.size.height * 0.05,
                                                   width: self.view!.frame.size.width * 0.9,
                                                   height: self.view!.frame.size.height * 0.9))
         backGroundView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        let newGameBtn = UIButton(type: UIButtonType.roundedRect)
+        newGameBtn.setTitle("Retry", for: .normal)
+        newGameBtn.sizeToFit()
+        newGameBtn.backgroundColor = UIColor.blue
+        newGameBtn.layer.position = CGPoint(x: newGameBtn.frame.size.width,
+                                     y: backGroundView.frame.size.height - newGameBtn.frame.size.height)
+        newGameBtn.addTarget(self, action: #selector(self.newGameButtonAction), for: .touchUpInside)
+        backGroundView.addSubview(newGameBtn)
+        
         self.view!.addSubview(backGroundView)
+    }
+    
+    @objc func newGameButtonAction(_ sender: UIButton ){
+        print("####restart")
+        backGroundView.removeFromSuperview()
+        newGame()
     }
     
     func newGame()
