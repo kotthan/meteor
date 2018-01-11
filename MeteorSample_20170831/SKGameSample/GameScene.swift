@@ -907,6 +907,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var backGroundView: UIView!
     func gameOverView(){
+        
         print("gameOverViewCreate")
         //背景兼ベース
         backGroundView = UIView(frame: CGRect(x: self.view!.frame.size.width * 0.05,
@@ -928,10 +929,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.text = "Score: " + String( self.score )
         scoreLabel.sizeToFit()
         scoreLabel.textColor = UIColor.white
-        scoreLabel.layer.position.y = backGroundView.frame.size.height/2
+        scoreLabel.layer.position.y = backGroundView.frame.size.height/4
         scoreLabel.layer.position.x = backGroundView.frame.size.width/2
         backGroundView.addSubview(scoreLabel)
-        
+        //ハイスコアラベル
+        let highScoreLabel = UILabel( )
+        highScoreLabel.text = "High Score: " + String( self.highScore )
+        highScoreLabel.sizeToFit()
+        highScoreLabel.textColor = UIColor.white
+        highScoreLabel.layer.position.y = backGroundView.frame.size.height/4 + scoreLabel.frame.size.height
+        highScoreLabel.layer.position.x = backGroundView.frame.size.width/2
+        backGroundView.addSubview(highScoreLabel)
         self.view!.addSubview(backGroundView)
     }
     
