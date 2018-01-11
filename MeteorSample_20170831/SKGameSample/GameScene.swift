@@ -908,11 +908,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var backGroundView: UIView!
     func gameOverView(){
         print("gameOverViewCreate")
+        //背景兼ベース
         backGroundView = UIView(frame: CGRect(x: self.view!.frame.size.width * 0.05,
                                                   y: self.view!.frame.size.height * 0.05,
                                                   width: self.view!.frame.size.width * 0.9,
                                                   height: self.view!.frame.size.height * 0.9))
         backGroundView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        //NewGameボタン
         let newGameBtn = UIButton(type: UIButtonType.roundedRect)
         newGameBtn.setTitle("Retry", for: .normal)
         newGameBtn.sizeToFit()
@@ -921,6 +923,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                                      y: backGroundView.frame.size.height - newGameBtn.frame.size.height)
         newGameBtn.addTarget(self, action: #selector(self.newGameButtonAction), for: .touchUpInside)
         backGroundView.addSubview(newGameBtn)
+        //スコアラベル
+        let scoreLabel = UILabel( )
+        scoreLabel.text = "Score: " + String( self.score )
+        scoreLabel.sizeToFit()
+        scoreLabel.textColor = UIColor.white
+        scoreLabel.layer.position.y = backGroundView.frame.size.height/2
+        scoreLabel.layer.position.x = backGroundView.frame.size.width/2
+        backGroundView.addSubview(scoreLabel)
         
         self.view!.addSubview(backGroundView)
     }
