@@ -1091,14 +1091,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                             //0,      //playerGravityCoefficient
                             0,      //meteorSpeedAtGuard
                             0]      //speedFromMeteorOnGuard
-    let paramMax:[Float] = [1000,   //gravity
+    let paramMax:[Float] = [10000,   //gravity
                             400,    //meteorPos
                             //1000,   //meteorGravityCoefficient
-                            1000,   //pleyerJumpSpeed
+                            100,   //pleyerJumpSpeed
                             //1000,   //playerGravityCoefficient
                             10,     //meteorSpeedAtGuard
                             1000]   //speedFromMeteorOnGuard
-    let paramTrans = [ {(a: Float) -> CGFloat in return -CGFloat((Float(Int(a)) / 10 * 150)) },
+    let paramTrans = [ {(a: Float) -> CGFloat in return -CGFloat((Float(Int(a)) / 10)) },
                        {(a: Float) -> CGFloat in return CGFloat((Float(Int(a)) / 10 * 150)) },
                        //{(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 10 / 100) },
                        {(a: Float) -> CGFloat in return CGFloat((Float(Int(a)) * 15)) },
@@ -1106,7 +1106,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                        {(a: Float) -> CGFloat in return CGFloat((Float(Int(a)) * 15)) },
                        {(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 10 / 100) }
     ]
-    let paramInv = [ {(a: CGFloat) -> Float in return -Float(a / 150 * 10) },
+    let paramInv = [ {(a: CGFloat) -> Float in return -Float(a * 10) },
                      {(a: CGFloat) -> Float in return Float(a / 150 * 10) },
                      //{(a: CGFloat) -> Float in return Float(a * 100 * 10) },
                      {(a: CGFloat) -> Float in return Float(a / 150 * 10 ) },
@@ -1189,9 +1189,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     @objc func setDefaultParam(){
         //調整用パラメータ
-        gravity = -9.8 * 150                //重力 9.8 [m/s^2] * 150 [pixels/m]
+        gravity = -900               //重力 9.8 [m/s^2] * 150 [pixels/m]
         meteorPos = 1320.0                  //隕石の初期位置(1500)
-        meteorGravityCoefficient = 1/5      //隕石が受ける重力の影響を調整する係数
+        meteorGravityCoefficient = 0.06      //隕石が受ける重力の影響を調整する係数
         pleyerJumpSpeed = 9.8 * 150 * 1.2   //プレイヤーのジャンプ時の初速
         playerGravityCoefficient = 1        //隕石が受ける重力の影響を調整する係数
         meteorSpeedAtGuard = 9.8 * 150 / 10 //隕石が防御された時の速度
