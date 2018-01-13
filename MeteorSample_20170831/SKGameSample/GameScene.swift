@@ -61,6 +61,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gameFlg:Bool = false
     var canMoveFlg = true
     var meteorCollisionFlg = false
+    var retryFlg = false            //リトライするときにそのままゲームスタートさせる
     
     //MARK: - プロパティ
 	//MARK: プレイヤーキャラプロパティ
@@ -298,6 +299,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.start0Node = start0Node
                 self.baseNode.addChild(start0Node)
             })
+            if( retryFlg ){ //リトライ時はそのままスタートする
+                startButtonAction()
+            }
 		}
         
         //===================
@@ -404,7 +408,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             else if node?.name == "start0Node"
             {
                 startButtonAction()
-                start0Node.zPosition = -15
             }
         }
     }
@@ -683,6 +686,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     {
         gameFlg = true
         play()
+        start0Node.zPosition = -15
         //playBgm(soundName: "bgmn")
     }
     
@@ -924,15 +928,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                                                   width: self.view!.frame.size.width * 0.9,
                                                   height: self.view!.frame.size.height * 0.9))
         backGroundView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
-        //NewGameボタン
+        //Titleボタン
         let newGameBtn = UIButton(type: UIButtonType.roundedRect)
-        newGameBtn.setTitle("Retry", for: .normal)
+        newGameBtn.setTitle("Title", for: .normal)
         newGameBtn.sizeToFit()
         newGameBtn.backgroundColor = UIColor.blue
         newGameBtn.layer.position = CGPoint(x: newGameBtn.frame.size.width,
                                      y: backGroundView.frame.size.height - newGameBtn.frame.size.height)
         newGameBtn.addTarget(self, action: #selector(self.newGameButtonAction), for: .touchUpInside)
         backGroundView.addSubview(newGameBtn)
+        //Retryボタン
+        let retryBtn = UIButton(type: UIButtonType.roundedRect)
+        retryBtn.setTitle("Rerty", for: .normal)
+        retryBtn.sizeToFit()
+        retryBtn.backgroundColor = UIColor.blue
+        retryBtn.layer.position = CGPoint(x: newGameBtn.frame.size.width + retryBtn.frame.size.width,
+                                            y: backGroundView.frame.size.height - retryBtn.frame.size.height)
+        retryBtn.addTarget(self, action: #selector(self.retryButtonAction), for: .touchUpInside)
+        backGroundView.addSubview(retryBtn)
         //スコアラベル
         let scoreLabel = UILabel( )
         scoreLabel.text = "Score: " + String( self.score )
@@ -953,10 +966,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     @objc func newGameButtonAction(_ sender: UIButton ){
-        print("####restart")
         removeParamSlider()
         backGroundView.removeFromSuperview()
         newGame()
+    }
+    @objc func retryButtonAction(_ sender: UIButton ){
+        removeParamSlider()
+        backGroundView.removeFromSuperview()
+        let scene = GameScene(size: self.scene!.size)
+        scene.scaleMode = SKSceneScaleMode.aspectFill
+        scene.retryFlg = true
+        self.view?.presentScene(scene)
     }
     
     func newGame()
