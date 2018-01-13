@@ -81,6 +81,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: 隕石・プレイヤー動作プロパティ
     var playerSpeed : CGFloat = 0.0                                 //プレイヤーの速度
     var meteorSpeed : CGFloat = 0.0                                 //隕石のスピード[pixels/s]
+    var meteorUpSize : CGFloat = 100.0                                  //隕石の増加サイズ
     //調整用パラメータ
     var gravity : CGFloat = -900                                    //重力 9.8 [m/s^2] * 150 [pixels/m]
     var meteorPos :CGFloat = 1320.0                                 //隕石の初期位置(1500.0)
@@ -344,7 +345,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.player.position.y = self.player.position.y + CGFloat( playerSpeed / 60 ) // [pixcel/s] / 60[fps]
             if ( !meteores.isEmpty ){
                 let meteor = self.meteores.first
-                let meteorY = (meteor?.position.y)! -  ( 70 + 25 * CGFloat(meteores.count-1) )
+                let meteorY = (meteor?.position.y)! - ((meteor?.size.height)!/2)
                 if( meteorY < self.player.position.y ){ //衝突する
                     meteorCollisionFlg = true
                     self.player.position.y = meteorY
@@ -640,7 +641,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: - 関数定義　自分で設定関係
     
     //MARK: 配列
-    var meteorNames: [String] = ["150","250","350","450"]
+    var meteorNames: [String] = ["rect_001","250","350","450"]
     var meteorInt: Int = 0
     var meteorDouble: Double = 70.0
     var meteores: [SKSpriteNode] = []
@@ -691,7 +692,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         else if firstBuildFlg == true
         {
-            buildMeteor(size: 150.0, meteorString: "150", meteorZ: 6.0)
+            buildMeteor(size: 50.0, meteorString: "rect_001", meteorZ: 70.0)
         }
         else if buildFlg == false
         {
@@ -702,10 +703,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             meteorInt += 1
             meteorDouble = 70.0
             self.meteorSpeed = 0.0
+            self.meteorGravityCoefficient += 0.05
             for i in (0...meteorInt).reversed()
             {
                 meteorDouble -= 1.0
-                buildMeteor(size: Double(150 + (i * 100)),meteorString: meteorNames[0], meteorZ: meteorDouble)
+                buildMeteor(size: Double(50 + (CGFloat(i) * meteorUpSize)),meteorString: meteorNames[0], meteorZ: meteorDouble)
                 print("---meteorInt = \(i)です-----")
             }
         }
