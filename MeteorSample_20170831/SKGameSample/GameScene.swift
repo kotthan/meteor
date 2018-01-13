@@ -950,7 +950,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             print("------------gameover------------")
             stop()
-            removeParamSlider()
             gameOverView()
         }
     }
@@ -995,6 +994,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     @objc func newGameButtonAction(_ sender: UIButton ){
         print("####restart")
+        removeParamSlider()
         backGroundView.removeFromSuperview()
         newGame()
     }
