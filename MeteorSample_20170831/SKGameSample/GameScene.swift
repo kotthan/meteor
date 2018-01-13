@@ -726,15 +726,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         if jumping == true
         {
-            attackShape.position = CGPoint(x: 0, y: 0)
+            attackShape.position = CGPoint(x: 0, y: player.size.height)
             print("---attackShapeをjumping位置に生成---")
         } else if falling == true
         {
-            attackShape.position = CGPoint(x: 0, y: 0)
+            attackShape.position = CGPoint(x: 0, y: player.size.height)
             print("---attackShapeをfalling位置に生成---")
         } else if (jumping == false && falling == false)
         {
-            attackShape.position = CGPoint(x: 0, y: 0)
+            attackShape.position = CGPoint(x: 0, y:player.size.height)
             print("---attackShapeをplayerと同位置に生成---")
         }
         attackShape.fillColor = UIColor.clear
@@ -802,6 +802,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 playSound(soundName: "hakai")
                 //隕石と接触していたら速度を0にする
                 if( meteorCollisionFlg ){
+                    meteorCollisionFlg = false
                     playerSpeed = 0;
                 }
             }
