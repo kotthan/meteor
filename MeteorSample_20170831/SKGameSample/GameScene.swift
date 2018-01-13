@@ -350,9 +350,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.playerBaseNode.position.y = defaultYPosition
             }
         }
-        if (jumping == true || falling == true) && (self.playerBaseNode.position.y > self.oneScreenSize.height/2)
+        if (jumping == true || falling == true) && (self.playerBaseNode.position.y + 200 > self.oneScreenSize.height/2)
         {
-            self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.playerBaseNode.position.y);
+            self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.playerBaseNode.position.y + 200 );
         }
         else {
             self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.oneScreenSize.height/2)
