@@ -67,7 +67,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	var playerAcceleration: CGFloat = 50.0                          //移動加速値
 	var playerMaxVelocity: CGFloat = 300.0                          //MAX移動値
 	var jumpForce: CGFloat = 60.0                                   //ジャンプ力
-    var guardForce: CGFloat = -10.0                                  //ガード反発力
+    var guardForce: CGFloat = -10.0                                 //ガード反発力
 	var charXOffset: CGFloat = 0                                    //X位置のオフセット
 	var charYOffset: CGFloat = 0                                    //Y位置のオフセット
     var guardPower : CGFloat = 4500.0                               //ガード可否判定用
@@ -82,13 +82,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var playerSpeed : CGFloat = 0.0                                 //プレイヤーの速度
     var meteorSpeed : CGFloat = 0.0                                 //隕石のスピード[pixels/s]
     //調整用パラメータ
-    var gravity : CGFloat = -900                  //重力 9.8 [m/s^2] * 150 [pixels/m]
-    var meteorPos :CGFloat = 1320.0                     //隕石の初期位置(1500.0)
-    var meteorGravityCoefficient: CGFloat = 0.06         //隕石が受ける重力の影響を調整する係数
-    var pleyerJumpSpeed : CGFloat = 9.8 * 150 * 1.2     //プレイヤーのジャンプ時の初速
-    var playerGravityCoefficient: CGFloat = 1           //隕石が受ける重力の影響を調整する係数
-    var meteorSpeedAtGuard: CGFloat = 100    //隕石が防御された時の速度
-    var speedFromMeteorAtGuard : CGFloat = 350         //隕石を防御した時にプレイヤーが受ける隕石の速度の割合
+    var gravity : CGFloat = -900                                    //重力 9.8 [m/s^2] * 150 [pixels/m]
+    var meteorPos :CGFloat = 1320.0                                 //隕石の初期位置(1500.0)
+    var meteorGravityCoefficient: CGFloat = 0.06                    //隕石が受ける重力の影響を調整する係数
+    var pleyerJumpSpeed : CGFloat = 9.8 * 150 * 1.2                 //プレイヤーのジャンプ時の初速
+    var playerGravityCoefficient: CGFloat = 1                       //プレイヤーが受ける重力の影響を調整する係数
+    var meteorSpeedAtGuard: CGFloat = 100                           //隕石が防御された時の速度
+    var speedFromMeteorAtGuard : CGFloat = 350                      //隕石を防御した時にプレイヤーが受ける隕石の速度
     
     //MARK: タッチ関係プロパティ
     var beganPos: CGPoint = CGPoint.zero
@@ -298,22 +298,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.start0Node = start0Node
                 self.baseNode.addChild(start0Node)
             })
-            //===================
-            //MARK:  リスタートボタン
-            //===================
-            /*let reStartButton = UIButton()
-            reStartButton.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-            reStartButton.backgroundColor = UIColor.red;
-            reStartButton.layer.masksToBounds = true
-            reStartButton.setTitle("restart!", for: <#T##UIControlState#>)
-            reStartButton.setTitleColor(UIColor.white, for: UIControlState)
-            reStartButton.setTitle("Done", forState: UIControlState.Highlighted)
-            myButton.setTitleColor(UIColor.blackColor(), forState: UIControlState.Highlighted)
-            myButton.layer.cornerRadius = 20.0
-            myButton.layer.position = CGPoint(x: self.view!.frame.width/2, y:200)
-            myButton.addTarget(self, action: "onClickMyButton:", forControlEvents: .TouchUpInside)
-            self.view!.addSubview(myButton);
- */
 		}
         
         //===================
@@ -502,27 +486,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if node == nil
             {
                 return
-            }
-            else if node?.name == "startNode"
-            {
-                print("hello")
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
-                {
-                    self.canMoveFlg = true
-                 }
-                self.isPaused = false
-                self.meteorTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(GameScene.fallMeteor), userInfo: nil, repeats: true)
-                let move1 = SKAction.moveBy(x: 0, y: 80, duration: 0.4)
-                let move2 = SKAction.wait(forDuration: 0.4)
-                let move3 = SKAction.moveBy(x: 0, y: -2300, duration: 10.0)
-                let move4 = SKAction.sequence([move1,move2,move3])
-                for i in meteores
-                {
-                    i.removeAllActions()
-                    i.run(move4)
-                    print("---隕石がガードされたモーションを実行---")
-                }
-                startNode.zPosition = -15
             }
         }
     }
