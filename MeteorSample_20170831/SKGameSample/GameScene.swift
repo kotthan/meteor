@@ -238,9 +238,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 x: self.player.size.width + 100,
                 y: self.player.size.height
             )
-            self.scoreLabel.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
-            self.scoreLabel.yScale = 1 / self.player.yScale
-            self.player.addChild(self.scoreLabel)               //playerにaddchiledすることでplayerに追従させる
+            self.playerBaseNode.addChild(self.scoreLabel)               //playerにaddchiledすることでplayerに追従させる
             
             //===================
             //MARK: 必殺技ボタン
