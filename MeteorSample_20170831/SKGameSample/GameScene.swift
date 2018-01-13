@@ -329,9 +329,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.playerSpeed += self.gravity * self.playerGravityCoefficient / 60   // [pixcel/s^2] / 60[fps]
             self.player.position.y = self.player.position.y + CGFloat( playerSpeed / 60 ) // [pixcel/s] / 60[fps]
             if ( !meteores.isEmpty ){
-                let meteor = self.meteores.last
-                let meteorY = (meteor?.position.y)! - 150 * (meteor?.yScale)! / 2
+                let meteor = self.meteores.first
+                print("meteorsacale=\(String(describing: meteor?.yScale))")
+                let meteorY = (meteor?.position.y)! -  ( 70 + 25 * CGFloat(meteores.count-1) )
+                //print("meteorY" + String(describing: meteorY))
                 if( meteorY < self.player.position.y ){
+                    print("\(meteor?.position.y) - \(meteorY)")
                     self.player.position.y = meteorY
                     self.playerSpeed -= self.meteorSpeed / 60
                 }
