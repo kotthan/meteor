@@ -246,23 +246,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //MARK: 必殺技ボタン
             //===================
             ultraButton = SKSpriteNode(imageNamed: ultraButtonString)
-            self.ultraButton.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
-                x: self.player.size.width - 600,
-                y: self.player.size.height + 50
+            self.ultraButton.position = CGPoint(                 //表示位置をplayerのサイズ分左に
+                x: -self.player.size.width,
+                y: 0
             )
-            self.ultraButton.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
-            self.ultraButton.yScale = 1 / self.player.yScale
-            self.player.addChild(self.ultraButton)               //playerにaddchiledすることでplayerに追従させる
+            self.playerBaseNode.addChild(self.ultraButton)               //playerにaddchiledすることでplayerに追従させる
             
             ultraOkButton = SKSpriteNode(imageNamed: "renzan.png")
-            self.ultraOkButton.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
-                x: self.player.size.width - 600,
-                y: self.player.size.height + 50
+            self.ultraOkButton.position = CGPoint(                 //表示位置をplayerのサイズ分左上に
+                x: -self.player.size.width,
+                y: 0
             )
-            self.ultraOkButton.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
-            self.ultraOkButton.yScale = 1 / self.player.yScale
             ultraOkButton.removeFromParent()
-            self.player.addChild(self.ultraOkButton)               //playerにaddchiledすることでplayerに追従させる
+            self.playerBaseNode.addChild(self.ultraOkButton)               //playerにaddchiledすることでplayerに追従させる
             self.ultraOkButton.isHidden = true
             
             //===================
