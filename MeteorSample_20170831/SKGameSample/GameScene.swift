@@ -737,10 +737,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         attackShape.physicsBody?.categoryBitMask = 0b10000      //接触判定用マスク設定
         attackShape.physicsBody?.collisionBitMask = 0b0000      //接触対象をなしに設定
         attackShape.physicsBody?.contactTestBitMask = 0b1000    //接触対象をmeteorに設定
-        self.player.addChild(attackShape)
+        self.playerBaseNode.addChild(attackShape)
         //print("---attackShapeを生成しました---")
-        attackShape.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
-        attackShape.yScale = 1 / self.player.yScale
         self.attackShapes.append(attackShape)
     }
     
@@ -830,10 +828,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guardShape.physicsBody?.categoryBitMask = 0b100000     //接触判定用マスク設定
         guardShape.physicsBody?.collisionBitMask = 0b0000      //接触対象をなしに設定
         guardShape.physicsBody?.contactTestBitMask = 0b1000    //接触対象をmeteorに設定
-        self.player.addChild(guardShape)
+        self.playerBaseNode.addChild(guardShape)
         print("---guardShapeを生成しました---")
-        guardShape.xScale = 1 / self.player.xScale
-        guardShape.yScale = 1 / self.player.yScale
         self.guardShapes.append(guardShape)
     }
     
