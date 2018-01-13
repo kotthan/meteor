@@ -26,6 +26,7 @@
 		B6BE9F2F1F6800DE00348B5E /* bgm.mid in Resources */ = {isa = PBXBuildFile; fileRef = B6BE9F2E1F6800DE00348B5E /* bgm.mid */; };
 		B6BE9F311F680D4F00348B5E /* bgmn.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B6BE9F301F680D4F00348B5E /* bgmn.mp3 */; };
 		B6E07F0D1F41CCEC007EB82F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6E07F0C1F41CCEC007EB82F /* Assets.xcassets */; };
+		B6E5B0F2200A9B8200A68D1E /* shining_star.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B6E5B0F1200A9B8200A68D1E /* shining_star.mp3 */; };
 		B6ED2EC81F44115D00567728 /* TitleScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = B6ED2EC71F44115D00567728 /* TitleScene.sks */; };
 		B6ED2ECA1F4417C600567728 /* TitleScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6ED2EC91F4417C600567728 /* TitleScene.swift */; };
 /* End PBXBuildFile section */
@@ -52,6 +53,7 @@
 		B6BE9F2E1F6800DE00348B5E /* bgm.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = bgm.mid; sourceTree = "<group>"; };
 		B6BE9F301F680D4F00348B5E /* bgmn.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bgmn.mp3; sourceTree = "<group>"; };
 		B6E07F0C1F41CCEC007EB82F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B6E5B0F1200A9B8200A68D1E /* shining_star.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = shining_star.mp3; sourceTree = "<group>"; };
 		B6ED2EC71F44115D00567728 /* TitleScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TitleScene.sks; sourceTree = "<group>"; };
 		B6ED2EC91F4417C600567728 /* TitleScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -96,6 +98,7 @@
 				B6ED2EC71F44115D00567728 /* TitleScene.sks */,
 				B6B4877E1F66BC0C00E41389 /* jump.wav */,
 				54F6B15F1C3CEFA000B1D569 /* GameViewController.swift */,
+				B6E5B0F1200A9B8200A68D1E /* shining_star.mp3 */,
 				B6B487801F66BDC400E41389 /* move.wav */,
 				B6B487861F66BF8900E41389 /* bougyo.wav */,
 				B6B487841F66BEE700E41389 /* tyakuti.wav */,
@@ -177,6 +180,7 @@
 				B6B4877F1F66BC0C00E41389 /* jump.wav in Resources */,
 				B6B487831F66BE4800E41389 /* hakai.wav in Resources */,
 				B6B487851F66BEE700E41389 /* tyakuti.wav in Resources */,
+				B6E5B0F2200A9B8200A68D1E /* shining_star.mp3 in Resources */,
 				5481994A1C3F3FB00017838C /* GameScene.sks in Resources */,
 				54F6B1561C3CEEFF00B1D569 /* LaunchScreen.storyboard in Resources */,
 				B6B4877B1F66BA1A00E41389 /* slash.wav in Resources */,

@@ -136,7 +136,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.meteorTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(GameScene.fallMeteor), userInfo: nil, repeats: true)                                          //タイマー生成
         
         //MARK: 音楽
-        let soundFilePath: String = Bundle.main.path(forResource: "bgmn", ofType: "mp3")!
+        let soundFilePath: String = Bundle.main.path(forResource: "shining_star", ofType: "mp3")!
         let fileURL: URL = URL(fileURLWithPath: soundFilePath)
         try! audioPlayer = AVAudioPlayer(contentsOf: fileURL)
         audioPlayer.numberOfLoops = -1
