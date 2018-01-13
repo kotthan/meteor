@@ -904,6 +904,55 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             removeParamSlider()
             newGame()
         }
+        print("------------gameover------------")
+        stop()
+        removeParamSlider()
+        gameOverView()
+        //newGame()
+    }
+    
+    var backGroundView: UIView!
+    func gameOverView(){
+        
+        print("gameOverViewCreate")
+        //背景兼ベース
+        backGroundView = UIView(frame: CGRect(x: self.view!.frame.size.width * 0.05,
+                                                  y: self.view!.frame.size.height * 0.05,
+                                                  width: self.view!.frame.size.width * 0.9,
+                                                  height: self.view!.frame.size.height * 0.9))
+        backGroundView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        //NewGameボタン
+        let newGameBtn = UIButton(type: UIButtonType.roundedRect)
+        newGameBtn.setTitle("Retry", for: .normal)
+        newGameBtn.sizeToFit()
+        newGameBtn.backgroundColor = UIColor.blue
+        newGameBtn.layer.position = CGPoint(x: newGameBtn.frame.size.width,
+                                     y: backGroundView.frame.size.height - newGameBtn.frame.size.height)
+        newGameBtn.addTarget(self, action: #selector(self.newGameButtonAction), for: .touchUpInside)
+        backGroundView.addSubview(newGameBtn)
+        //スコアラベル
+        let scoreLabel = UILabel( )
+        scoreLabel.text = "Score: " + String( self.score )
+        scoreLabel.sizeToFit()
+        scoreLabel.textColor = UIColor.white
+        scoreLabel.layer.position.y = backGroundView.frame.size.height/4
+        scoreLabel.layer.position.x = backGroundView.frame.size.width/2
+        backGroundView.addSubview(scoreLabel)
+        //ハイスコアラベル
+        let highScoreLabel = UILabel( )
+        highScoreLabel.text = "High Score: " + String( self.highScore )
+        highScoreLabel.sizeToFit()
+        highScoreLabel.textColor = UIColor.white
+        highScoreLabel.layer.position.y = backGroundView.frame.size.height/4 + scoreLabel.frame.size.height
+        highScoreLabel.layer.position.x = backGroundView.frame.size.width/2
+        backGroundView.addSubview(highScoreLabel)
+        self.view!.addSubview(backGroundView)
+    }
+    
+    @objc func newGameButtonAction(_ sender: UIButton ){
+        print("####restart")
+        backGroundView.removeFromSuperview()
+        newGame()
     }
     
     func newGame()
