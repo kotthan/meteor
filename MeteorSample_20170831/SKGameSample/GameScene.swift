@@ -369,11 +369,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.jumping = false
             self.falling = true
         }
-        /*if self.player.position.y > self.meteores.last!.position.y - self.meteores.last!.size.height/2
-        {
-            self.player!.position.y = meteores.last!.position.y - meteores.last!.size.height/2
-        }
-        */
         if( debug ){
             playerPosLabel.text = "x : \(self.player.position.x) \ny : \(self.player.position.y)"
         }
