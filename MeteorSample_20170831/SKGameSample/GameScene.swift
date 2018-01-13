@@ -28,6 +28,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var lowestShape: SKShapeNode!                                   //落下判定シェイプノード
     var attackShape: SKShapeNode!                                   //攻撃判定シェイプノード
     var guardShape: SKShapeNode!                                    //防御判定シェイプノード
+    var guardGage: SKShapeNode!                                     //ガードゲージ
     var startNode: SKSpriteNode!
     var start0Node: SKSpriteNode!
     let scoreLabel = SKLabelNode()                                  //スコア表示ラベル
@@ -237,12 +238,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.scoreLabel.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
             self.scoreLabel.yScale = 1 / self.player.yScale
             self.player.addChild(self.scoreLabel)               //playerにaddchiledすることでplayerに追従させる
+            
             //===================
             //MARK: 必殺技ボタン
             //===================
             ultraButton = SKSpriteNode(imageNamed: ultraButtonString)
             self.ultraButton.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
-                x: self.player.size.width - 250,
+                x: self.player.size.width - 600,
                 y: self.player.size.height + 50
             )
             self.ultraButton.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
@@ -251,7 +253,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             ultraOkButton = SKSpriteNode(imageNamed: "renzan.png")
             self.ultraOkButton.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
-                x: self.player.size.width - 400,
+                x: self.player.size.width - 600,
                 y: self.player.size.height + 50
             )
             self.ultraOkButton.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
@@ -310,6 +312,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.view!.addSubview(myButton);
  */
 		}
+        
+        //===================
+        //MARK: ガードゲージ
+        //===================
+        guardGage = SKShapeNode(rect:CGRect(x: 0, y: 0, width: self.player.size.width*0.3, height: self.player.size.height*0.8))
+        guardGage.name = "guardGage"
+        guardGage.fillColor = UIColor.red
+        self.guardGage.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
+        self.guardGage.yScale = 1 / self.player.yScale
+        self.player.addChild(self.guardGage)               //playerにaddchiledすることでplayerに追従させる
+        
         //ハイスコアラベル
         if ( UserDefaults.standard.object(forKey: keyHighScore) != nil ){
             self.highScore = UserDefaults.standard.integer(forKey: self.keyHighScore) //保存したデータの読み出し
