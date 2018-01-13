@@ -123,9 +123,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         print("---カメラのスタート位置は\(self.camera!.position)です---")
         
         //MARK: 設定関係
-        self.backgroundColor = SKColor.clear                        //背景色
-        self.physicsWorld.contactDelegate = self                    //接触デリゲート
-        self.physicsWorld.gravity = CGVector(dx:0, dy:0)         //重力設定
+        self.backgroundColor = SKColor.clear                           //背景色
+        self.physicsWorld.contactDelegate = self                       //接触デリゲート
+        self.physicsWorld.gravity = CGVector(dx:0, dy:0)               //重力設定
         
 		//MARK: 背景
         self.addChild(self.baseNode)                                //ベース追加
@@ -348,7 +348,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if (jumping == true || falling == true){
             // 次の位置を計算する
             self.playerSpeed += self.gravity * self.playerGravityCoefficient / 60   // [pixcel/s^2] / 60[fps]
-            self.playerBaseNode.position.y += CGFloat( playerSpeed / 60 ) // [pixcel/s] / 60[fps]
+            self.playerBaseNode.position.y += CGFloat( playerSpeed / 60 )           // [pixcel/s] / 60[fps]
             if ( !meteores.isEmpty ){
                 let meteor = self.meteores.first
                 let meteorMinY = (meteor?.position.y)! - ((meteor?.size.height)!/2)
@@ -381,8 +381,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             playerPosLabel.text = "x : \(self.playerBaseNode.position.x) \ny : \(self.playerBaseNode.position.y)"
         }
         
-        if (guardPower < 4500.0)
-        { guardPower += 60
+        if guardPower < 0
+        {
+            guardPower = 0
+        } else if guardPower <= 4500
+        {
+            guardPower += 50
         }
         guardGage.yScale = CGFloat(guardPower / 1000)
     }
@@ -419,8 +423,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let xPos = beganPos.x - endedPos.x
             let yPos = beganPos.y - endedPos.y
             if fabs(yPos) > fabs(xPos)  {
-                if yPos > 0  {              //下スワイプ
-                    return
+                if yPos > 0                                 //下スワイプ
+                {
+                    guardPower -= 100
                 } else if yPos < 0 {        //上スワイプ
                     return
                 }
