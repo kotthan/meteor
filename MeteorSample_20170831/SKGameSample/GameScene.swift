@@ -82,7 +82,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: 隕石・プレイヤー動作プロパティ
     var playerSpeed : CGFloat = 0.0                                 //プレイヤーの速度
     var meteorSpeed : CGFloat = 0.0                                 //隕石のスピード[pixels/s]
-    var meteorUpScale : CGFloat = 1                                 //隕石の増加倍率
+    var meteorUpScale : CGFloat = 0.8                                 //隕石の増加倍率
     //調整用パラメータ
     var gravity : CGFloat = -900                                    //重力 9.8 [m/s^2] * 150 [pixels/m]
     var meteorPos :CGFloat = 1320.0                                 //隕石の初期位置(1500.0)
@@ -341,8 +341,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 let meteorMinY = (meteor?.position.y)! - ((meteor?.size.height)!/2)
                 let playerMaxY = playerBaseNode.position.y + ((player?.size.height)!/2)
                 let playerHalfSize = (player?.size.height)!/2
-                if( meteorMinY < playerMaxY ){ //衝突する
-                    meteorCollisionFlg = true
+                if( meteorCollisionFlg ){ //衝突する
                     self.playerBaseNode.position.y = meteorMinY - playerHalfSize
                     self.playerSpeed -= self.meteorSpeed / 60
                 }
@@ -691,7 +690,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         else if firstBuildFlg == true
         {
-            buildMeteor(size: 0.5, meteorString: "rect_001", meteorZ: 70.0)
+            buildMeteor(size: 0.3, meteorString: "rect_001", meteorZ: 70.0)
         }
         else if buildFlg == false
         {
@@ -707,7 +706,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             for i in (0...meteorInt).reversed()
             {
                 meteorDouble -= 1.0
-                buildMeteor(size: Double(0.5 + (CGFloat(i) * meteorUpScale)),meteorString: meteorNames[0], meteorZ: meteorDouble)
+                buildMeteor(size: Double(0.3 + (CGFloat(i) * meteorUpScale)),meteorString: meteorNames[0], meteorZ: meteorDouble)
                     print("---meteorInt = \(i)です-----")
             }
         }
