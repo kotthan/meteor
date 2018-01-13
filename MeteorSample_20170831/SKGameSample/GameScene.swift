@@ -82,11 +82,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: 隕石・プレイヤー動作プロパティ
     var playerSpeed : CGFloat = 0.0                                 //プレイヤーの速度
     var meteorSpeed : CGFloat = 0.0                                 //隕石のスピード[pixels/s]
-    var meteorUpSize : CGFloat = 100.0                                  //隕石の増加サイズ
+    var meteorUpScale : CGFloat = 1                                 //隕石の増加倍率
     //調整用パラメータ
     var gravity : CGFloat = -900                                    //重力 9.8 [m/s^2] * 150 [pixels/m]
     var meteorPos :CGFloat = 1320.0                                 //隕石の初期位置(1500.0)
-    var meteorGravityCoefficient: CGFloat = 0.06                    //隕石が受ける重力の影響を調整する係数
+    var meteorGravityCoefficient: CGFloat = 0.04                    //隕石が受ける重力の影響を調整する係数
     var pleyerJumpSpeed : CGFloat = 9.8 * 150 * 1.2                 //プレイヤーのジャンプ時の初速
     var playerGravityCoefficient: CGFloat = 1                       //プレイヤーが受ける重力の影響を調整する係数
     var meteorSpeedAtGuard: CGFloat = 100                           //隕石が防御された時の速度
@@ -655,11 +655,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         buildFlg = false
         let texture = SKTexture(imageNamed: meteorString)
         let meteor = SKSpriteNode(texture: texture)
-        meteor.position = CGPoint(x: 187, y: self.meteorPos)
         meteor.zPosition = CGFloat(meteorZ)
         meteor.size = CGSize(width: texture.size().width, height: texture.size().height)
-        meteor.xScale = CGFloat(size / 150)
-        meteor.yScale = CGFloat(size / 150)
+        meteor.xScale = CGFloat(size)
+        meteor.yScale = CGFloat(size)
+        if meteores.isEmpty
+        {
+            meteor.position = CGPoint(x: 187, y: self.meteorPos + (meteor.size.height)/2)
+        } else
+        {
+            meteor.position = CGPoint(x: 187, y: (meteores.first?.position.y)!)
+        }
         meteor.physicsBody = SKPhysicsBody(texture: texture, size: meteor.size)
         meteor.physicsBody?.affectedByGravity = false
         meteor.physicsBody?.categoryBitMask = 0b1000                         //接触判定用マスク設定
@@ -688,7 +694,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         else if firstBuildFlg == true
         {
-            buildMeteor(size: 50.0, meteorString: "rect_001", meteorZ: 70.0)
+            buildMeteor(size: 0.5, meteorString: "rect_001", meteorZ: 70.0)
         }
         else if buildFlg == false
         {
@@ -699,12 +705,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             meteorInt += 1
             meteorDouble = 70.0
             self.meteorSpeed = 0.0
-            self.meteorGravityCoefficient += 0.05
+            self.meteorGravityCoefficient += 0.08
             for i in (0...meteorInt).reversed()
             {
                 meteorDouble -= 1.0
-                buildMeteor(size: Double(50 + (CGFloat(i) * meteorUpSize)),meteorString: meteorNames[0], meteorZ: meteorDouble)
-                print("---meteorInt = \(i)です-----")
+                buildMeteor(size: Double(0.5 + (CGFloat(i) * meteorUpScale)),meteorString: meteorNames[0], meteorZ: meteorDouble)
+                    print("---meteorInt = \(i)です-----")
             }
         }
         else
