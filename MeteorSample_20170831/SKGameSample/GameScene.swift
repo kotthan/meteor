@@ -85,8 +85,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var meteorGravityCoefficient: CGFloat = 0.06         //隕石が受ける重力の影響を調整する係数
     var pleyerJumpSpeed : CGFloat = 9.8 * 150 * 1.2     //プレイヤーのジャンプ時の初速
     var playerGravityCoefficient: CGFloat = 1           //隕石が受ける重力の影響を調整する係数
-    var meteorSpeedAtGuard: CGFloat = 9.8 * 150 / 10    //隕石が防御された時の速度
-    var speedFromMeteorAtGuard : CGFloat = 1.0         //隕石を防御した時にプレイヤーが受ける隕石の速度の割合
+    var meteorSpeedAtGuard: CGFloat = 100    //隕石が防御された時の速度
+    var speedFromMeteorAtGuard : CGFloat = 350         //隕石を防御した時にプレイヤーが受ける隕石の速度の割合
     
     //MARK: タッチ関係プロパティ
     var beganPos: CGPoint = CGPoint.zero
@@ -314,6 +314,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             addParamSlider()    //パラメータ調整用スライダー
             view.showsPhysics = true
         }
+        setDefaultParam()
 	}
     
     //MARK: シーンのアップデート時に呼ばれる関数
@@ -1076,13 +1077,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //デバッグ表示用view
     var debugView = UIView()
     let playerPosLabel = UILabel()                                  //プレイヤーの座標表示用ラベル
-    let paramNames = ["gravity[m/s^2]",
-                      "meteorPos[m]",
+    let paramNames = ["重力",
+                      "隕石の発生位置",
                       //"meteorGravityCoefficient[%]",
-                      "pleyerJumpSpeed[m/s]",
+                      "ジャンプ速度",
                       //"playerGravityCoefficient[%]",
-                      "meteorSpeedAtGuard[m/s]",
-                      "speedFromMeteorAtGuard[%]"]
+                      "ガード時の隕石速度",
+                      "ガード時のプレイヤー速度"]
     var params = [UnsafeMutablePointer<CGFloat>]()
     let paramMin:[Float] = [0,      //gravity
                             0,      //meteorPos
@@ -1091,28 +1092,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                             //0,      //playerGravityCoefficient
                             0,      //meteorSpeedAtGuard
                             0]      //speedFromMeteorOnGuard
-    let paramMax:[Float] = [10000,   //gravity
+    let paramMax:[Float] = [1000,   //gravity
                             5000,    //meteorPos
                             //1000,   //meteorGravityCoefficient
-                            100,   //pleyerJumpSpeed
+                            10,   //pleyerJumpSpeed
                             //1000,   //playerGravityCoefficient
-                            10,     //meteorSpeedAtGuard
+                            100,     //meteorSpeedAtGuard
                             1000]   //speedFromMeteorOnGuard
-    let paramTrans = [ {(a: Float) -> CGFloat in return -CGFloat((Float(Int(a)) / 10)) },
-                       {(a: Float) -> CGFloat in return CGFloat(Float(Int(a))) },
-                       //{(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 10 / 100) },
-                       {(a: Float) -> CGFloat in return CGFloat((Float(Int(a)) * 15)) },
-                       //{(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 10 / 100) },
-                       {(a: Float) -> CGFloat in return CGFloat((Float(Int(a)) * 15)) },
-                       {(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 10 / 100) }
+    let paramTrans = [ {(a: Float) -> CGFloat in return -CGFloat(Int(a)) },
+                       {(a: Float) -> CGFloat in return CGFloat(Int(a)) },
+                       //{(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 100) },
+                       {(a: Float) -> CGFloat in return CGFloat(Int(a)) },
+                       //{(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 100) },
+                       {(a: Float) -> CGFloat in return CGFloat(Int(a)) },
+                       {(a: Float) -> CGFloat in return CGFloat(Int(a)) }
     ]
-    let paramInv = [ {(a: CGFloat) -> Float in return -Float(a * 10) },
+    let paramInv = [ {(a: CGFloat) -> Float in return -Float(a) },
                      {(a: CGFloat) -> Float in return Float(a) },
-                     //{(a: CGFloat) -> Float in return Float(a * 100 * 10) },
-                     {(a: CGFloat) -> Float in return Float(a / 150 * 10 ) },
-                     //{(a: CGFloat) -> Float in return Float(a * 100 * 10) },
-                     {(a: CGFloat) -> Float in return Float(a / 150 * 10 ) },
-                     {(a: CGFloat) -> Float in return Float(a * 100 * 10) }
+                     //{(a: CGFloat) -> Float in return Float(a * 100) },
+                     {(a: CGFloat) -> Float in return Float(a) },
+                     //{(a: CGFloat) -> Float in return Float(a * 100) },
+                     {(a: CGFloat) -> Float in return Float(a) },
+                     {(a: CGFloat) -> Float in return Float(a) }
     ]
     //調整用スライダー
     var paramSliders = [UISlider]()
@@ -1125,9 +1126,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //
         params.append(&gravity)
         params.append(&meteorPos)
-        params.append(&meteorGravityCoefficient)
+        //params.append(&meteorGravityCoefficient)
         params.append(&pleyerJumpSpeed)
-        params.append(&playerGravityCoefficient)
+        //params.append(&playerGravityCoefficient)
         params.append(&meteorSpeedAtGuard)
         params.append(&speedFromMeteorAtGuard)
         //パラメータ調整用スライダー
@@ -1192,15 +1193,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gravity = -900               //重力 9.8 [m/s^2] * 150 [pixels/m]
         meteorPos = 1500                  //隕石の初期位置(1500)
         meteorGravityCoefficient = 0.06      //隕石が受ける重力の影響を調整する係数
-        pleyerJumpSpeed = 9.8 * 150 * 1.2   //プレイヤーのジャンプ時の初速
+        pleyerJumpSpeed = 1500   //プレイヤーのジャンプ時の初速
         playerGravityCoefficient = 1        //隕石が受ける重力の影響を調整する係数
-        meteorSpeedAtGuard = 9.8 * 150 / 10 //隕石が防御された時の速度
-        speedFromMeteorAtGuard = 1.0        //隕石を防御した時にプレイヤーが受ける隕石の速度の割合
+        meteorSpeedAtGuard = 100            //隕石が防御された時の速度
+        speedFromMeteorAtGuard = 350        //隕石を防御した時にプレイヤーの速度
         var ix = 0
         for slider in paramSliders {
             slider.setValue( paramInv[ix](params[ix].pointee), animated: true)  // デフォルト値の設定
             let label = slider.subviews.last as! UILabel
             label.text = paramNames[ix] + ": " + String( describing: params[ix].pointee )
+            label.sizeToFit()
             ix += 1
         }
     }
