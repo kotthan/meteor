@@ -413,6 +413,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 if yPos > 0                                 //下スワイプ
                 {
                     guardPower -= 100
+                    guardAction()
                 } else if yPos < 0 {        //上スワイプ
                     return
                 }
@@ -701,7 +702,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             meteorInt += 1
             meteorDouble = 70.0
             self.meteorSpeed = 0.0
-            self.meteorGravityCoefficient += 0.08
+            self.meteorGravityCoefficient = CGFloat(0.06 + 0.08 * Double(meteorInt))
+            print("--meteorGravityCoeffient\(meteorGravityCoefficient)--")
             for i in (0...meteorInt).reversed()
             {
                 meteorDouble -= 1.0
@@ -788,6 +790,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 meteores.remove(at: 0)
                 UltraPower += 1
                 print("---UltraPowerは\(UltraPower)です---")
+                //self.meteorGravityCoefficient -= 0.06                   //数が減るごとに隕石の速度を遅くする
                 //スコア
                 self.score += 1;
                 self.scoreLabel.text = String( self.score )
@@ -841,7 +844,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func guardAction()
     {
-        if (canMoveFlg == true && guardPower >= 1500)
+        if (canMoveFlg == true && guardPower >= 0)
         {
             print("---ガードフラグをON---")
             guardFlg = true
@@ -872,8 +875,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             for i in meteores
             {
                 i.removeAllActions()
-                self.playerSpeed -= self.speedFromMeteorAtGuard //ガード隕石の速度分プレイヤーの速度が上がる
-                self.meteorSpeed = self.meteorSpeedAtGuard //上に持ちあげる
+                self.playerSpeed -= self.speedFromMeteorAtGuard  //ガード隕石の速度分プレイヤーの速度が上がる
+                self.meteorSpeed = self.meteorSpeedAtGuard       //上に持ちあげる
                 print("---隕石がガードされたモーションを実行---")
             }
         }
