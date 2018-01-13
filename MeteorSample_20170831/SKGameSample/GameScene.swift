@@ -742,8 +742,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         attackShape.physicsBody?.contactTestBitMask = 0b1000    //接触対象をmeteorに設定
         self.player.addChild(attackShape)
         //print("---attackShapeを生成しました---")
-        
-        
         attackShape.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
         attackShape.yScale = 1 / self.player.yScale
         self.attackShapes.append(attackShape)
@@ -815,13 +813,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let physicsBody = SKPhysicsBody(rectangleOf: guardShape.frame.size)
         if jumping == true
         {
-            guardShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
+            guardShape.position = CGPoint(x: 0, y: 0)
         } else if falling == true
         {
-            guardShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
+            guardShape.position = CGPoint(x: 0, y: 0)
         } else
         {
-            guardShape.position = CGPoint(x: self.player.position.x, y: self.player.position.y)
+            guardShape.position = CGPoint(x: 0, y: 0)
         }
         guardShape.fillColor = UIColor.clear
         guardShape.zPosition = 7.0
@@ -831,8 +829,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guardShape.physicsBody?.categoryBitMask = 0b100000     //接触判定用マスク設定
         guardShape.physicsBody?.collisionBitMask = 0b0000      //接触対象をなしに設定
         guardShape.physicsBody?.contactTestBitMask = 0b1000    //接触対象をmeteorに設定
-        self.addChild(guardShape)
+        self.player.addChild(guardShape)
         print("---guardShapeを生成しました---")
+        guardShape.xScale = 1 / self.player.xScale
+        guardShape.yScale = 1 / self.player.yScale
         self.guardShapes.append(guardShape)
     }
     
