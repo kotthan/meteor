@@ -884,24 +884,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func gameOver()
     {
-        gameoverFlg = true
-        canMoveFlg = false
-        makeStartNode()
-        startNode.zPosition = 6
-        self.isPaused = true
-        self.meteorTimer?.invalidate()
-        //ハイスコア更新
-        print("------------score:\(self.score) high:\(self.highScore)------------")
-        if( self.score > self.highScore ){
-            self.highScore = self.score
-            self.highScoreLabel.text = String(self.highScore)
-            print("------------hidh score!------------")
-            UserDefaults.standard.set(self.highScore, forKey: self.keyHighScore) //データの保存
+        if( gameoverFlg ){ //既にGameOverの場合はなにもしない
+            gameoverFlg = true
+            canMoveFlg = false
+            makeStartNode()
+            startNode.zPosition = 6
+            self.isPaused = true
+            self.meteorTimer?.invalidate()
+            //ハイスコア更新
+            print("------------score:\(self.score) high:\(self.highScore)------------")
+            if( self.score > self.highScore ){
+                self.highScore = self.score
+                self.highScoreLabel.text = String(self.highScore)
+                print("------------hidh score!------------")
+                UserDefaults.standard.set(self.highScore, forKey: self.keyHighScore) //データの保存
+            }
+            print("------------gameover------------")
+            stop()
+            removeParamSlider()
+            newGame()
         }
-        print("------------gameover------------")
-        stop()
-        removeParamSlider()
-        newGame()
     }
     
     func newGame()
