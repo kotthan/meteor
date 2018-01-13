@@ -39,7 +39,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var ultraButtonString: String = "zan.png"
     var ultraButton: SKSpriteNode!
     var ultraOkButton: SKSpriteNode!
-    
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
 	let oneScreenSize = CGSize(width: 375, height: 667)             //１画面サイズ
@@ -207,6 +206,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 player.physicsBody?.contactTestBitMask = 0b1000 | 0b0001//接触対象を地面｜meteorに設定
                 //シーンから削除して再配置
 				player.removeFromParent()
+                player.isPaused = false
 				self.playerBaseNode.addChild(player)
                 self.player = player
                 print("---SKSファイルよりプレイヤー＝\(player)を読み込みました---")
@@ -229,13 +229,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     self.baseNode.addChild(titleLogo)
                     print("---SKSファイルより背景＝\(titleLogo)を読み込みました---")
             })
-            /*
-            let leftMoveAction = SKAction.moveTo(x: self.frame.minX, duration: 1.0)
-            let rightMoveAction = SKAction.moveTo(x: self.frame.maxX, duration: 1.0)
-            let sequenceAction = SKAction.sequence([leftMoveAction,rightMoveAction])
-            let repeatAction = SKAction.repeatForever(sequenceAction)
-            self.run(repeatAction)
-            */
+
             //===================
             //MARK: スコア
             //===================
@@ -372,6 +366,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     self.playerSpeed -= self.meteorSpeed / 60
                 }
             }
+
         }
         if (jumping == true || falling == true) && (self.player.position.y > self.oneScreenSize.height/2)
         {
