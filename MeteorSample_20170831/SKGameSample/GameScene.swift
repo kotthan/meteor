@@ -1104,39 +1104,39 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let playerPosLabel = UILabel()                                  //プレイヤーの座標表示用ラベル
     let paramNames = ["重力",
                       "隕石の発生位置",
-                      //"meteorGravityCoefficient[%]",
+                      "隕石の重力受ける率",
                       "ジャンプ速度",
-                      //"playerGravityCoefficient[%]",
+                      "プレイヤーの重力受ける率",
                       "ガード時の隕石速度",
                       "ガード時のプレイヤー速度"]
     var params = [UnsafeMutablePointer<CGFloat>]()
     let paramMin:[Float] = [0,      //gravity
                             0,      //meteorPos
-                            //0,      //meteorGravityCoefficient
+                            0,      //meteorGravityCoefficient
                             0,      //pleyerJumpSpeed
-                            //0,      //playerGravityCoefficient
+                            0,      //playerGravityCoefficient
                             0,      //meteorSpeedAtGuard
                             0]      //speedFromMeteorOnGuard
     let paramMax:[Float] = [1000,   //gravity
                             5000,    //meteorPos
-                            //1000,   //meteorGravityCoefficient
+                            100,   //meteorGravityCoefficient
                             2000,   //pleyerJumpSpeed
-                            //1000,   //playerGravityCoefficient
+                            100,   //playerGravityCoefficient
                             1000,     //meteorSpeedAtGuard
                             1000]   //speedFromMeteorOnGuard
     let paramTrans = [ {(a: Float) -> CGFloat in return -CGFloat(Int(a)) },
                        {(a: Float) -> CGFloat in return CGFloat(Int(a)) },
-                       //{(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 100) },
+                       {(a: Float) -> CGFloat in return CGFloat(Int(a)) / 100 },
                        {(a: Float) -> CGFloat in return CGFloat(Int(a)) },
-                       //{(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 100) },
+                       {(a: Float) -> CGFloat in return CGFloat(Int(a)) / 100 },
                        {(a: Float) -> CGFloat in return CGFloat(Int(a)) },
                        {(a: Float) -> CGFloat in return CGFloat(Int(a)) }
     ]
     let paramInv = [ {(a: CGFloat) -> Float in return -Float(a) },
                      {(a: CGFloat) -> Float in return Float(a) },
-                     //{(a: CGFloat) -> Float in return Float(a * 100) },
+                     {(a: CGFloat) -> Float in return Float(a * 100) },
                      {(a: CGFloat) -> Float in return Float(a) },
-                     //{(a: CGFloat) -> Float in return Float(a * 100) },
+                     {(a: CGFloat) -> Float in return Float(a * 100) },
                      {(a: CGFloat) -> Float in return Float(a) },
                      {(a: CGFloat) -> Float in return Float(a) }
     ]
@@ -1151,9 +1151,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //
         params.append(&gravity)
         params.append(&meteorPos)
-        //params.append(&meteorGravityCoefficient)
+        params.append(&meteorGravityCoefficient)
         params.append(&pleyerJumpSpeed)
-        //params.append(&playerGravityCoefficient)
+        params.append(&playerGravityCoefficient)
         params.append(&meteorSpeedAtGuard)
         params.append(&speedFromMeteorAtGuard)
         //パラメータ調整用スライダー
