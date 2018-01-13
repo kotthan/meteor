@@ -330,11 +330,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.player.position.y = self.player.position.y + CGFloat( playerSpeed / 60 ) // [pixcel/s] / 60[fps]
             if ( !meteores.isEmpty ){
                 let meteor = self.meteores.first
-                print("meteorsacale=\(String(describing: meteor?.yScale))")
                 let meteorY = (meteor?.position.y)! -  ( 70 + 25 * CGFloat(meteores.count-1) )
-                //print("meteorY" + String(describing: meteorY))
-                if( meteorY < self.player.position.y ){
-                    print("\(meteor?.position.y) - \(meteorY)")
+                if( meteorY < self.player.position.y ){ //衝突する
+                    meteorCollisionFlg = true
                     self.player.position.y = meteorY
                     self.playerSpeed -= self.meteorSpeed / 60
                 }
@@ -809,6 +807,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     ultraOkButton.isHidden = false
                 }
                 playSound(soundName: "hakai")
+                //隕石と接触していたら速度を0にする
+                if( meteorCollisionFlg ){
+                    playerSpeed = 0;
+                }
             }
             if meteores.isEmpty == true
             {
