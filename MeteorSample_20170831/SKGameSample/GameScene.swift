@@ -22,6 +22,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: ノード
     let baseNode = SKNode()                                         //ゲームベースノード
     let backScrNode = SKNode()                                      //背景ノード
+    let titleLogo = SKSpriteNode()                                   //タイトルロゴノード
     var player: SKSpriteNode!                                       //プレイヤーノード
     var ground: SKSpriteNode!                                       //地面
     var lowestShape: SKShapeNode!                                   //落下判定シェイプノード
@@ -212,6 +213,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if( debug ){ //デバッグ用
                 //addBodyFrame(node: player)  //枠表示
             }
+            //===================
+            //MARK: タイトルロゴ
+            //===================
+            scene.enumerateChildNodes(withName: "titleLogo", using:
+                { (node, stop) -> Void in
+                    let titleLogo = node as! SKSpriteNode
+                    titleLogo.name = "titleLogo"
+                    //シーンから削除して再配置
+                    titleLogo.removeFromParent()
+                    self.baseNode.addChild(titleLogo)
+                    print("---SKSファイルより背景＝\(titleLogo)を読み込みました---")
+            })
+            
             //===================
             //MARK: スコア
             //===================
