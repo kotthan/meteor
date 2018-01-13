@@ -21,8 +21,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	//MARK: - 基本構成
     //MARK: ノード
     let baseNode = SKNode()                                         //ゲームベースノード
+    let playerBaseNode = SKNode()                                   //プレイヤーベース
     let backScrNode = SKNode()                                      //背景ノード
-    let titleLogo = SKSpriteNode()                                   //タイトルロゴノード
+    let titleLogo = SKSpriteNode()                                  //タイトルロゴノード
     var player: SKSpriteNode!                                       //プレイヤーノード
     var ground: SKSpriteNode!                                       //地面
     var lowestShape: SKShapeNode!                                   //落下判定シェイプノード
@@ -70,7 +71,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var guardForce: CGFloat = -10.0                                  //ガード反発力
 	var charXOffset: CGFloat = 0                                    //X位置のオフセット
 	var charYOffset: CGFloat = 0                                    //Y位置のオフセット
-    var guardPower : Int = 500                                      //ガード可否判定用
+    var guardPower : CGFloat = 4500.0                               //ガード可否判定用
     var UltraPower : Int = 0                                        //必殺技可否判定用
     
     //MARK: ポジションプロパティ
@@ -125,7 +126,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsWorld.gravity = CGVector(dx:0, dy:0)         //重力設定
         
 		//MARK: 背景
-        self.addChild(self.baseNode)
+        self.addChild(self.baseNode)                                //ベース追加
+        self.baseNode.addChild(self.playerBaseNode)                 //プレイヤーベース追加
         self.addChild(self.backScrNode)                             //背景追加
  
         //MARK: ゲーム進行関係
@@ -205,7 +207,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 player.physicsBody?.contactTestBitMask = 0b1000 | 0b0001//接触対象を地面｜meteorに設定
                 //シーンから削除して再配置
 				player.removeFromParent()
-				self.baseNode.addChild(player)
+				self.playerBaseNode.addChild(player)
                 self.player = player
                 print("---SKSファイルよりプレイヤー＝\(player)を読み込みました---")
                 //アニメーション
@@ -227,7 +229,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     self.baseNode.addChild(titleLogo)
                     print("---SKSファイルより背景＝\(titleLogo)を読み込みました---")
             })
-            
+            /*
+            let leftMoveAction = SKAction.moveTo(x: self.frame.minX, duration: 1.0)
+            let rightMoveAction = SKAction.moveTo(x: self.frame.maxX, duration: 1.0)
+            let sequenceAction = SKAction.sequence([leftMoveAction,rightMoveAction])
+            let repeatAction = SKAction.repeatForever(sequenceAction)
+            self.run(repeatAction)
+            */
             //===================
             //MARK: スコア
             //===================
@@ -317,12 +325,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //===================
         //MARK: ガードゲージ
         //===================
-        guardGage = SKShapeNode(rect:CGRect(x: 0, y: 0, width: self.player.size.width*0.3, height: self.player.size.height*0.8))
+        guardGage = SKShapeNode(rect:CGRect(x: 0, y: 0, width: 10, height: 15))
         guardGage.name = "guardGage"
+        guardGage.position = CGPoint(x: 100, y: 50)
+        guardGage.zPosition = 90
         guardGage.fillColor = UIColor.red
-        self.guardGage.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
-        self.guardGage.yScale = 1 / self.player.yScale
-        self.player.addChild(self.guardGage)               //playerにaddchiledすることでplayerに追従させる
+        self.playerBaseNode.addChild(self.guardGage)               //playerにaddchiledすることでplayerに追従させる
         
         //ハイスコアラベル
         if ( UserDefaults.standard.object(forKey: keyHighScore) != nil ){
@@ -383,16 +391,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.player!.position.y = meteores.last!.position.y - meteores.last!.size.height/2
         }
         */
-        if (guardPower < 500)
-        { guardPower += 1
-        }
-        else
-        {
-         //return
-        }
         if( debug ){
             playerPosLabel.text = "x : \(self.player.position.x) \ny : \(self.player.position.y)"
         }
+        
+        if (guardPower < 4500.0)
+        { guardPower += 60
+        }
+        guardGage.yScale = CGFloat(guardPower / 1000)
     }
     
     //MARK: すべてのアクションと物理シミュレーション処理後、1フレーム毎に呼び出される
@@ -880,7 +886,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func guardAction()
     {
-        if (canMoveFlg == true && guardPower >= 500)
+        if (canMoveFlg == true && guardPower >= 1500)
         {
             print("---ガードフラグをON---")
             guardFlg = true
@@ -907,7 +913,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             print("---隕石をガード---")
             playSound(soundName: "bougyo")
-            //guardPower -= 50
+            guardPower -= 1500
             for i in meteores
             {
                 i.removeAllActions()
