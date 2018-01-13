@@ -702,7 +702,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             meteorInt += 1
             meteorDouble = 70.0
             self.meteorSpeed = 0.0
-            self.meteorGravityCoefficient = CGFloat(0.06 + 0.08 * Double(meteorInt))
+            self.meteorGravityCoefficient = CGFloat(0.06 + 0.01 * Double(meteorInt))
             print("--meteorGravityCoeffient\(meteorGravityCoefficient)--")
             for i in (0...meteorInt).reversed()
             {
