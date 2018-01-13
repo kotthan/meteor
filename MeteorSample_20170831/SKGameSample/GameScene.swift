@@ -884,7 +884,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func gameOver()
     {
-        if( gameoverFlg ){ //既にGameOverの場合はなにもしない
+        if( !gameoverFlg ){ //既にGameOverの場合はなにもしない
             gameoverFlg = true
             canMoveFlg = false
             makeStartNode()
@@ -902,13 +902,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             print("------------gameover------------")
             stop()
             removeParamSlider()
-            newGame()
+            gameOverView()
         }
-        print("------------gameover------------")
-        stop()
-        removeParamSlider()
-        gameOverView()
-        //newGame()
     }
     
     var backGroundView: UIView!
