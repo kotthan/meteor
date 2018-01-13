@@ -30,7 +30,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var attackShape: SKShapeNode!                                   //攻撃判定シェイプノード
     var guardShape: SKShapeNode!                                    //防御判定シェイプノード
     var guardGage: SKShapeNode!                                     //ガードゲージ
-    var startNode: SKSpriteNode!
     var start0Node: SKSpriteNode!
     let scoreLabel = SKLabelNode()                                  //スコア表示ラベル
     var score = 0                                                   //スコア
@@ -275,19 +274,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 			wallFrameNode.physicsBody = SKPhysicsBody(edgeLoopFrom: CGRect(x: 0, y: 0, width: scene.size.width, height: scene.size.height))
 			wallFrameNode.physicsBody!.categoryBitMask = 0b0000             //接触判定用マスク設定
 			wallFrameNode.physicsBody!.usesPreciseCollisionDetection = true //詳細物理判定
-            
-            //===================
-            //MARK: startNode
-            //===================
-            scene.enumerateChildNodes(withName: "startNode", using: { (node, stop) -> Void in
-                let startNode = node as! SKSpriteNode
-                startNode.name = "startNode"
-                //シーンから削除して再配置
-                startNode.removeFromParent()
-                self.startNode = startNode
-                self.baseNode.addChild(startNode)
-                startNode.isUserInteractionEnabled = false
-            })
+
             //===================
             //MARK: start0Node
             //===================
@@ -402,7 +389,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if let touch = touches.first as UITouch?
         {
             beganPos = touch.location(in: self)
-            beganPyPos = playerBaseNode.position.y
+            beganPyPos = (camera?.position.y)!
             let node:SKSpriteNode? = self.atPoint(beganPos) as? SKSpriteNode;
             print("---タップを離したノード=\(String(describing: node?.name))---")
             if node == nil
@@ -448,7 +435,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let endPos = touch.location(in: self)
             let xPos = beganPos.x - endPos.x
             let yPos = beganPos.y - endPos.y
-            endPyPos = playerBaseNode.position.y
+            endPyPos = (self.camera?.position.y)!
             movePyPos = endPyPos - beganPyPos
             let moveY = beganPos.y + movePyPos - endPos.y
             print("---beganPos.y=\(beganPos.y),movePyPos=\(movePyPos),endPos.y=\(endPos.y),moveY=\(moveY)---")
@@ -899,17 +886,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             return
         }
     }
-    //MARK: ゲームオーバー処理
-    func makeStartNode()
-    {    }
-    
     func gameOver()
     {
         if( !gameoverFlg ){ //既にGameOverの場合はなにもしない
             gameoverFlg = true
             canMoveFlg = false
-            makeStartNode()
-            startNode.zPosition = 6
             self.isPaused = true
             self.meteorTimer?.invalidate()
             //ハイスコア更新
