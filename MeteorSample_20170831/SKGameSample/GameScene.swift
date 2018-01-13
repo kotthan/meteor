@@ -655,7 +655,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         meteor.size = CGSize(width: texture.size().width, height: texture.size().height)
         meteor.xScale = CGFloat(size)
         meteor.yScale = CGFloat(size)
-        meteor.position = CGPoint(x: 187, y: self.meteorPos + (meteor.size.height)/2)
+        if meteores.isEmpty
+        {
+            meteor.position = CGPoint(x: 187, y: self.meteorPos + (meteor.size.height)/2)
+        } else
+        {
+            meteor.position = CGPoint(x: 187, y: (meteores.first?.position.y)!)
+        }
         meteor.physicsBody = SKPhysicsBody(texture: texture, size: meteor.size)
         meteor.physicsBody?.affectedByGravity = false
         meteor.physicsBody?.categoryBitMask = 0b1000                         //接触判定用マスク設定
