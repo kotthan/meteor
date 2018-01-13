@@ -77,6 +77,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let centerPosition = CGPoint(x: 187.5, y: 243.733)              //中央位置
     let leftPosition = CGPoint(x: 93.75, y: 243.733)                //左位置
     let rightPosition = CGPoint(x: 281.25, y: 243.733)              //右位置
+    var defaultYPosition : CGFloat = 0.0
     
     //MARK: 隕石・プレイヤー動作プロパティ
     var playerSpeed : CGFloat = 0.0                                 //プレイヤーの速度
@@ -209,7 +210,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 				player.removeFromParent()
                 player.isPaused = false
                 self.playerBaseNode.position = player.position   //プレイヤーのポジションをBaseの位置にして
+                self.defaultYPosition = player.position.y
                 player.position = CGPoint(x:0,y:0)              //baseNodeに追加するplayerの位置は０にする
+                print("playerDefault : \(self.defaultYPosition)")
 				self.playerBaseNode.addChild(player)
                 self.player = player
                 print("---SKSファイルよりプレイヤー＝\(player)を読み込みました---")
@@ -238,8 +241,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //===================
             self.scoreLabel.text = String( self.score )         //スコアを表示する
             self.scoreLabel.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
-                x: self.player.size.width + 100,
-                y: self.player.size.height
+                x: self.player.size.width/2,
+                y: self.player.size.height/2
             )
             self.playerBaseNode.addChild(self.scoreLabel)               //playerにaddchiledすることでplayerに追従させる
             
@@ -353,7 +356,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     self.playerSpeed -= self.meteorSpeed / 60
                 }
             }
-
+            if( self.playerBaseNode.position.y < defaultYPosition ){
+                self.playerBaseNode.position.y = defaultYPosition
+            }
         }
         if (jumping == true || falling == true) && (self.playerBaseNode.position.y > self.oneScreenSize.height/2)
         {
