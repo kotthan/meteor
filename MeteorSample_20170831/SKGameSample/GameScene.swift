@@ -81,7 +81,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //調整用パラメータ
     var gravity : CGFloat = -300                  //重力 9.8 [m/s^2] * 150 [pixels/m]
     var meteorPos :CGFloat = 1320.0                     //隕石の初期位置(1500.0)
-    var meteorGravityCoefficient: CGFloat = 1         //隕石が受ける重力の影響を調整する係数
+    var meteorGravityCoefficient: CGFloat = 0.2         //隕石が受ける重力の影響を調整する係数
     var pleyerJumpSpeed : CGFloat = 9.8 * 150 * 1.2     //プレイヤーのジャンプ時の初速
     var playerGravityCoefficient: CGFloat = 1           //隕石が受ける重力の影響を調整する係数
     var meteorSpeedAtGuard: CGFloat = 9.8 * 150 / 10    //隕石が防御された時の速度
