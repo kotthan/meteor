@@ -389,7 +389,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if let touch = touches.first as UITouch?
         {
             beganPos = touch.location(in: self)
-            beganPyPos = playerBaseNode.position.y
+            beganPyPos = (camera?.position.y)!
             let node:SKSpriteNode? = self.atPoint(beganPos) as? SKSpriteNode;
             print("---タップを離したノード=\(String(describing: node?.name))---")
             if node == nil
@@ -434,7 +434,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let endPos = touch.location(in: self)
             let xPos = beganPos.x - endPos.x
             let yPos = beganPos.y - endPos.y
-            endPyPos = playerBaseNode.position.y
+            endPyPos = (self.camera?.position.y)!
             movePyPos = endPyPos - beganPyPos
             let moveY = beganPos.y + movePyPos - endPos.y
             print("---beganPos.y=\(beganPos.y),movePyPos=\(movePyPos),endPos.y=\(endPos.y),moveY=\(moveY)---")
