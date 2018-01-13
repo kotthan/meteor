@@ -673,11 +673,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if( debug ){    //デバッグ用
             //addBodyFrame(node: meteor)  //枠を表示
         }
-        /*
-        let moveG = SKAction.moveBy(x: 0, y: -3500, duration: 10.0)
-        meteor.run(moveG)
-        */
-        print("---meteor\(meteorString)がmoveGを開始しました---")
     }
     func startButtonAction()
     {
