@@ -301,7 +301,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //===================
         guardGage = SKShapeNode(rect:CGRect(x: 0, y: 0, width: 10, height: 15))
         guardGage.name = "guardGage"
-        guardGage.position = CGPoint(x: 100, y: 50)
+        guardGage.position = CGPoint(x: -player.size.width/2, y: -player.size.height/2)
         guardGage.zPosition = 90
         guardGage.fillColor = UIColor.red
         self.playerBaseNode.addChild(self.guardGage)               //playerにaddchiledすることでplayerに追従させる
