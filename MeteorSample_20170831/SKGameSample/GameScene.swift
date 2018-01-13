@@ -21,12 +21,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	//MARK: - 基本構成
     //MARK: ノード
     let baseNode = SKNode()                                         //ゲームベースノード
+    let playerBaseNode = SKNode()                                   //プレイヤーベース
     let backScrNode = SKNode()                                      //背景ノード
+    let titleLogo = SKSpriteNode()                                  //タイトルロゴノード
     var player: SKSpriteNode!                                       //プレイヤーノード
     var ground: SKSpriteNode!                                       //地面
     var lowestShape: SKShapeNode!                                   //落下判定シェイプノード
     var attackShape: SKShapeNode!                                   //攻撃判定シェイプノード
     var guardShape: SKShapeNode!                                    //防御判定シェイプノード
+    var guardGage: SKShapeNode!                                     //ガードゲージ
     var startNode: SKSpriteNode!
     var start0Node: SKSpriteNode!
     let scoreLabel = SKLabelNode()                                  //スコア表示ラベル
@@ -36,7 +39,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var ultraButtonString: String = "zan.png"
     var ultraButton: SKSpriteNode!
     var ultraOkButton: SKSpriteNode!
-    
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
 	let oneScreenSize = CGSize(width: 375, height: 667)             //１画面サイズ
@@ -68,7 +70,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var guardForce: CGFloat = -10.0                                  //ガード反発力
 	var charXOffset: CGFloat = 0                                    //X位置のオフセット
 	var charYOffset: CGFloat = 0                                    //Y位置のオフセット
-    var guardPower : Int = 500                                      //ガード可否判定用
+    var guardPower : CGFloat = 4500.0                               //ガード可否判定用
     var UltraPower : Int = 0                                        //必殺技可否判定用
     
     //MARK: ポジションプロパティ
@@ -123,7 +125,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsWorld.gravity = CGVector(dx:0, dy:0)         //重力設定
         
 		//MARK: 背景
-        self.addChild(self.baseNode)
+        self.addChild(self.baseNode)                                //ベース追加
+        self.baseNode.addChild(self.playerBaseNode)                 //プレイヤーベース追加
         self.addChild(self.backScrNode)                             //背景追加
  
         //MARK: ゲーム進行関係
@@ -203,7 +206,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 player.physicsBody?.contactTestBitMask = 0b1000 | 0b0001//接触対象を地面｜meteorに設定
                 //シーンから削除して再配置
 				player.removeFromParent()
-				self.baseNode.addChild(player)
+                player.isPaused = false
+				self.playerBaseNode.addChild(player)
                 self.player = player
                 print("---SKSファイルよりプレイヤー＝\(player)を読み込みました---")
                 //アニメーション
@@ -213,6 +217,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if( debug ){ //デバッグ用
                 //addBodyFrame(node: player)  //枠表示
             }
+            //===================
+            //MARK: タイトルロゴ
+            //===================
+            scene.enumerateChildNodes(withName: "titleLogo", using:
+                { (node, stop) -> Void in
+                    let titleLogo = node as! SKSpriteNode
+                    titleLogo.name = "titleLogo"
+                    //シーンから削除して再配置
+                    titleLogo.removeFromParent()
+                    self.baseNode.addChild(titleLogo)
+                    print("---SKSファイルより背景＝\(titleLogo)を読み込みました---")
+            })
+
             //===================
             //MARK: スコア
             //===================
@@ -224,12 +241,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.scoreLabel.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
             self.scoreLabel.yScale = 1 / self.player.yScale
             self.player.addChild(self.scoreLabel)               //playerにaddchiledすることでplayerに追従させる
+            
             //===================
             //MARK: 必殺技ボタン
             //===================
             ultraButton = SKSpriteNode(imageNamed: ultraButtonString)
             self.ultraButton.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
-                x: self.player.size.width - 250,
+                x: self.player.size.width - 600,
                 y: self.player.size.height + 50
             )
             self.ultraButton.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
@@ -238,7 +256,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             ultraOkButton = SKSpriteNode(imageNamed: "renzan.png")
             self.ultraOkButton.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
-                x: self.player.size.width - 400,
+                x: self.player.size.width - 600,
                 y: self.player.size.height + 50
             )
             self.ultraOkButton.xScale = 1 / self.player.xScale     //playerが縮小されている分拡大して元の大きさで表示
@@ -297,6 +315,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.view!.addSubview(myButton);
  */
 		}
+        
+        //===================
+        //MARK: ガードゲージ
+        //===================
+        guardGage = SKShapeNode(rect:CGRect(x: 0, y: 0, width: 10, height: 15))
+        guardGage.name = "guardGage"
+        guardGage.position = CGPoint(x: 100, y: 50)
+        guardGage.zPosition = 90
+        guardGage.fillColor = UIColor.red
+        self.playerBaseNode.addChild(self.guardGage)               //playerにaddchiledすることでplayerに追従させる
+        
         //ハイスコアラベル
         if ( UserDefaults.standard.object(forKey: keyHighScore) != nil ){
             self.highScore = UserDefaults.standard.integer(forKey: self.keyHighScore) //保存したデータの読み出し
@@ -338,6 +367,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     self.playerSpeed -= self.meteorSpeed / 60
                 }
             }
+
         }
         if (jumping == true || falling == true) && (self.player.position.y > self.oneScreenSize.height/2)
         {
@@ -357,16 +387,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.player!.position.y = meteores.last!.position.y - meteores.last!.size.height/2
         }
         */
-        if (guardPower < 500)
-        { guardPower += 1
-        }
-        else
-        {
-         //return
-        }
         if( debug ){
             playerPosLabel.text = "x : \(self.player.position.x) \ny : \(self.player.position.y)"
         }
+        
+        if (guardPower < 4500.0)
+        { guardPower += 60
+        }
+        guardGage.yScale = CGFloat(guardPower / 1000)
     }
     
     //MARK: すべてのアクションと物理シミュレーション処理後、1フレーム毎に呼び出される
@@ -854,7 +882,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func guardAction()
     {
-        if (canMoveFlg == true && guardPower >= 500)
+        if (canMoveFlg == true && guardPower >= 1500)
         {
             print("---ガードフラグをON---")
             guardFlg = true
@@ -881,7 +909,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             print("---隕石をガード---")
             playSound(soundName: "bougyo")
-            //guardPower -= 50
+            guardPower -= 1500
             for i in meteores
             {
                 i.removeAllActions()
