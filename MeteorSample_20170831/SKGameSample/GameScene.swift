@@ -207,6 +207,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 //シーンから削除して再配置
 				player.removeFromParent()
                 player.isPaused = false
+                self.playerBaseNode.position = player.position   //プレイヤーのポジションをBaseの位置にして
+                player.position = CGPoint(x:0,y:0)              //baseNodeに追加するplayerの位置は０にする
 				self.playerBaseNode.addChild(player)
                 self.player = player
                 print("---SKSファイルよりプレイヤー＝\(player)を読み込みました---")
@@ -340,6 +342,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if(debug){
             addParamSlider()    //パラメータ調整用スライダー
             view.showsPhysics = true
+            let playerBaseShape = SKShapeNode(rect: CGRect(x: 0, y: 0, width: 10, height: 10))
+            playerBaseShape.zPosition = 1500
+            playerBaseNode.addChild( playerBaseShape )
         }
         setDefaultParam()
 	}
@@ -355,21 +360,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if (jumping == true || falling == true){
             // 次の位置を計算する
             self.playerSpeed += self.gravity * self.playerGravityCoefficient / 60   // [pixcel/s^2] / 60[fps]
-            self.player.position.y = self.player.position.y + CGFloat( playerSpeed / 60 ) // [pixcel/s] / 60[fps]
+            self.playerBaseNode.position.y += CGFloat( playerSpeed / 60 ) // [pixcel/s] / 60[fps]
             if ( !meteores.isEmpty ){
                 let meteor = self.meteores.first
                 let meteorY = (meteor?.position.y)! -  ( 70 + 25 * CGFloat(meteores.count-1) )
-                if( meteorY < self.player.position.y ){ //衝突する
+                if( meteorY < self.playerBaseNode.position.y ){ //衝突する
                     meteorCollisionFlg = true
-                    self.player.position.y = meteorY
+                    self.playerBaseNode.position.y = meteorY
                     self.playerSpeed -= self.meteorSpeed / 60
                 }
             }
 
         }
-        if (jumping == true || falling == true) && (self.player.position.y > self.oneScreenSize.height/2)
+        if (jumping == true || falling == true) && (self.playerBaseNode.position.y > self.oneScreenSize.height/2)
         {
-            self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.player.position.y);
+            self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.playerBaseNode.position.y);
         }
         else {
             self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.oneScreenSize.height/2)
@@ -380,13 +385,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.jumping = false
             self.falling = true
         }
-        /*if self.player.position.y > self.meteores.last!.position.y - self.meteores.last!.size.height/2
-        {
-            self.player!.position.y = meteores.last!.position.y - meteores.last!.size.height/2
-        }
-        */
         if( debug ){
-            playerPosLabel.text = "x : \(self.player.position.x) \ny : \(self.player.position.y)"
+            playerPosLabel.text = "x : \(self.playerBaseNode.position.x) \ny : \(self.playerBaseNode.position.y)"
         }
         
         if (guardPower < 4500.0)
@@ -406,7 +406,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if let touch = touches.first as UITouch?
         {
             beganPos = touch.location(in: self)
-            beganPyPos = player!.position.y
+            beganPyPos = playerBaseNode.position.y
             let node:SKSpriteNode? = self.atPoint(beganPos) as? SKSpriteNode;
             print("---タップを離したノード=\(String(describing: node?.name))---")
             if node == nil
@@ -451,12 +451,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let endPos = touch.location(in: self)
             let xPos = beganPos.x - endPos.x
             let yPos = beganPos.y - endPos.y
-            endPyPos = player.position.y
+            endPyPos = playerBaseNode.position.y
             movePyPos = endPyPos - beganPyPos
             let moveY = beganPos.y + movePyPos - endPos.y
             print("---beganPos.y=\(beganPos.y),movePyPos=\(movePyPos),endPos.y=\(endPos.y),moveY=\(moveY)---")
             print("---xPos=\(xPos),yPos=\(yPos)---")
-            if (self.player.position.y > self.oneScreenSize.height/2) && (canMoveFlg == true)
+            if (self.playerBaseNode.position.y > self.oneScreenSize.height/2) && (canMoveFlg == true)
             {
                 if (jumping == true || falling == true) && (-10...10 ~= moveY) && (-10...10 ~= xPos)
                 {
@@ -469,7 +469,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     print("---jumpingガード---")
                 }
             }
-            else if (self.player.position.y < self.oneScreenSize.height/2) && (canMoveFlg == true)
+            else if (self.playerBaseNode.position.y < self.oneScreenSize.height/2) && (canMoveFlg == true)
             {
                 if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos))
                 {
@@ -541,7 +541,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             moving = true
             let names = ["attack01","attack02","player00"]
             self.attackTextureAnimation(self.player, names: names)
-            player.run(moveR)
+            playerBaseNode.run(moveR)
             playSound(soundName: "move")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.moveStop()
@@ -556,7 +556,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             moving = true
             let names = ["attack01","attack02","player00"]
             attackTextureAnimation(self.player, names: names)
-            player.run(moveC)
+            playerBaseNode.run(moveC)
             playSound(soundName: "move")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.moveStop()
@@ -577,7 +577,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             rightPosFlg = false
             let names = ["attack01","attack02","player00"]
             attackTextureAnimation(self.player, names: names)
-            player.run(moveL)
+            playerBaseNode.run(moveL)
             playSound(soundName: "move")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.moveStop()
@@ -591,7 +591,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             rightPosFlg = false
             let names = ["attack01","attack02","player00"]
             attackTextureAnimation(self.player, names: names)
-            player.run(moveC)
+            playerBaseNode.run(moveC)
             playSound(soundName: "move")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.moveStop()
