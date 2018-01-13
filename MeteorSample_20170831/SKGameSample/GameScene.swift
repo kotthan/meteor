@@ -489,17 +489,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
                 return
             }
-            else if node?.name == "startNode"
-            {
-                print("hello")
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
-                {
-                    self.canMoveFlg = true
-                 }
-                self.isPaused = false
-                self.meteorTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(GameScene.fallMeteor), userInfo: nil, repeats: true)
-                startNode.zPosition = -15
-            }
         }
     }
     
