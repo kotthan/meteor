@@ -345,10 +345,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.player.position.y = self.player.position.y + CGFloat( playerSpeed / 60 ) // [pixcel/s] / 60[fps]
             if ( !meteores.isEmpty ){
                 let meteor = self.meteores.first
-                let meteorY = (meteor?.position.y)! - ((meteor?.size.height)!/2)
-                if( meteorY < self.player.position.y ){ //衝突する
+                let meteorMinY = (meteor?.position.y)! - ((meteor?.size.height)!/2)
+                let playerMaxY = (player?.position.y)! + ((player?.size.height)!/2)
+                let playerHalfSize = (player?.size.height)!/2
+                if( meteorMinY < playerMaxY ){ //衝突する
                     meteorCollisionFlg = true
-                    self.player.position.y = meteorY
+                    self.player.position.y = meteorMinY - playerHalfSize
                     self.playerSpeed -= self.meteorSpeed / 60
                 }
             }
