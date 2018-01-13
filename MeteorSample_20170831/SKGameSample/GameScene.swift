@@ -913,10 +913,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             for i in meteores
             {
                 i.removeAllActions()
-                /*
-                self.playerSpeed += self.meteorSpeed * self.speedFromMeteorAtGuard //ガード隕石の速度分プレイヤーの速度が上がる
-                */
-                self.playerSpeed -= 350.0   //一定速度で反発する際のスピード
+                self.playerSpeed -= self.speedFromMeteorAtGuard //ガード隕石の速度分プレイヤーの速度が上がる
                 self.meteorSpeed = self.meteorSpeedAtGuard //上に持ちあげる
                 print("---隕石がガードされたモーションを実行---")
             }
@@ -1123,9 +1120,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let paramMax:[Float] = [1000,   //gravity
                             5000,    //meteorPos
                             //1000,   //meteorGravityCoefficient
-                            10,   //pleyerJumpSpeed
+                            2000,   //pleyerJumpSpeed
                             //1000,   //playerGravityCoefficient
-                            100,     //meteorSpeedAtGuard
+                            1000,     //meteorSpeedAtGuard
                             1000]   //speedFromMeteorOnGuard
     let paramTrans = [ {(a: Float) -> CGFloat in return -CGFloat(Int(a)) },
                        {(a: Float) -> CGFloat in return CGFloat(Int(a)) },
