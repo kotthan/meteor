@@ -1092,14 +1092,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                             0,      //meteorSpeedAtGuard
                             0]      //speedFromMeteorOnGuard
     let paramMax:[Float] = [10000,   //gravity
-                            400,    //meteorPos
+                            5000,    //meteorPos
                             //1000,   //meteorGravityCoefficient
                             100,   //pleyerJumpSpeed
                             //1000,   //playerGravityCoefficient
                             10,     //meteorSpeedAtGuard
                             1000]   //speedFromMeteorOnGuard
     let paramTrans = [ {(a: Float) -> CGFloat in return -CGFloat((Float(Int(a)) / 10)) },
-                       {(a: Float) -> CGFloat in return CGFloat((Float(Int(a)) / 10 * 150)) },
+                       {(a: Float) -> CGFloat in return CGFloat(Float(Int(a))) },
                        //{(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 10 / 100) },
                        {(a: Float) -> CGFloat in return CGFloat((Float(Int(a)) * 15)) },
                        //{(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 10 / 100) },
@@ -1107,7 +1107,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                        {(a: Float) -> CGFloat in return CGFloat(Float(Int(a)) / 10 / 100) }
     ]
     let paramInv = [ {(a: CGFloat) -> Float in return -Float(a * 10) },
-                     {(a: CGFloat) -> Float in return Float(a / 150 * 10) },
+                     {(a: CGFloat) -> Float in return Float(a) },
                      //{(a: CGFloat) -> Float in return Float(a * 100 * 10) },
                      {(a: CGFloat) -> Float in return Float(a / 150 * 10 ) },
                      //{(a: CGFloat) -> Float in return Float(a * 100 * 10) },
@@ -1145,7 +1145,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             debugView.addSubview(slider)
             //値表示用ラベル
             let label = UILabel()
-            label.text = p + ": " + String( paramInv[ix](params[ix].pointee)/10 )
+            label.text = p + ": " + String( describing: params[ix].pointee )
             label.sizeToFit()
             label.textColor = UIColor.white
             label.layer.position.y -= 10
@@ -1190,7 +1190,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     @objc func setDefaultParam(){
         //調整用パラメータ
         gravity = -900               //重力 9.8 [m/s^2] * 150 [pixels/m]
-        meteorPos = 1320.0                  //隕石の初期位置(1500)
+        meteorPos = 1500                  //隕石の初期位置(1500)
         meteorGravityCoefficient = 0.06      //隕石が受ける重力の影響を調整する係数
         pleyerJumpSpeed = 9.8 * 150 * 1.2   //プレイヤーのジャンプ時の初速
         playerGravityCoefficient = 1        //隕石が受ける重力の影響を調整する係数
@@ -1200,7 +1200,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for slider in paramSliders {
             slider.setValue( paramInv[ix](params[ix].pointee), animated: true)  // デフォルト値の設定
             let label = slider.subviews.last as! UILabel
-            label.text = paramNames[ix] + ": " + String( paramInv[ix](params[ix].pointee)/10 )
+            label.text = paramNames[ix] + ": " + String( describing: params[ix].pointee )
             ix += 1
         }
     }
@@ -1212,7 +1212,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         params[index!].pointee = paramTrans[index!](sender.value)
         print("###set \(paramNames[index!]): \(sender.value) -> \(params[index!].pointee)")
         let label = sender.subviews.last as! UILabel
-        label.text = paramNames[index!] + ": " + String( paramInv[index!](params[index!].pointee)/10 )
+        label.text = paramNames[index!] + ": " + String( describing: params[index!].pointee )
         label.sizeToFit()
     }
 }
