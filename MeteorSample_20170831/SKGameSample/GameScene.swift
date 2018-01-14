@@ -390,6 +390,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if let touch = touches.first as UITouch?
         {
             beganPos = touch.location(in: self)
+/*
+            let cameraMoveY = ( (camera?.position.y)! -  self.oneScreenSize.height/2 ) //カメラの現在地　- デフォルト位置
+            beganPos.y -= cameraMoveY
+ */
             beganPyPos = (camera?.position.y)!
             touchPoints.append(beganPos)
             let node:SKSpriteNode? = self.atPoint(beganPos) as? SKSpriteNode;
@@ -413,13 +417,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch: AnyObject in touches {
             let endedPos = touch.location(in: self)
+            let cameraMoveY = ( (camera?.position.y)! -  beganPyPos ) //カメラの移動量
+            beganPyPos = (camera?.position.y)!
+            beganPos.y += cameraMoveY
             let xPos = beganPos.x - endedPos.x
             let yPos = beganPos.y - endedPos.y
             touchPoints.append(endedPos)
             if( touchPath != nil ){
                 touchPath.removeFromParent()
             }
-            touchPath = SKShapeNode(points: &touchPoints, count: touchPoints.count)
+            var points = [beganPos,endedPos]
+            touchPath = SKShapeNode(points: &points, count: points.count) //デバッグに始点から現在地を線で結ぶ
             if fabs(yPos) > fabs(xPos)  {
                 if yPos > 0                                 //下スワイプ
                 {
@@ -449,6 +457,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for touch: AnyObject in touches
         {
             let endPos = touch.location(in: self)
+            let cameraMoveY = ( (camera?.position.y)! -  beganPyPos ) //カメラの現在地　- デフォルト位置
+            beganPos.y += cameraMoveY
             let xPos = beganPos.x - endPos.x
             let yPos = beganPos.y - endPos.y
             endPyPos = (self.camera?.position.y)!
@@ -456,11 +466,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let moveY = beganPos.y + movePyPos - endPos.y
             print("---beganPos.y=\(beganPos.y),movePyPos=\(movePyPos),endPos.y=\(endPos.y),moveY=\(moveY)---")
             print("---xPos=\(xPos),yPos=\(yPos)---")
-            touchPoints.append(endPos)
             if( touchPath != nil ){
                 touchPath.removeFromParent()
             }
-            touchPath = SKShapeNode(points: &touchPoints, count: touchPoints.count)
+            var points = [beganPos,endPos]
+            touchPath = SKShapeNode(points: &points, count: points.count) //デバッグに始点から現在地を線で結ぶ
             if (self.playerBaseNode.position.y > self.oneScreenSize.height/2) && (canMoveFlg == true)
             {
                 if (jumping == true || falling == true) && (-10...10 ~= moveY) && (-10...10 ~= xPos)
