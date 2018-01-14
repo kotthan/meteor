@@ -381,6 +381,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didSimulatePhysics() {
     }
     
+    var touchPath: SKShapeNode! = nil
+    var touchPoints: [CGPoint] = []
     //MARK: - 関数定義　タッチ処理
     //MARK: タッチダウンされたときに呼ばれる関数
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
@@ -389,8 +391,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             beganPos = touch.location(in: self)
             beganPyPos = (camera?.position.y)!
+            touchPoints.append(beganPos)
             let node:SKSpriteNode? = self.atPoint(beganPos) as? SKSpriteNode;
             print("---タップを離したノード=\(String(describing: node?.name))---")
+            if( touchPath != nil ){
+                touchPath.removeFromParent()
+                touchPoints.removeAll()
+            }
             if node == nil
             {
                 return
@@ -408,21 +415,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let endedPos = touch.location(in: self)
             let xPos = beganPos.x - endedPos.x
             let yPos = beganPos.y - endedPos.y
+            touchPoints.append(endedPos)
+            if( touchPath != nil ){
+                touchPath.removeFromParent()
+            }
+            touchPath = SKShapeNode(points: &touchPoints, count: touchPoints.count)
             if fabs(yPos) > fabs(xPos)  {
                 if yPos > 0                                 //下スワイプ
                 {
                     guardPower -= 100
                     guardAction()
+                    touchPath.strokeColor = UIColor.blue
                 } else if yPos < 0 {        //上スワイプ
-                    return
+                    touchPath.strokeColor = UIColor.white
+                    //return
                 }
             } else {
                 if xPos > 100 {             //左スワイプ
-                    return
+                    touchPath.strokeColor = UIColor.white
+                    //return
                 } else if xPos < -100 {     //右スワイプ
-                    return
+                    touchPath.strokeColor = UIColor.white
+                    //return
                 }
             }
+            baseNode.addChild(touchPath)
         }
     }
     
@@ -439,16 +456,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let moveY = beganPos.y + movePyPos - endPos.y
             print("---beganPos.y=\(beganPos.y),movePyPos=\(movePyPos),endPos.y=\(endPos.y),moveY=\(moveY)---")
             print("---xPos=\(xPos),yPos=\(yPos)---")
+            touchPoints.append(endPos)
+            if( touchPath != nil ){
+                touchPath.removeFromParent()
+            }
+            touchPath = SKShapeNode(points: &touchPoints, count: touchPoints.count)
             if (self.playerBaseNode.position.y > self.oneScreenSize.height/2) && (canMoveFlg == true)
             {
                 if (jumping == true || falling == true) && (-10...10 ~= moveY) && (-10...10 ~= xPos)
                 {
                     attackAction()
+                    touchPath.strokeColor = UIColor.red
                     print("---jumpingアタック---")
                 }
                 else if (jumping == true || falling == true) && (moveY > 10)
                 {
                     guardAction()
+                    touchPath.strokeColor = UIColor.blue
                     print("---jumpingガード---")
                 }
             }
@@ -457,26 +481,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos))
                 {
                     attackAction()
+                    touchPath.strokeColor = UIColor.red
                     print("---groundアタック---")
                 }
                 else if yPos > 50
                 {
                     self.guardAction()
+                    touchPath.strokeColor = UIColor.blue
                     print("---groundガード---")
                 }
                 else if yPos < -50
                 {
                     self.jumpingAction()
+                    touchPath.strokeColor = UIColor.green
                     print("---groundアタック---")
                 }
                 else if xPos > 50
                 {
                     self.moveToLeft()
+                    touchPath.strokeColor = UIColor.white
                     print("---左スワイプ---")
                 }
                 else if xPos < -50
                 {
                     self.moveToRight()
+                    touchPath.strokeColor = UIColor.white
                     print("---右スワイプ---")
                 }
             }
@@ -486,6 +515,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
                 return
             }
+            baseNode.addChild(touchPath)
         }
     }
     
