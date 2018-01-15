@@ -424,7 +424,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 if yPos > 0                                 //下スワイプ
                 {
                     guardPower -= 100
-                    guardAction()
+                    guardAction(endFlg: false)
                     touchPath.strokeColor = UIColor.blue
                 } else if yPos < 0 {        //上スワイプ
                     touchPath.strokeColor = UIColor.white
@@ -470,7 +470,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 else if (jumping == true || falling == true) && (yPos > 10)
                 {
-                    guardAction()
+                    guardAction(endFlg: true)
                     touchPath.strokeColor = UIColor.blue
                     print("---jumpingガード---")
                 }
@@ -485,7 +485,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 else if yPos > 50
                 {
-                    self.guardAction()
+                    self.guardAction(endFlg: true)
                     touchPath.strokeColor = UIColor.blue
                     print("---groundガード---")
                 }
@@ -873,21 +873,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.guardShapes.append(guardShape)
     }
     
-    func guardAction()
+    func guardAction(enfFlg: Bool)
     {
         if (canMoveFlg == true && guardPower >= 0)
         {
-            print("---ガードフラグをON---")
-            guardFlg = true
-            let names = ["guard01","player00"]
-            self.guardTextureAnimation(self.player, names: names)
-            guardShapeMake()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
-            {
-                self.guardFlg = false
-                self.guardShapes[0].removeFromParent()
-                self.guardShapes.remove(at: 0)
-                print("---ガードフラグをOFF---")
+            if( guardFlg == false ){ //ガード開始
+                print("---ガードフラグをON---")
+                guardFlg = true
+                let names = ["guard01","player00"]
+                self.guardTextureAnimation(self.player, names: names)
+                guardShapeMake()
+            }
+            if( endFlg == true ){
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
+                {
+                    self.guardFlg = false
+                    self.guardShapes[0].removeFromParent()
+                    self.guardShapes.remove(at: 0)
+                    print("---ガードフラグをOFF---")
+                }
             }
         }
         else
@@ -895,7 +899,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             return
         }
     }
-    
+
     func guardMeteor()
     {
         if (guardFlg == true)
