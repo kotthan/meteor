@@ -58,9 +58,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var firstBuildFlg: Bool = true
     var buildFlg:Bool = true
     var gameFlg:Bool = false
-    var canMoveFlg = true
     var meteorCollisionFlg = false
-    var retryFlg = false            //リトライするときにそのままゲームスタートさせる
+    var retryFlg = false                                            //リトライするときにそのままゲームスタートさせる
     
     //MARK: - プロパティ
 	//MARK: プレイヤーキャラプロパティ
@@ -496,13 +495,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             var points = [beganPos,endPos]
             touchPath = SKShapeNode(points: &points, count: points.count) //デバッグに始点から現在地を線で結ぶ
-            if (self.playerBaseNode.position.y > self.oneScreenSize.height/2) && (canMoveFlg == true)
+            if gameoverFlg == true
+            {
+                return
+            }
+            else if (self.playerBaseNode.position.y > self.oneScreenSize.height/2)
             {
                 if (jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos)
                 {
                     attackAction()
                     touchPath.strokeColor = UIColor.red
-                    print("---jump中にattackAction(),yPos=\(yPos)---")
+                    //print("---jump中にattackAction(),yPos=\(yPos)---")
                 }
                 else if (jumping == true || falling == true) && (yPos > 10)
                 {
@@ -511,7 +514,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     print("---jump中にguardAction(),yPos=\(yPos)---")
                 }
             }
-            else if (self.playerBaseNode.position.y < self.oneScreenSize.height/2) && (canMoveFlg == true)
+            else if (self.playerBaseNode.position.y < self.oneScreenSize.height/2)
             {
                 if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos))
                 {
@@ -819,25 +822,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func attackAction()
     {
-        if canMoveFlg == true
+        if gameoverFlg == true
         {
-        //print("---アタックフラグをON---")
-        attackFlg = true
-        let names = ["attack01","attack02","player00"]
-        self.attackTextureAnimation(self.player, names: names)
-        playSound(soundName: "slash")
-        attackShapeMake()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
-            {
-                self.attackFlg = false
-                self.attackShapes[0].removeFromParent()
-                self.attackShapes.remove(at: 0)
-                //print("---アタックフラグをOFF---")
-            }
+            return
         }
         else
         {
-            return
+            //print("---アタックフラグをON---")
+            attackFlg = true
+            let names = ["attack01","attack02","player00"]
+            self.attackTextureAnimation(self.player, names: names)
+            playSound(soundName: "slash")
+            attackShapeMake()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
+                {
+                    self.attackFlg = false
+                    self.attackShapes[0].removeFromParent()
+                    self.attackShapes.remove(at: 0)
+                    //print("---アタックフラグをOFF---")
+                }
         }
     }
     
@@ -868,7 +871,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 //print("---消すノードは\(meteores[0])です---")
                 meteores.remove(at: 0)
                 UltraPower += 1
-                print("---UltraPowerは\(UltraPower)です---")
+                //print("---UltraPowerは\(UltraPower)です---")
                 //self.meteorGravityCoefficient -= 0.06                   //数が減るごとに隕石の速度を遅くする
                 //スコア
                 self.score += 1;
@@ -924,16 +927,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func guardAction(endFlg: Bool)
     {
-        if (canMoveFlg == true && guardPower >= 0)
+        if gameoverFlg == true
         {
-            if( guardFlg == false ){ //ガード開始
+            return
+        }
+        else if (guardPower >= 0)
+        {
+            if( guardFlg == false )
+            {   //ガード開始
                 //print("---ガードフラグをON---")
                 guardFlg = true
                 let names = ["guard01","player00"]
                 self.guardTextureAnimation(self.player, names: names)
                 guardShapeMake()
             }
-            if( endFlg == true ){
+            if( endFlg == true )
+            {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
                 {
                     self.guardFlg = false
@@ -944,10 +953,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     //print("---ガードフラグをOFF---")
                 }
             }
-        }
-        else
-        {
-            return
         }
     }
 
@@ -982,7 +987,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     {
         if( !gameoverFlg ){ //既にGameOverの場合はなにもしない
             gameoverFlg = true
-            canMoveFlg = false
             self.isPaused = true
             self.meteorTimer?.invalidate()
             //ハイスコア更新
