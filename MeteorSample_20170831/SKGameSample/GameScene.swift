@@ -346,7 +346,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if( self.playerSpeed < self.meteorSpeed ){
                         //playerが上昇中にfalseにすると何度も衝突がおきてplayeerがぶれるので
                         //落下速度が隕石より早くなってからfalseにする
-                        meteorCollisionFlg = false
+                        self.meteorCollisionFlg = false
                     }
                     if( debug ){
                         //衝突位置表示
@@ -567,10 +567,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: - 右移動
     func moveCtoR() {
         if (jumping == false) && (falling == false) {
-            centerPosFlg = false
-            leftPosFlg = false
-            rightPosFlg = true
-            moving = true
+            self.centerPosFlg = false
+            self.leftPosFlg = false
+            self.rightPosFlg = true
+            self.moving = true
             let names = ["attack01","attack02","player00"]
             self.attackTextureAnimation(self.player, names: names)
             playerBaseNode.run(moveR)
@@ -582,10 +582,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     func moveLtoC() {
         if (jumping == false) && (falling == false) {
-            centerPosFlg = true
-            leftPosFlg = false
-            rightPosFlg = false
-            moving = true
+            self.centerPosFlg = true
+            self.leftPosFlg = false
+            self.rightPosFlg = false
+            self.moving = true
             let names = ["attack01","attack02","player00"]
             attackTextureAnimation(self.player, names: names)
             playerBaseNode.run(moveC)
@@ -604,9 +604,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: - 左移動
     func moveCtoL() {
         if (jumping == false) && (falling == false) {
-            centerPosFlg = false
-            leftPosFlg = true
-            rightPosFlg = false
+            self.centerPosFlg = false
+            self.leftPosFlg = true
+            self.rightPosFlg = false
             let names = ["attack01","attack02","player00"]
             attackTextureAnimation(self.player, names: names)
             playerBaseNode.run(moveL)
@@ -618,9 +618,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     func moveRtoC() {
         if self.jumping == false && self.falling == false {
-            centerPosFlg = true
-            leftPosFlg = false
-            rightPosFlg = false
+            self.centerPosFlg = true
+            self.leftPosFlg = false
+            self.rightPosFlg = false
             let names = ["attack01","attack02","player00"]
             attackTextureAnimation(self.player, names: names)
             playerBaseNode.run(moveC)
@@ -717,8 +717,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //MARK: 隕石落下
     func buildMeteor(size: Double, meteorString: String, meteorZ: Double){
-        firstBuildFlg = false
-        buildFlg = false
+        self.firstBuildFlg = false
+        self.buildFlg = false
         let texture = SKTexture(imageNamed: meteorString)
         let meteor = SKSpriteNode(texture: texture)
         meteor.zPosition = CGFloat(meteorZ)
@@ -747,7 +747,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     func startButtonAction()
     {
-        gameFlg = true
+        self.gameFlg = true
         play()
         start0Node.zPosition = -15
         //playBgm(soundName: "bgmn")
@@ -925,7 +925,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if( guardFlg == false )
             {   //ガード開始
                 //print("---ガードフラグをON---")
-                guardFlg = true
+                self.guardFlg = true
                 let names = ["guard01","player00"]
                 self.guardTextureAnimation(self.player, names: names)
                 guardShapeMake()
@@ -975,7 +975,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func gameOver()
     {
         if( !gameoverFlg ){ //既にGameOverの場合はなにもしない
-            gameoverFlg = true
+            self.gameoverFlg = true
             self.isPaused = true
             self.meteorTimer?.invalidate()
             //ハイスコア更新
