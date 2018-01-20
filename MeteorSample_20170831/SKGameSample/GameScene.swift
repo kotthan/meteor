@@ -843,6 +843,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 meteores[0].physicsBody?.categoryBitMask = 0
                 meteores[0].physicsBody?.contactTestBitMask = 0
                 meteores[0].removeFromParent()
+                //隕石を爆発させる
+                let particle = SKEmitterNode(fileNamed: "MeteorBroken.sks")
+                //接触座標にパーティクルを放出するようにする。
+                particle!.position = meteores[0].position
+                //0.7秒後にシーンから消すアクションを作成する。
+                let action1 = SKAction.wait(forDuration: 0.5)
+                let action2 = SKAction.removeFromParent()
+                let actionAll = SKAction.sequence([action1, action2])
+                //パーティクルをシーンに追加する。
+                self.addChild(particle!)
+                //アクションを実行する。
+                particle!.run(actionAll)
                 print("---消すノードは\(meteores[0])です---")
                 meteores.remove(at: 0)
                 UltraPower += 1
