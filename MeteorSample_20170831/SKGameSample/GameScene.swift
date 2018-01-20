@@ -501,13 +501,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             else if (self.playerBaseNode.position.y > self.oneScreenSize.height/2)
             {
-                if (jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos)
+                if ( jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos) && (guardFlg == false)
                 {
                     attackAction()
                     touchPath.strokeColor = UIColor.red
                     //print("---jump中にattackAction(),yPos=\(yPos)---")
                 }
-                else if (jumping == true || falling == true) && (yPos > 10)
+                else if (jumping == true || falling == true) && (yPos > 10) || (guardFlg == true)
                 {
                     guardAction(endFlg: true)
                     touchPath.strokeColor = UIColor.blue
@@ -516,13 +516,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             else if (self.playerBaseNode.position.y < self.oneScreenSize.height/2)
             {
-                if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos))
+                if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos)) && (guardFlg == false)
                 {
                     attackAction()
                     touchPath.strokeColor = UIColor.red
                     //print("---groundアタック---")
                 }
-                else if yPos > 50
+                else if (yPos > 50) || (guardFlg == true)
                 {
                     self.guardAction(endFlg: true)
                     touchPath.strokeColor = UIColor.blue
@@ -859,7 +859,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 //隕石を爆発させる
                 let particle = SKEmitterNode(fileNamed: "MeteorBroken.sks")
                 //接触座標にパーティクルを放出するようにする。
-                particle!.position = meteores[0].position
+                particle!.position = CGPoint(x: playerBaseNode.position.x,
+                                             y: playerBaseNode.position.y + (attackShapes[0].position.y))
                 //0.7秒後にシーンから消すアクションを作成する。
                 let action1 = SKAction.wait(forDuration: 0.5)
                 let action2 = SKAction.removeFromParent()
