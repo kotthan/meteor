@@ -25,6 +25,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let backScrNode = SKNode()                                      //背景ノード
     let titleLogo = SKSpriteNode()                                  //タイトルロゴノード
     var player: SKSpriteNode!                                       //プレイヤーノード
+    var back_wall_main: SKSpriteNode!                               //メイン背景
+    var back_wall: SKSpriteNode!                                    //メニュー画面背景
     var ground: SKSpriteNode!                                       //地面
     var lowestShape: SKShapeNode!                                   //落下判定シェイプノード
     var attackShape: SKShapeNode!                                   //攻撃判定シェイプノード
@@ -144,7 +146,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 		if let scene = SKScene(fileNamed: "GameScene.sks")
         {
             //===================
-			//MARK: 背景
+			//MARK: メニュー背景
 			//===================
 			scene.enumerateChildNodes(withName: "back_wall", using:
             { (node, stop) -> Void in
@@ -155,6 +157,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 				self.backScrNode.addChild(back_wall)
                 //print("---SKSファイルより背景＝\(back_wall)を読み込みました---")
 			})
+            //===================
+            //MARK: メイン背景
+            //===================
+            scene.enumerateChildNodes(withName: "back_wall_main", using:
+                { (node, stop) -> Void in
+                    let back_wall_main = node as! SKSpriteNode
+                    back_wall_main.name = "back_wall_main"
+                    //シーンから削除して再配置
+                    back_wall_main.removeFromParent()
+                    self.backScrNode.addChild(back_wall_main)
+                    //print("---SKSファイルより背景＝\(back_wall)を読み込みました---")
+            })
 			//===================
 			//MARK: 地面
 			//===================
@@ -277,7 +291,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //===================
             //MARK: start0Node
             //===================
-            scene.enumerateChildNodes(withName: "start0Node", using: { (node, stop) -> Void in
+            scene.enumerateChildNodes(withName: "start0Node", using:
+            { (node, stop) -> Void in
                 let start0Node = node as! SKSpriteNode
                 start0Node.name = "start0Node"
                 //シーンから削除して再配置
@@ -285,7 +300,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.start0Node = start0Node
                 self.baseNode.addChild(start0Node)
             })
-            if( retryFlg ){ //リトライ時はそのままスタートする
+            if( retryFlg )
+            { //リトライ時はそのままスタートする
                 startButtonAction()
             }
 		}
@@ -299,9 +315,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guardGage.zPosition = 90
         guardGage.fillColor = UIColor.red
         self.playerBaseNode.addChild(self.guardGage)               //playerにaddchiledすることでplayerに追従させる
-        
         //ハイスコアラベル
-        if ( UserDefaults.standard.object(forKey: keyHighScore) != nil ){
+        if ( UserDefaults.standard.object(forKey: keyHighScore) != nil )
+        {
             self.highScore = UserDefaults.standard.integer(forKey: self.keyHighScore) //保存したデータの読み出し
             print("read data\(keyHighScore) : \(self.highScore)")
         }
@@ -313,7 +329,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.highScoreLabel.zPosition = 4 //プレイヤーの後ろ
         self.baseNode.addChild(self.highScoreLabel) //背景に固定のつもりでbaseNodeに追加
         
-        if(debug){
+        if(debug)
+        {
             addParamSlider()    //パラメータ調整用スライダー
             view.showsPhysics = true
             let playerBaseShape = SKShapeNode(rect: CGRect(x: 0, y: 0, width: 10, height: 10))
@@ -324,14 +341,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	}
     
     //MARK: シーンのアップデート時に呼ばれる関数
-    override func update(_ currentTime: TimeInterval) {
-        if ( !meteores.isEmpty ){
+    override func update(_ currentTime: TimeInterval)
+    {
+        if ( !meteores.isEmpty )
+        {
             self.meteorSpeed += self.gravity * meteorGravityCoefficient / 60
-            for m in meteores{
+            for m in meteores
+            {
                 m.position.y += self.meteorSpeed / 60
             }
         }
-        if (jumping == true || falling == true){
+        if (jumping == true || falling == true)
+        {
             // 次の位置を計算する
             self.playerSpeed += self.gravity * self.playerGravityCoefficient / 60   // [pixcel/s^2] / 60[fps]
             self.playerBaseNode.position.y += CGFloat( playerSpeed / 60 )           // [pixcel/s] / 60[fps]
@@ -348,11 +369,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         //落下速度が隕石より早くなってからfalseにする
                         self.meteorCollisionFlg = false
                     }
-                    if( debug ){
+                    if( debug )
+                    {
                         //衝突位置表示
                         var points = [CGPoint(x:frame.minX,y:playerBaseNode.position.y + playerHalfSize),
                                       CGPoint(x:frame.maxX,y:playerBaseNode.position.y + playerHalfSize)]
-                        if( collisionLine != nil ){
+                        if( collisionLine != nil )
+                        {
                             collisionLine.removeFromParent()
                         }
                         collisionLine = SKShapeNode(points: &points, count: points.count)
@@ -360,16 +383,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         baseNode.addChild(collisionLine)
                     }
                 }
-                else{
-                    if ( debug ) {
-                        if( collisionLine != nil ){
+                else
+                {
+                    if ( debug )
+                    {
+                        if( collisionLine != nil )
+                        {
                             collisionLine.removeFromParent()
                             collisionLine = nil
                         }
                     }
                 }
             }
-            if( self.playerBaseNode.position.y < defaultYPosition ){
+            if( self.playerBaseNode.position.y < defaultYPosition )
+            {
                 self.playerBaseNode.position.y = defaultYPosition
             }
             player.position = CGPoint.zero //playerの位置がだんだん上に上がる対策
@@ -378,34 +405,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.playerBaseNode.position.y + 200 );
         }
-        else {
+        else
+        {
             self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.oneScreenSize.height/2)
         }
-        
         if self.player.physicsBody?.velocity.dy < -9.8 && self.falling == false
         {
             self.jumping = false
             self.falling = true
         }
-        if( debug ){
-            playerPosLabel.text = "playerSpeed : \(self.playerSpeed) \n" +
-                                  "y +: \(CGFloat( playerSpeed / 60 ))"
+        if( debug )
+        {
+            playerPosLabel.text = "playerSpeed : \(self.playerSpeed) \n" + "y +: \(CGFloat( playerSpeed / 60 ))"
         }
-        
         if guardPower < 0
         {
             guardPower = 0
-        } else if guardPower <= 4500
+        }
+        else if guardPower <= 4500
         {
             guardPower += 50
         }
         guardGage.yScale = CGFloat(guardPower / 1000)
     }
-    
     //MARK: すべてのアクションと物理シミュレーション処理後、1フレーム毎に呼び出される
-    override func didSimulatePhysics() {
-    }
-    
+    override func didSimulatePhysics()
+    {   }
     var touchPath: SKShapeNode! = nil
     //MARK: - 関数定義　タッチ処理
     //MARK: タッチダウンされたときに呼ばれる関数
@@ -558,15 +583,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
-    
     //MARK: - 移動
     let moveL = SKAction.moveTo(x: 93.75, duration: 0.15)
     let moveC = SKAction.moveTo(x: 187.5, duration: 0.15)
     let moveR = SKAction.moveTo(x: 281.25, duration: 0.15)
-    
     //MARK: - 右移動
-    func moveCtoR() {
-        if (jumping == false) && (falling == false) {
+    func moveCtoR()
+    {
+        if (jumping == false) && (falling == false)
+        {
             self.centerPosFlg = false
             self.leftPosFlg = false
             self.rightPosFlg = true
@@ -575,13 +600,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.attackTextureAnimation(self.player, names: names)
             playerBaseNode.run(moveR)
             playSound(soundName: "move")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
+            {
                 self.moveStop()
             }
         }
     }
-    func moveLtoC() {
-        if (jumping == false) && (falling == false) {
+    func moveLtoC()
+    {
+        if (jumping == false) && (falling == false)
+        {
             self.centerPosFlg = true
             self.leftPosFlg = false
             self.rightPosFlg = false
@@ -590,20 +618,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             attackTextureAnimation(self.player, names: names)
             playerBaseNode.run(moveC)
             playSound(soundName: "move")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
+            {
                 self.moveStop()
             }
         }
     }
-    func moveToRight() {
-        if centerPosFlg == true { moveCtoR()
-        } else if leftPosFlg == true { moveLtoC()
+    func moveToRight()
+    {
+        if centerPosFlg == true
+        {
+            moveCtoR()
+        }
+        else if leftPosFlg == true
+        {
+            moveLtoC()
         }
     }
-    
     //MARK: - 左移動
-    func moveCtoL() {
-        if (jumping == false) && (falling == false) {
+    func moveCtoL()
+    {
+        if (jumping == false) && (falling == false)
+        {
             self.centerPosFlg = false
             self.leftPosFlg = true
             self.rightPosFlg = false
@@ -611,13 +647,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             attackTextureAnimation(self.player, names: names)
             playerBaseNode.run(moveL)
             playSound(soundName: "move")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
+            {
                 self.moveStop()
             }
         }
     }
-    func moveRtoC() {
-        if self.jumping == false && self.falling == false {
+    func moveRtoC()
+    {
+        if (self.jumping == false) && (self.falling == false)
+        {
             self.centerPosFlg = true
             self.leftPosFlg = false
             self.rightPosFlg = false
@@ -625,14 +664,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             attackTextureAnimation(self.player, names: names)
             playerBaseNode.run(moveC)
             playSound(soundName: "move")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
+            {
                 self.moveStop()
             }
         }
     }
-    func moveToLeft() {
-        if centerPosFlg == true { moveCtoL()
-        } else if rightPosFlg == true { moveRtoC()
+    func moveToLeft()
+    {
+        if centerPosFlg == true
+        {
+            moveCtoL()
+        }
+        else if rightPosFlg == true
+        {
+            moveRtoC()
         }
     }
     
@@ -750,6 +796,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.gameFlg = true
         play()
         start0Node.zPosition = -15
+        /*
+        //メニュー背景を動かすアクションを作成する。
+        let action1 = SKAction.moveTo(y: -3000, duration: 1.0)
+        //アクションを実行する。
+        back_wall.run(action1)
+         */
         //playBgm(soundName: "bgmn")
     }
     
