@@ -344,11 +344,36 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 if( meteorCollisionFlg ){ //衝突する
                     self.playerBaseNode.position.y = meteorMinY - playerHalfSize
                     self.playerSpeed -= self.meteorSpeed / 60
+                    if( self.playerSpeed < self.meteorSpeed ){
+                        //playerが上昇中にfalseにすると何度も衝突がおきてplayeerがぶれるので
+                        //落下速度が隕石より早くなってからfalseにする
+                        meteorCollisionFlg = false
+                    }
+                    if( debug ){
+                        //衝突位置表示
+                        var points = [CGPoint(x:frame.minX,y:playerBaseNode.position.y + playerHalfSize),
+                                      CGPoint(x:frame.maxX,y:playerBaseNode.position.y + playerHalfSize)]
+                        if( collisionLine != nil ){
+                            collisionLine.removeFromParent()
+                        }
+                        collisionLine = SKShapeNode(points: &points, count: points.count)
+                        collisionLine.strokeColor = UIColor.orange
+                        baseNode.addChild(collisionLine)
+                    }
+                }
+                else{
+                    if ( debug ) {
+                        if( collisionLine != nil ){
+                            collisionLine.removeFromParent()
+                            collisionLine = nil
+                        }
+                    }
                 }
             }
             if( self.playerBaseNode.position.y < defaultYPosition ){
                 self.playerBaseNode.position.y = defaultYPosition
             }
+            player.position = CGPoint.zero //playerの位置がだんだん上に上がる対策
         }
         if (jumping == true || falling == true) && (self.playerBaseNode.position.y + 200 > self.oneScreenSize.height/2)
         {
@@ -364,7 +389,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.falling = true
         }
         if( debug ){
-            playerPosLabel.text = "x : \(self.playerBaseNode.position.x) \ny : \(self.playerBaseNode.position.y)"
+            playerPosLabel.text = "playerSpeed : \(self.playerSpeed) \n" +
+                                  "y +: \(CGFloat( playerSpeed / 60 ))"
         }
         
         if guardPower < 0
@@ -873,7 +899,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.guardShapes.append(guardShape)
     }
     
-    func guardAction(enfFlg: Bool)
+    func guardAction(endFlg: Bool)
     {
         if (canMoveFlg == true && guardPower >= 0)
         {
@@ -888,8 +914,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
                 {
                     self.guardFlg = false
-                    self.guardShapes[0].removeFromParent()
-                    self.guardShapes.remove(at: 0)
+                    if( !self.guardShapes.isEmpty ){
+                        self.guardShapes[0].removeFromParent()
+                        self.guardShapes.remove(at: 0)
+                    }
                     print("---ガードフラグをOFF---")
                 }
             }
@@ -910,7 +938,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             for i in meteores
             {
                 i.removeAllActions()
-                self.playerSpeed -= self.speedFromMeteorAtGuard  //ガード隕石の速度分プレイヤーの速度が上がる
+                self.playerSpeed = self.speedFromMeteorAtGuard  //プレイヤーの速度が上がる
+                let meteor = self.meteores.first
+                let meteorMinY = (meteor?.position.y)! - ((meteor?.size.height)!/2)
+                let playerHalfSize = (player?.size.height)!/2
+                self.playerBaseNode.position.y = meteorMinY - playerHalfSize - 1
                 self.meteorSpeed = self.meteorSpeedAtGuard       //上に持ちあげる
                 print("---隕石がガードされたモーションを実行---")
             }
@@ -1150,6 +1182,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //調整用スライダー
     var paramSliders = [UISlider]()
     var paramLabals = [SKLabelNode]()
+    var collisionLine : SKShapeNode!
     //追加
     func addParamSlider(){
         //デバッグ表示関連はすべてdebugViewに追加する
@@ -1187,7 +1220,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         //プレイヤー座標
         playerPosLabel.layer.position = CGPoint(x: 10, y:30)
-        playerPosLabel.numberOfLines = 2
+        playerPosLabel.numberOfLines = 10
         playerPosLabel.textColor = UIColor.white
         playerPosLabel.frame.size.width = frame.size.width
         playerPosLabel.frame.size.height = 50
@@ -1228,7 +1261,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pleyerJumpSpeed = 1500   //プレイヤーのジャンプ時の初速
         playerGravityCoefficient = 1        //隕石が受ける重力の影響を調整する係数
         meteorSpeedAtGuard = 100            //隕石が防御された時の速度
-        speedFromMeteorAtGuard = 350        //隕石を防御した時にプレイヤーの速度
+        speedFromMeteorAtGuard = -500        //隕石を防御した時にプレイヤーの速度
         var ix = 0
         for slider in paramSliders {
             slider.setValue( paramInv[ix](params[ix].pointee), animated: true)  // デフォルト値の設定
