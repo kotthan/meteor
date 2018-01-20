@@ -415,7 +415,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if let touch = touches.first as UITouch?
         {
             self.beganPos = touch.location(in: self)
-            beganPyPos = (camera?.position.y)!  //カメラの移動量を計算するために覚えておく
+            self.beganPyPos = (camera?.position.y)!                     //カメラの移動量を計算するために覚えておく
             if( touchPath != nil ){ //すでにタッチの軌跡が描かれていれば削除
                 touchPath.removeFromParent()
             }
@@ -435,10 +435,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: タッチ移動されたときに呼ばれる関数
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch: AnyObject in touches {
-            let endedPos = touch.location(in: self)
-            let cameraMoveY = ( (camera?.position.y)! -  beganPyPos )   //前回からのカメラの移動量を求める
-            beganPyPos = (camera?.position.y)!                          //次回計算時のために現在位置を覚える
-            beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
+            let endedPos = touch.location(in: self)                          //タップを話した点を定義
+            let cameraMoveY = ( (camera?.position.y)! -  self.beganPyPos )   //前回からのカメラの移動量を求める
+            self.beganPyPos = (camera?.position.y)!                          //次回計算時のために現在位置を覚える
+            self.beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
             let xPos = beganPos.x - endedPos.x
             let yPos = beganPos.y - endedPos.y
             if( touchPath != nil ){ //すでにタッチの軌跡が描かれていれば削除
