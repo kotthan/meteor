@@ -414,7 +414,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     {
         if let touch = touches.first as UITouch?
         {
-            beganPos = touch.location(in: self)
+            self.beganPos = touch.location(in: self)
             beganPyPos = (camera?.position.y)!  //カメラの移動量を計算するために覚えておく
             if( touchPath != nil ){ //すでにタッチの軌跡が描かれていれば削除
                 touchPath.removeFromParent()
