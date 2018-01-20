@@ -420,7 +420,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 touchPath.removeFromParent()
             }
             let node:SKSpriteNode? = self.atPoint(beganPos) as? SKSpriteNode;
-            print("---タップを離したノード=\(String(describing: node?.name))---")
+            print("---タップをしたノード=\(String(describing: node?.name))---")
             if node == nil
             {
                 return
