@@ -793,20 +793,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let attackShape = SKShapeNode(rect: CGRect(x: 0.0 - self.player.size.width/2, y: 0.0 - self.player.size.height/2, width: self.player.size.width, height: self.player.size.height))
         attackShape.name = "attackShape"
         let physicsBody = SKPhysicsBody(rectangleOf: attackShape.frame.size)
-
-        if jumping == true
-        {
-            attackShape.position = CGPoint(x: 0, y: player.size.height)
-            //print("---attackShapeをjumping位置に生成---")
-        } else if falling == true
-        {
-            attackShape.position = CGPoint(x: 0, y: player.size.height)
-            //print("---attackShapeをfalling位置に生成---")
-        } else if (jumping == false && falling == false)
-        {
-            attackShape.position = CGPoint(x: 0, y:player.size.height)
-            //print("---attackShapeをplayerと同位置に生成---")
-        }
+        attackShape.position = CGPoint(x: 0, y: player.size.height)
         attackShape.fillColor = UIColor.clear
         attackShape.zPosition = 7.0
         attackShape.physicsBody = physicsBody
@@ -829,7 +816,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else
         {
             //print("---アタックフラグをON---")
-            attackFlg = true
+            self.attackFlg = true
             let names = ["attack01","attack02","player00"]
             self.attackTextureAnimation(self.player, names: names)
             playSound(soundName: "slash")
@@ -884,14 +871,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 playSound(soundName: "hakai")
                 //隕石と接触していたら速度を0にする
-                if( meteorCollisionFlg ){
-                    meteorCollisionFlg = false
+                if( meteorCollisionFlg )
+                {
+                    self.meteorCollisionFlg = false
                     playerSpeed = 0;
                 }
             }
             if meteores.isEmpty == true
             {
-                buildFlg = true
+                self.buildFlg = true
                 //print("---meteoresが空だったのでビルドフラグON---")
             }
         }
