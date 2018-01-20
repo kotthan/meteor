@@ -488,13 +488,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             touchPath = SKShapeNode(points: &points, count: points.count) //デバッグに始点から現在地を線で結ぶ
             if (self.playerBaseNode.position.y > self.oneScreenSize.height/2) && (canMoveFlg == true)
             {
-                if (jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos)
+                if ( jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos) && (guardFlg == false)
                 {
                     attackAction()
                     touchPath.strokeColor = UIColor.red
                     print("---jumpingアタック---")
                 }
-                else if (jumping == true || falling == true) && (yPos > 10)
+                else if (jumping == true || falling == true) && (yPos > 10) || (guardFlg == true)
                 {
                     guardAction(endFlg: true)
                     touchPath.strokeColor = UIColor.blue
@@ -503,13 +503,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             else if (self.playerBaseNode.position.y < self.oneScreenSize.height/2) && (canMoveFlg == true)
             {
-                if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos))
+                if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos)) && (guardFlg == false)
                 {
                     attackAction()
                     touchPath.strokeColor = UIColor.red
                     print("---groundアタック---")
                 }
-                else if yPos > 50
+                else if (yPos > 50) || (guardFlg == true)
                 {
                     self.guardAction(endFlg: true)
                     touchPath.strokeColor = UIColor.blue
