@@ -846,7 +846,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 //隕石を爆発させる
                 let particle = SKEmitterNode(fileNamed: "MeteorBroken.sks")
                 //接触座標にパーティクルを放出するようにする。
-                particle!.position = meteores[0].position
+                particle!.position = CGPoint(x: playerBaseNode.position.x,
+                                             y: playerBaseNode.position.y + (attackShapes[0].position.y))
                 //0.7秒後にシーンから消すアクションを作成する。
                 let action1 = SKAction.wait(forDuration: 0.5)
                 let action2 = SKAction.removeFromParent()
