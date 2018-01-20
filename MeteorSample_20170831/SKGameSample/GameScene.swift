@@ -33,6 +33,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var start0Node: SKSpriteNode!
     let scoreLabel = SKLabelNode()                                  //スコア表示ラベル
     var score = 0                                                   //スコア
+    let comboLabel = SKLabelNode()                                  //スコア表示ラベル
+    var combo = 0                                                   //スコア
     let highScoreLabel = SKLabelNode()                              //ハイスコア表示ラベル
     var highScore = 0                                               //ハイスコア
     var ultraButtonString: String = "zan.png"
@@ -245,7 +247,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 y: self.player.size.height/2
             )
             self.playerBaseNode.addChild(self.scoreLabel)               //playerにaddchiledすることでplayerに追従させる
-            
+            //===================
+            //MARK: コンボ
+            //===================
+            self.comboLabel.text = String( self.combo )         //スコアを表示する
+            self.comboLabel.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
+                x: self.player.size.width/2,
+                y: self.player.size.height/2 - 50
+            )
+            self.playerBaseNode.addChild(self.comboLabel)               //playerにaddchiledすることでplayerに追従させる
             //===================
             //MARK: 必殺技ボタン
             //===================
@@ -864,6 +874,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 //スコア
                 self.score += 1;
                 self.scoreLabel.text = String( self.score )
+                //コンボ
+                self.combo += 1;
+                self.comboLabel.text = String( self.combo )
                 if UltraPower >= 10
                 {
                     ultraButton.isHidden = true
@@ -961,6 +974,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 self.meteorSpeed = self.meteorSpeedAtGuard       //上に持ちあげる
                 print("---隕石がガードされたモーションを実行---")
+                self.combo = 0
+                self.comboLabel.text = String( self.combo )
             }
         }
         else
