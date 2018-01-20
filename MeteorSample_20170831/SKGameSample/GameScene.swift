@@ -676,6 +676,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             falling = false
             playSound(soundName: "tyakuti")
             self.playerSpeed = 0.0
+            self.playerBaseNode.position.y = self.defaultYPosition
         }
         else if (bitA == 0b0100 || bitB == 0b0100) && (bitA == 0b1000 || bitB == 0b1000)
         {
@@ -938,11 +939,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             for i in meteores
             {
                 i.removeAllActions()
-                self.playerSpeed = self.speedFromMeteorAtGuard  //プレイヤーの速度が上がる
-                let meteor = self.meteores.first
-                let meteorMinY = (meteor?.position.y)! - ((meteor?.size.height)!/2)
-                let playerHalfSize = (player?.size.height)!/2
-                self.playerBaseNode.position.y = meteorMinY - playerHalfSize - 1
+                if( jumping == true || falling == true ){
+                    self.playerSpeed = self.speedFromMeteorAtGuard  //プレイヤーの速度が上がる
+                    let meteor = self.meteores.first
+                    let meteorMinY = (meteor?.position.y)! - ((meteor?.size.height)!/2)
+                    let playerHalfSize = (player?.size.height)!/2
+                    self.playerBaseNode.position.y = meteorMinY - playerHalfSize - 1
+                }
                 self.meteorSpeed = self.meteorSpeedAtGuard       //上に持ちあげる
                 print("---隕石がガードされたモーションを実行---")
             }
