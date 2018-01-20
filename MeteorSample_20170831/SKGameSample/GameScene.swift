@@ -385,6 +385,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             player.position = CGPoint.zero //playerの位置がだんだん上に上がる対策
         }
+        else{
+            if( !meteores.isEmpty ){
+                let meteor = self.meteores.first
+                let meteorMinY = (meteor?.position.y)! - ((meteor?.size.height)!/2)
+                let playerHalfSize = (player?.size.height)!/2
+                if( self.playerBaseNode.position.y < meteorMinY - playerHalfSize ){
+                    meteorCollisionFlg = false
+                    if( collisionLine != nil ){
+                        collisionLine.removeFromParent()
+                        collisionLine = nil
+                    }
+                }
+            }
+            else{
+                meteorCollisionFlg = false
+                if( collisionLine != nil ){
+                    collisionLine.removeFromParent()
+                    collisionLine = nil
+                }
+            }
+        }
         if (jumping == true || falling == true) && (self.playerBaseNode.position.y + 200 > self.oneScreenSize.height/2)
         {
             self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.playerBaseNode.position.y + 200 );
