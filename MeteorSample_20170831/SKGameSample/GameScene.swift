@@ -62,7 +62,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gameFlg:Bool = false
     var canMoveFlg = true
     var meteorCollisionFlg = false
-    var retryFlg = false            //リトライするときにそのままゲームスタートさせる
+    var retryFlg = false                                            //リトライするときにそのままゲームスタートさせる
     
     //MARK: - プロパティ
 	//MARK: プレイヤーキャラプロパティ
@@ -703,11 +703,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else if (bitA == 0b0100 || bitB == 0b0100) && (bitA == 0b0001 || bitB == 0b0001)
         {
             print("---Playerと地面が接触しました---")
-            jumping = false
-            falling = false
+            self.jumping = false
+            self.falling = false
             playSound(soundName: "tyakuti")
             self.playerSpeed = 0.0
             self.playerBaseNode.position.y = self.defaultYPosition
+            //煙を発生させる
+            let particle = SKEmitterNode(fileNamed: "smoke.sks")
+            //接触座標にパーティクルを放出するようにする。
+            particle!.position = CGPoint(x: playerBaseNode.position.x,
+                                         y: playerBaseNode.position.y)
+            //一定時間後にシーンから消すアクションを作成する。
+            let action1 = SKAction.wait(forDuration: 0.2)
+            let action2 = SKAction.removeFromParent()
+            let actionAll = SKAction.sequence([action1, action2])
+            //パーティクルをシーンに追加する。
+            self.addChild(particle!)
+            //アクションを実行する。
+            particle!.run(actionAll)
         }
         else if (bitA == 0b0100 || bitB == 0b0100) && (bitA == 0b1000 || bitB == 0b1000)
         {
