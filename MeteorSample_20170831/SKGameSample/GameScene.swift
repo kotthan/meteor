@@ -427,6 +427,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             guardPower += 50
         }
         guardGage.yScale = CGFloat(guardPower / 1000)
+        
     }
     //MARK: すべてのアクションと物理シミュレーション処理後、1フレーム毎に呼び出される
     override func didSimulatePhysics()
@@ -513,7 +514,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let cameraMoveY = ( (camera?.position.y)! -  beganPyPos )   //前回からのカメラの移動量を求める
             beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
             let xPos = beganPos.x - endPos.x
-            let yPos = beganPos.y - endPos.y
+            let floatYPos = beganPos.y - endPos.y
+            let yPos = round(floatYPos)
+            print("yPos : \(floatYPos),flooryPos : \(round(yPos))")
             if( touchPath != nil )
             { //すでにタッチの軌跡が描かれていれば削除
                 touchPath.removeFromParent()
