@@ -420,8 +420,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.falling = true
         }
         if( debug ){
-            playerPosLabel.text = "playerSpeed : \(self.playerSpeed) \n" +
-                                  "y +: \(CGFloat( playerSpeed / 60 ))"
+            playerPosLabel.text = "playerSpeed : \(self.player.physicsBody?.velocity.dy) \n" +
+                                  "y +: \(CGFloat( playerSpeed / 60 ))\n" +
+                                  "jumping : \(self.jumping)\n " +
+                                  "falling : \(self.falling)\n " +
+                                  ""
+            playerPosLabel.sizeToFit()
         }
         
         if guardPower < 0
