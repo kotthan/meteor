@@ -33,7 +33,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var start0Node: SKSpriteNode!
     let scoreLabel = SKLabelNode()                                  //スコア表示ラベル
     var score = 0                                                   //スコア
-    //let comboLabel = SKLabelNode()                                  //スコア表示ラベル
+    let comboLabel = SKLabelNode()                                  //スコア表示ラベル
     var combo = 0                                                   //スコア
     let highScoreLabel = SKLabelNode()                              //ハイスコア表示ラベル
     var highScore = 0                                               //ハイスコア
@@ -250,12 +250,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //===================
             //MARK: コンボ
             //===================
-            //self.comboLabel.text = String( self.combo )         //スコアを表示する
-            /*self.comboLabel.position = CGPoint.zero(                 //表示位置をplayerのサイズ分右上に
+            self.comboLabel.text = String( self.combo )         //スコアを表示する
+            self.comboLabel.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
                 x: self.player.size.width/2,
                 y: self.player.size.height/2 - 50
-            )*/
-            //self.playerBaseNode.addChild(self.comboLabel)               //playerにaddchiledすることでplayerに追従させる
+            )
+            self.playerBaseNode.addChild(self.comboLabel)               //playerにaddchiledすることでplayerに追従させる
             //===================
             //MARK: 必殺技ボタン
             //===================
@@ -880,9 +880,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 particle!.position = CGPoint(x: playerBaseNode.position.x,
                                              y: playerBaseNode.position.y + (attackShapes[0].position.y))
                 //0.7秒後にシーンから消すアクションを作成する。
-                var action1 = SKAction.wait(forDuration: 0.5)
-                var action2 = SKAction.removeFromParent()
-                var actionAll = SKAction.sequence([action1, action2])
+                let action1 = SKAction.wait(forDuration: 0.5)
+                let action2 = SKAction.removeFromParent()
+                let actionAll = SKAction.sequence([action1, action2])
                 //パーティクルをシーンに追加する。
                 self.addChild(particle!)
                 //アクションを実行する。
@@ -897,23 +897,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.scoreLabel.text = String( self.score )
                 //コンボ
                 self.combo += 1;
-                //self.comboLabel.text = String( self.combo )
-                //コンボ表示
-                let comboParticle = SKEmitterNode(fileNamed: "Combo.sks")
-                //接触座標にパーティクルを放出するようにする。
-                comboParticle!.position = CGPoint(x: playerBaseNode.position.x,
-                                                  y: playerBaseNode.position.y + (attackShapes[0].position.y))
-                let comboLabel = SKLabelNode()
-                comboLabel.text = String( combo )
-                comboParticle?.addChild(comboLabel)
-                //0.7秒後にシーンから消すアクションを作成する。
-                action1 = SKAction.wait(forDuration: 1.0)
-                action2 = SKAction.removeFromParent()
-                actionAll = SKAction.sequence([action1, action2])
-                //パーティクルをシーンに追加する。
-                self.addChild(comboParticle!)
-                //アクションを実行する。
-                particle!.run(actionAll)
+                self.comboLabel.text = String( self.combo )
                 if UltraPower >= 10
                 {
                     ultraButton.isHidden = true
@@ -1012,7 +996,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.meteorSpeed = self.meteorSpeedAtGuard       //上に持ちあげる
                 print("---隕石がガードされたモーションを実行---")
                 self.combo = 0
-                //self.comboLabel.text = String( self.combo )
+                self.comboLabel.text = String( self.combo )
             }
         }
         else
