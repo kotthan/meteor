@@ -25,6 +25,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let backScrNode = SKNode()                                      //背景ノード
     let titleLogo = SKSpriteNode()                                  //タイトルロゴノード
     var player: SKSpriteNode!                                       //プレイヤーノード
+    var back_wall_main: SKSpriteNode!                               //メイン背景
+    var back_wall: SKSpriteNode!                                    //メニュー画面背景
     var ground: SKSpriteNode!                                       //地面
     var lowestShape: SKShapeNode!                                   //落下判定シェイプノード
     var attackShape: SKShapeNode!                                   //攻撃判定シェイプノード
@@ -60,7 +62,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var firstBuildFlg: Bool = true
     var buildFlg:Bool = true
     var gameFlg:Bool = false
-    var canMoveFlg = true
     var meteorCollisionFlg = false
     var retryFlg = false                                            //リトライするときにそのままゲームスタートさせる
     
@@ -121,7 +122,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let camera = SKCameraNode()
         self.addChild(camera)
         self.camera = camera
-        print("---カメラのスタート位置は\(self.camera!.position)です---")
+        print("camera : \(self.camera!.position)")
         
         //MARK: 設定関係
         self.backgroundColor = SKColor.clear                           //背景色
@@ -147,7 +148,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 		if let scene = SKScene(fileNamed: "GameScene.sks")
         {
             //===================
-			//MARK: 背景
+			//MARK: メニュー背景
 			//===================
 			scene.enumerateChildNodes(withName: "back_wall", using:
             { (node, stop) -> Void in
@@ -156,8 +157,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 				//シーンから削除して再配置
 				back_wall.removeFromParent()
 				self.backScrNode.addChild(back_wall)
-                print("---SKSファイルより背景＝\(back_wall)を読み込みました---")
+                //print("---SKSファイルより背景＝\(back_wall)を読み込みました---")
 			})
+            //===================
+            //MARK: メイン背景
+            //===================
+            scene.enumerateChildNodes(withName: "back_wall_main", using:
+                { (node, stop) -> Void in
+                    let back_wall_main = node as! SKSpriteNode
+                    back_wall_main.name = "back_wall_main"
+                    //シーンから削除して再配置
+                    back_wall_main.removeFromParent()
+                    self.backScrNode.addChild(back_wall_main)
+                    //print("---SKSファイルより背景＝\(back_wall)を読み込みました---")
+            })
 			//===================
 			//MARK: 地面
 			//===================
@@ -171,7 +184,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 				ground.removeFromParent()
 				self.baseNode.addChild(ground)
                 self.ground = ground
-                print("---SKSファイルより地面＝\(ground)を読み込みました---")
+                //print("---SKSファイルより地面＝\(ground)を読み込みました---")
 			})
             //===================
             //MARK: 落下判定シェイプノード
@@ -190,7 +203,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 lowestShape.removeFromParent()
                 self.baseNode.addChild(lowestShape)
                 self.lowestShape = lowestShape
-                print("---SKSファイルより落下判定シェイプノード＝\(lowestShape)を読み込みました---")
+                //print("---SKSファイルより落下判定シェイプノード＝\(lowestShape)を読み込みました---")
             })
             //===================
 			//MARK: プレイヤー
@@ -217,7 +230,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 print("playerDefault : \(self.defaultYPosition)")
 				self.playerBaseNode.addChild(player)
                 self.player = player
-                print("---SKSファイルよりプレイヤー＝\(player)を読み込みました---")
+                //print("---SKSファイルよりプレイヤー＝\(player)を読み込みました---")
                 //アニメーション
                 let names = ["stand01","stand02"]
                 self.startStandTextureAnimation(player, names: names)
@@ -235,7 +248,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     //シーンから削除して再配置
                     titleLogo.removeFromParent()
                     self.baseNode.addChild(titleLogo)
-                    print("---SKSファイルより背景＝\(titleLogo)を読み込みました---")
+                    //print("---SKSファイルより背景＝\(titleLogo)を読み込みました---")
             })
 
             //===================
@@ -288,7 +301,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //===================
             //MARK: start0Node
             //===================
-            scene.enumerateChildNodes(withName: "start0Node", using: { (node, stop) -> Void in
+            scene.enumerateChildNodes(withName: "start0Node", using:
+            { (node, stop) -> Void in
                 let start0Node = node as! SKSpriteNode
                 start0Node.name = "start0Node"
                 //シーンから削除して再配置
@@ -296,7 +310,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.start0Node = start0Node
                 self.baseNode.addChild(start0Node)
             })
-            if( retryFlg ){ //リトライ時はそのままスタートする
+            if( retryFlg )
+            { //リトライ時はそのままスタートする
                 startButtonAction()
             }
 		}
@@ -310,11 +325,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guardGage.zPosition = 90
         guardGage.fillColor = UIColor.red
         self.playerBaseNode.addChild(self.guardGage)               //playerにaddchiledすることでplayerに追従させる
-        
         //ハイスコアラベル
-        if ( UserDefaults.standard.object(forKey: keyHighScore) != nil ){
+        if ( UserDefaults.standard.object(forKey: keyHighScore) != nil )
+        {
             self.highScore = UserDefaults.standard.integer(forKey: self.keyHighScore) //保存したデータの読み出し
-            print("--------------read data\(keyHighScore) = \(self.highScore)----------------")
+            print("read data\(keyHighScore) : \(self.highScore)")
         }
         self.highScoreLabel.text = String( self.highScore ) //ハイスコアを表示する
         self.highScoreLabel.position = CGPoint(             //表示位置は適当
@@ -324,7 +339,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.highScoreLabel.zPosition = 4 //プレイヤーの後ろ
         self.baseNode.addChild(self.highScoreLabel) //背景に固定のつもりでbaseNodeに追加
         
-        if(debug){
+        if(debug)
+        {
             addParamSlider()    //パラメータ調整用スライダー
             view.showsPhysics = true
             let playerBaseShape = SKShapeNode(rect: CGRect(x: 0, y: 0, width: 10, height: 10))
@@ -335,14 +351,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	}
     
     //MARK: シーンのアップデート時に呼ばれる関数
-    override func update(_ currentTime: TimeInterval) {
-        if ( !meteores.isEmpty ){
+    override func update(_ currentTime: TimeInterval)
+    {
+        if ( !meteores.isEmpty )
+        {
             self.meteorSpeed += self.gravity * meteorGravityCoefficient / 60
-            for m in meteores{
+            for m in meteores
+            {
                 m.position.y += self.meteorSpeed / 60
             }
         }
-        if (jumping == true || falling == true){
+        if (jumping == true || falling == true)
+        {
             // 次の位置を計算する
             self.playerSpeed += self.gravity * self.playerGravityCoefficient / 60   // [pixcel/s^2] / 60[fps]
             self.playerBaseNode.position.y += CGFloat( playerSpeed / 60 )           // [pixcel/s] / 60[fps]
@@ -357,13 +377,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if( self.playerSpeed < self.meteorSpeed ){
                         //playerが上昇中にfalseにすると何度も衝突がおきてplayeerがぶれるので
                         //落下速度が隕石より早くなってからfalseにする
-                        meteorCollisionFlg = false
+                        self.meteorCollisionFlg = false
                     }
-                    if( debug ){
+                    if( debug )
+                    {
                         //衝突位置表示
                         var points = [CGPoint(x:frame.minX,y:playerBaseNode.position.y + playerHalfSize),
                                       CGPoint(x:frame.maxX,y:playerBaseNode.position.y + playerHalfSize)]
-                        if( collisionLine != nil ){
+                        if( collisionLine != nil )
+                        {
                             collisionLine.removeFromParent()
                         }
                         collisionLine = SKShapeNode(points: &points, count: points.count)
@@ -371,16 +393,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         baseNode.addChild(collisionLine)
                     }
                 }
-                else{
-                    if ( debug ) {
-                        if( collisionLine != nil ){
+                else
+                {
+                    if ( debug )
+                    {
+                        if( collisionLine != nil )
+                        {
                             collisionLine.removeFromParent()
                             collisionLine = nil
                         }
                     }
                 }
             }
-            if( self.playerBaseNode.position.y < defaultYPosition ){
+            if( self.playerBaseNode.position.y < defaultYPosition )
+            {
                 self.playerBaseNode.position.y = defaultYPosition
             }
             player.position = CGPoint.zero //playerの位置がだんだん上に上がる対策
@@ -410,34 +436,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.playerBaseNode.position.y + 200 );
         }
-        else {
+        else
+        {
             self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.oneScreenSize.height/2)
         }
-        
         if self.player.physicsBody?.velocity.dy < -9.8 && self.falling == false
         {
             self.jumping = false
             self.falling = true
         }
-        if( debug ){
-            playerPosLabel.text = "playerSpeed : \(self.playerSpeed) \n" +
-                                  "y +: \(CGFloat( playerSpeed / 60 ))"
+        if( debug )
+        {
+            playerPosLabel.text = "playerSpeed : \(self.playerSpeed) \n" + "y +: \(CGFloat( playerSpeed / 60 ))"
         }
-        
         if guardPower < 0
         {
             guardPower = 0
-        } else if guardPower <= 4500
+        }
+        else if guardPower <= 4500
         {
             guardPower += 50
         }
         guardGage.yScale = CGFloat(guardPower / 1000)
+        
     }
-    
     //MARK: すべてのアクションと物理シミュレーション処理後、1フレーム毎に呼び出される
-    override func didSimulatePhysics() {
-    }
-    
+    override func didSimulatePhysics()
+    {   }
     var touchPath: SKShapeNode! = nil
     //MARK: - 関数定義　タッチ処理
     //MARK: タッチダウンされたときに呼ばれる関数
@@ -445,13 +470,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     {
         if let touch = touches.first as UITouch?
         {
-            beganPos = touch.location(in: self)
-            beganPyPos = (camera?.position.y)!  //カメラの移動量を計算するために覚えておく
+            self.beganPos = touch.location(in: self)
+            self.beganPyPos = (camera?.position.y)!                     //カメラの移動量を計算するために覚えておく
             if( touchPath != nil ){ //すでにタッチの軌跡が描かれていれば削除
                 touchPath.removeFromParent()
             }
             let node:SKSpriteNode? = self.atPoint(beganPos) as? SKSpriteNode;
-            print("---タップを離したノード=\(String(describing: node?.name))---")
+            //print("---タップをしたノード=\(String(describing: node?.name))---")
             if node == nil
             {
                 return
@@ -464,42 +489,51 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     //MARK: タッチ移動されたときに呼ばれる関数
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for touch: AnyObject in touches {
-            let endedPos = touch.location(in: self)
-            let cameraMoveY = ( (camera?.position.y)! -  beganPyPos )   //前回からのカメラの移動量を求める
-            beganPyPos = (camera?.position.y)!                          //次回計算時のために現在位置を覚える
-            beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
+    {
+        /*for touch: AnyObject in touches
+        {
+            let endedPos = touch.location(in: self)                          //タップを話した点を定義
+            let cameraMoveY = ( (camera?.position.y)! -  self.beganPyPos )   //前回からのカメラの移動量を求める
+            self.beganPyPos = (camera?.position.y)!                          //次回計算時のために現在位置を覚える
+            self.beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
             let xPos = beganPos.x - endedPos.x
             let yPos = beganPos.y - endedPos.y
-            if( touchPath != nil ){ //すでにタッチの軌跡が描かれていれば削除
+            if( touchPath != nil )                                           //すでにタッチの軌跡が描かれていれば削除
+            {
                 touchPath.removeFromParent()
             }
             var points = [beganPos,endedPos]
-            touchPath = SKShapeNode(points: &points, count: points.count) //デバッグ用にに始点から現在地を線で結ぶ
-            if fabs(yPos) > fabs(xPos)  {
-                if yPos > 0                                 //下スワイプ
+            touchPath = SKShapeNode(points: &points, count: points.count)   //デバッグ用に始点から現在地を線で結ぶ
+            if fabs(yPos) > fabs(xPos)
+            {
+                if yPos > 0                                                 //下スワイプ
                 {
                     guardPower -= 100
                     guardAction(endFlg: false)
                     touchPath.strokeColor = UIColor.blue
-                } else if yPos < 0 {        //上スワイプ
-                    touchPath.strokeColor = UIColor.white
-                    //return
                 }
-            } else {
-                if xPos > 100 {             //左スワイプ
+                else if yPos < 0                                           //上スワイプ
+                {
                     touchPath.strokeColor = UIColor.white
-                    //return
-                } else if xPos < -100 {     //右スワイプ
-                    touchPath.strokeColor = UIColor.white
-                    //return
                 }
             }
-            if( debug ){
+            else
+            {
+                if xPos > 100                                             //左スワイプ
+                {
+                    touchPath.strokeColor = UIColor.white
+                }
+                else if xPos < -100                                       //右スワイプ
+                {
+                    touchPath.strokeColor = UIColor.white
+                }
+            }
+            if( debug )
+            {
                 baseNode.addChild(touchPath)
             }
-        }
+        }*/
     }
     
     //MARK: タッチアップされたときに呼ばれる関数
@@ -511,46 +545,52 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let cameraMoveY = ( (camera?.position.y)! -  beganPyPos )   //前回からのカメラの移動量を求める
             beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
             let xPos = beganPos.x - endPos.x
-            let yPos = beganPos.y - endPos.y
-            if( touchPath != nil ){ //すでにタッチの軌跡が描かれていれば削除
+            let floatYPos = beganPos.y - endPos.y
+            let yPos = round(floatYPos)
+            print("yPos : \(floatYPos),flooryPos : \(round(yPos))")
+            if( touchPath != nil )
+            { //すでにタッチの軌跡が描かれていれば削除
                 touchPath.removeFromParent()
             }
             var points = [beganPos,endPos]
             touchPath = SKShapeNode(points: &points, count: points.count) //デバッグに始点から現在地を線で結ぶ
-            if (self.playerBaseNode.position.y > self.oneScreenSize.height/2) && (canMoveFlg == true)
+            if gameoverFlg == true
+            {
+                return
+            }
+            else if (self.playerBaseNode.position.y > self.oneScreenSize.height/2)
             {
                 if ( jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos) && (guardFlg == false)
                 {
                     attackAction()
                     touchPath.strokeColor = UIColor.red
-                    print("---jumpingアタック---")
+                    //print("---jump中にattackAction(),yPos=\(yPos)---")
                 }
                 else if (jumping == true || falling == true) && (yPos > 10) || (guardFlg == true)
                 {
                     guardAction(endFlg: true)
                     touchPath.strokeColor = UIColor.blue
-                    print("---jumpingガード---")
+                    print("---jump中にguardAction(),yPos=\(yPos)---")
                 }
             }
-            else if (self.playerBaseNode.position.y < self.oneScreenSize.height/2) && (canMoveFlg == true)
+            else if (self.playerBaseNode.position.y < self.oneScreenSize.height/2)
             {
                 if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos)) && (guardFlg == false)
                 {
                     attackAction()
                     touchPath.strokeColor = UIColor.red
-                    print("---groundアタック---")
+                    //print("---groundアタック---")
                 }
                 else if (yPos > 50) || (guardFlg == true)
                 {
                     self.guardAction(endFlg: true)
                     touchPath.strokeColor = UIColor.blue
-                    print("---groundガード---")
+                    //print("---groundガード---")
                 }
                 else if yPos < -50
                 {
                     self.jumpingAction()
                     touchPath.strokeColor = UIColor.green
-                    print("---groundアタック---")
                 }
                 else if xPos > 50
                 {
@@ -566,91 +606,113 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
             let node:SKSpriteNode? = self.atPoint(endPos) as? SKSpriteNode;
-            print("---タップを離したノード=\(String(describing: node?.name))---")
+            //print("---タップを離したノード=\(String(describing: node?.name))---")
             if node == nil
             {
                 return
             }
-            if( debug ){
+            if( debug )
+            {
                 baseNode.addChild(touchPath)
             }
         }
     }
-    
     //MARK: - 移動
     let moveL = SKAction.moveTo(x: 93.75, duration: 0.15)
     let moveC = SKAction.moveTo(x: 187.5, duration: 0.15)
     let moveR = SKAction.moveTo(x: 281.25, duration: 0.15)
-    
     //MARK: - 右移動
-    func moveCtoR() {
-        if (jumping == false) && (falling == false) {
-            centerPosFlg = false
-            leftPosFlg = false
-            rightPosFlg = true
-            moving = true
+    func moveCtoR()
+    {
+        if (jumping == false) && (falling == false)
+        {
+            self.centerPosFlg = false
+            self.leftPosFlg = false
+            self.rightPosFlg = true
+            self.moving = true
             let names = ["attack01","attack02","player00"]
             self.attackTextureAnimation(self.player, names: names)
             playerBaseNode.run(moveR)
             playSound(soundName: "move")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
+            {
                 self.moveStop()
             }
         }
     }
-    func moveLtoC() {
-        if (jumping == false) && (falling == false) {
-            centerPosFlg = true
-            leftPosFlg = false
-            rightPosFlg = false
-            moving = true
+    func moveLtoC()
+    {
+        if (jumping == false) && (falling == false)
+        {
+            self.centerPosFlg = true
+            self.leftPosFlg = false
+            self.rightPosFlg = false
+            self.moving = true
             let names = ["attack01","attack02","player00"]
             attackTextureAnimation(self.player, names: names)
             playerBaseNode.run(moveC)
             playSound(soundName: "move")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
+            {
                 self.moveStop()
             }
         }
     }
-    func moveToRight() {
-        if centerPosFlg == true { moveCtoR()
-        } else if leftPosFlg == true { moveLtoC()
+    func moveToRight()
+    {
+        if centerPosFlg == true
+        {
+            moveCtoR()
+        }
+        else if leftPosFlg == true
+        {
+            moveLtoC()
         }
     }
-    
     //MARK: - 左移動
-    func moveCtoL() {
-        if (jumping == false) && (falling == false) {
-            centerPosFlg = false
-            leftPosFlg = true
-            rightPosFlg = false
+    func moveCtoL()
+    {
+        if (jumping == false) && (falling == false)
+        {
+            self.centerPosFlg = false
+            self.leftPosFlg = true
+            self.rightPosFlg = false
             let names = ["attack01","attack02","player00"]
             attackTextureAnimation(self.player, names: names)
             playerBaseNode.run(moveL)
             playSound(soundName: "move")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
+            {
                 self.moveStop()
             }
         }
     }
-    func moveRtoC() {
-        if self.jumping == false && self.falling == false {
-            centerPosFlg = true
-            leftPosFlg = false
-            rightPosFlg = false
+    func moveRtoC()
+    {
+        if (self.jumping == false) && (self.falling == false)
+        {
+            self.centerPosFlg = true
+            self.leftPosFlg = false
+            self.rightPosFlg = false
             let names = ["attack01","attack02","player00"]
             attackTextureAnimation(self.player, names: names)
             playerBaseNode.run(moveC)
             playSound(soundName: "move")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
+            {
                 self.moveStop()
             }
         }
     }
-    func moveToLeft() {
-        if centerPosFlg == true { moveCtoL()
-        } else if rightPosFlg == true { moveRtoC()
+    func moveToLeft()
+    {
+        if centerPosFlg == true
+        {
+            moveCtoL()
+        }
+        else if rightPosFlg == true
+        {
+            moveRtoC()
         }
     }
     
@@ -676,63 +738,50 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //MARK: - 関数定義　接触判定
     func didBegin(_ contact: SKPhysicsContact) {
-        print("---didBeginで衝突しました---")
+        //print("---didBeginで衝突しました---")
         let nodeA = contact.bodyA.node
         let nodeB = contact.bodyB.node
         let nameA = nodeA?.name
         let nameB = nodeB?.name
         let bitA = contact.bodyA.categoryBitMask
         let bitB = contact.bodyB.categoryBitMask
-        print("---接触したノードは\(String(describing: nameA))と\(String(describing: nameB))です---")
+        //print("---接触したノードは\(String(describing: nameA))と\(String(describing: nameB))です---")
         
         if (bitA == 0b10000 || bitB == 0b10000) && (bitA == 0b1000 || bitB == 0b1000)
         {
-            print("---MeteorとattackShapeが接触しました---")
+            //print("---MeteorとattackShapeが接触しました---")
             attackMeteor()
         }
         else if (bitA == 0b100000 || bitB == 0b100000) && (bitA == 0b1000 || bitB == 0b1000)
         {
-            print("---MeteorとguardShapeが接触しました---")
+            //print("---MeteorとguardShapeが接触しました---")
             guardMeteor()
         }
         else if (bitA == 0b0010 || bitB == 0b0010) && (bitA == 0b1000 || bitB == 0b1000)
         {
-            print("---MeteorとGameOverが接触しました---")
+            //print("---MeteorとGameOverが接触しました---")
             gameOver()
         }
         else if (bitA == 0b0100 || bitB == 0b0100) && (bitA == 0b0001 || bitB == 0b0001)
         {
-            print("---Playerと地面が接触しました---")
-            self.jumping = false
-            self.falling = false
+            //print("---Playerと地面が接触しました---")
+            jumping = false
+            falling = false
             playSound(soundName: "tyakuti")
             self.playerSpeed = 0.0
             self.playerBaseNode.position.y = self.defaultYPosition
-            //煙を発生させる
-            let particle = SKEmitterNode(fileNamed: "smoke.sks")
-            //接触座標にパーティクルを放出するようにする。
-            particle!.position = CGPoint(x: playerBaseNode.position.x,
-                                         y: playerBaseNode.position.y)
-            //一定時間後にシーンから消すアクションを作成する。
-            let action1 = SKAction.wait(forDuration: 0.2)
-            let action2 = SKAction.removeFromParent()
-            let actionAll = SKAction.sequence([action1, action2])
-            //パーティクルをシーンに追加する。
-            self.addChild(particle!)
-            //アクションを実行する。
-            particle!.run(actionAll)
         }
         else if (bitA == 0b0100 || bitB == 0b0100) && (bitA == 0b1000 || bitB == 0b1000)
         {
-            print("---Playerとmeteorが接触しました---")
+            //print("---Playerとmeteorが接触しました---")
             meteorCollisionFlg = true;
         }
     }
 
     func didEnd(_ contact: SKPhysicsContact) {
-        print("------------didEndで衝突しました------------")
-        print("bodyA:\(contact.bodyA)")
-        print("bodyB:\(contact.bodyB)")
+        //print("------------didEndで衝突しました------------")
+        //print("bodyA:\(contact.bodyA)")
+        //print("bodyB:\(contact.bodyB)")
         return
     }
     
@@ -748,8 +797,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //MARK: 隕石落下
     func buildMeteor(size: Double, meteorString: String, meteorZ: Double){
-        firstBuildFlg = false
-        buildFlg = false
+        self.firstBuildFlg = false
+        self.buildFlg = false
         let texture = SKTexture(imageNamed: meteorString)
         let meteor = SKSpriteNode(texture: texture)
         meteor.zPosition = CGFloat(meteorZ)
@@ -770,7 +819,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         meteor.physicsBody?.contactTestBitMask = 0b0010 | 0b10000 | 0b100000 | 0b0100 //接触対象を各Shapeとプレイヤーに設定
         meteor.name = "meteor"//meteorString
         self.addChild(meteor)
-        print("---meteor\(meteorString)を生成しました---")
+        //print("---meteor\(meteorString)を生成しました---")
         self.meteores.append(meteor)
         if( debug ){    //デバッグ用
             //addBodyFrame(node: meteor)  //枠を表示
@@ -778,9 +827,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     func startButtonAction()
     {
-        gameFlg = true
+        self.gameFlg = true
         play()
         start0Node.zPosition = -15
+        /*
+        //メニュー背景を動かすアクションを作成する。
+        let action1 = SKAction.moveTo(y: -3000, duration: 1.0)
+        //アクションを実行する。
+        back_wall.run(action1)
+         */
         //playBgm(soundName: "bgmn")
     }
     
@@ -804,12 +859,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             meteorDouble = 70.0
             self.meteorSpeed = 0.0
             self.meteorGravityCoefficient = CGFloat(0.06 + 0.01 * Double(meteorInt))
-            print("--meteorGravityCoeffient\(meteorGravityCoefficient)--")
+            //print("--meteorGravityCoeffient\(meteorGravityCoefficient)--")
             for i in (0...meteorInt).reversed()
             {
                 meteorDouble -= 1.0
                 buildMeteor(size: Double(0.3 + (CGFloat(i) * meteorUpScale)),meteorString: meteorNames[0], meteorZ: meteorDouble)
-                    print("---meteorInt = \(i)です-----")
+                    //print("---meteorInt = \(i)です-----")
             }
         }
         else
@@ -824,20 +879,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let attackShape = SKShapeNode(rect: CGRect(x: 0.0 - self.player.size.width/2, y: 0.0 - self.player.size.height/2, width: self.player.size.width, height: self.player.size.height))
         attackShape.name = "attackShape"
         let physicsBody = SKPhysicsBody(rectangleOf: attackShape.frame.size)
-
-        if jumping == true
-        {
-            attackShape.position = CGPoint(x: 0, y: player.size.height)
-            print("---attackShapeをjumping位置に生成---")
-        } else if falling == true
-        {
-            attackShape.position = CGPoint(x: 0, y: player.size.height)
-            print("---attackShapeをfalling位置に生成---")
-        } else if (jumping == false && falling == false)
-        {
-            attackShape.position = CGPoint(x: 0, y:player.size.height)
-            print("---attackShapeをplayerと同位置に生成---")
-        }
+        attackShape.position = CGPoint(x: 0, y: player.size.height)
         attackShape.fillColor = UIColor.clear
         attackShape.zPosition = 7.0
         attackShape.physicsBody = physicsBody
@@ -853,25 +895,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func attackAction()
     {
-        if canMoveFlg == true
+        if gameoverFlg == true
         {
-        print("---アタックフラグをON---")
-        attackFlg = true
-        let names = ["attack01","attack02","player00"]
-        self.attackTextureAnimation(self.player, names: names)
-        playSound(soundName: "slash")
-        attackShapeMake()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
-            {
-                self.attackFlg = false
-                self.attackShapes[0].removeFromParent()
-                self.attackShapes.remove(at: 0)
-                print("---アタックフラグをOFF---")
-            }
+            return
         }
         else
         {
-            return
+            //print("---アタックフラグをON---")
+            self.attackFlg = true
+            let names = ["attack01","attack02","player00"]
+            self.attackTextureAnimation(self.player, names: names)
+            playSound(soundName: "slash")
+            attackShapeMake()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
+                {
+                    self.attackFlg = false
+                    self.attackShapes[0].removeFromParent()
+                    self.attackShapes.remove(at: 0)
+                    //print("---アタックフラグをOFF---")
+                }
         }
     }
     
@@ -879,7 +921,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     {
         if attackFlg == true
         {
-            print("---隕石を攻撃---")
+            //print("---隕石を攻撃---")
             if meteores.isEmpty == false
             {
                 attackShapes[0].physicsBody?.categoryBitMask = 0
@@ -900,10 +942,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.addChild(particle!)
                 //アクションを実行する。
                 particle!.run(actionAll)
-                print("---消すノードは\(meteores[0])です---")
+                //print("---消すノードは\(meteores[0])です---")
                 meteores.remove(at: 0)
                 UltraPower += 1
-                print("---UltraPowerは\(UltraPower)です---")
+                //print("---UltraPowerは\(UltraPower)です---")
                 //self.meteorGravityCoefficient -= 0.06                   //数が減るごとに隕石の速度を遅くする
                 //スコア
                 self.score += 1;
@@ -918,15 +960,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 playSound(soundName: "hakai")
                 //隕石と接触していたら速度を0にする
-                if( meteorCollisionFlg ){
-                    meteorCollisionFlg = false
+                if( meteorCollisionFlg )
+                {
+                    self.meteorCollisionFlg = false
                     playerSpeed = 0;
                 }
             }
             if meteores.isEmpty == true
             {
-                buildFlg = true
-                print("---meteoresが空だったのでビルドフラグON---")
+                self.buildFlg = true
+                //print("---meteoresが空だったのでビルドフラグON---")
             }
         }
     }
@@ -956,22 +999,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guardShape.physicsBody?.collisionBitMask = 0b0000      //接触対象をなしに設定
         guardShape.physicsBody?.contactTestBitMask = 0b1000    //接触対象をmeteorに設定
         self.playerBaseNode.addChild(guardShape)
-        print("---guardShapeを生成しました---")
+        //print("---guardShapeを生成しました---")
         self.guardShapes.append(guardShape)
     }
     
     func guardAction(endFlg: Bool)
     {
-        if (canMoveFlg == true && guardPower >= 0)
+        if gameoverFlg == true
         {
-            if( guardFlg == false ){ //ガード開始
-                print("---ガードフラグをON---")
-                guardFlg = true
+            return
+        }
+        else if (guardPower >= 0)
+        {
+            if( guardFlg == false )
+            {   //ガード開始
+                //print("---ガードフラグをON---")
+                self.guardFlg = true
                 let names = ["guard01","player00"]
                 self.guardTextureAnimation(self.player, names: names)
                 guardShapeMake()
             }
-            if( endFlg == true ){
+            if( endFlg == true )
+            {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
                 {
                     self.guardFlg = false
@@ -979,13 +1028,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         self.guardShapes[0].removeFromParent()
                         self.guardShapes.remove(at: 0)
                     }
-                    print("---ガードフラグをOFF---")
+                    //print("---ガードフラグをOFF---")
                 }
             }
-        }
-        else
-        {
-            return
         }
     }
 
@@ -993,7 +1038,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     {
         if (guardFlg == true)
         {
-            print("---隕石をガード---")
+            //print("---隕石をガード---")
             playSound(soundName: "bougyo")
             guardPower -= 1500
             for i in meteores
@@ -1007,22 +1052,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     self.playerBaseNode.position.y = meteorMinY - playerHalfSize - 1
                 }
                 self.meteorSpeed = self.meteorSpeedAtGuard       //上に持ちあげる
-                print("---隕石がガードされたモーションを実行---")
+                //print("---隕石がガードされたモーションを実行---")
                 self.combo = 0
                 self.comboLabel.text = String( self.combo )
             }
         }
         else
         {
-            print("---guardShapeとmeteorが衝突したけどフラグOFFでした---")
+            //print("---guardShapeとmeteorが衝突したけどフラグOFFでした---")
             return
         }
     }
     func gameOver()
     {
         if( !gameoverFlg ){ //既にGameOverの場合はなにもしない
-            gameoverFlg = true
-            canMoveFlg = false
+            self.gameoverFlg = true
             self.isPaused = true
             self.meteorTimer?.invalidate()
             //ハイスコア更新

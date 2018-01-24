@@ -16,7 +16,6 @@
 		54F6B1621C3CEFA000B1D569 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F6B15E1C3CEFA000B1D569 /* GameView.swift */; };
 		54F6B1631C3CEFA000B1D569 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F6B15F1C3CEFA000B1D569 /* GameViewController.swift */; };
 		A3B2A1852013036B004E6F75 /* MeteorBroken.sks in Resources */ = {isa = PBXBuildFile; fileRef = A3B2A1842013036B004E6F75 /* MeteorBroken.sks */; };
-		B669AF522014B8CF00F2595C /* smoke.sks in Resources */ = {isa = PBXBuildFile; fileRef = B669AF512014B8CF00F2595C /* smoke.sks */; };
 		B6B4877B1F66BA1A00E41389 /* slash.wav in Resources */ = {isa = PBXBuildFile; fileRef = B6B4877A1F66BA1A00E41389 /* slash.wav */; };
 		B6B4877F1F66BC0C00E41389 /* jump.wav in Resources */ = {isa = PBXBuildFile; fileRef = B6B4877E1F66BC0C00E41389 /* jump.wav */; };
 		B6B487811F66BDC400E41389 /* move.wav in Resources */ = {isa = PBXBuildFile; fileRef = B6B487801F66BDC400E41389 /* move.wav */; };
@@ -45,7 +44,6 @@
 		54F6B15E1C3CEFA000B1D569 /* GameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		54F6B15F1C3CEFA000B1D569 /* GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		A3B2A1842013036B004E6F75 /* MeteorBroken.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MeteorBroken.sks; sourceTree = "<group>"; };
-		B669AF512014B8CF00F2595C /* smoke.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = smoke.sks; sourceTree = "<group>"; };
 		B6B4877A1F66BA1A00E41389 /* slash.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = slash.wav; sourceTree = "<group>"; };
 		B6B4877E1F66BC0C00E41389 /* jump.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = jump.wav; sourceTree = "<group>"; };
 		B6B487801F66BDC400E41389 /* move.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = move.wav; sourceTree = "<group>"; };
@@ -103,7 +101,6 @@
 				B6ED2EC71F44115D00567728 /* TitleScene.sks */,
 				B6B4877E1F66BC0C00E41389 /* jump.wav */,
 				54F6B15F1C3CEFA000B1D569 /* GameViewController.swift */,
-				B669AF512014B8CF00F2595C /* smoke.sks */,
 				B6E5B0F1200A9B8200A68D1E /* shining_star.mp3 */,
 				B6B487801F66BDC400E41389 /* move.wav */,
 				B6B487861F66BF8900E41389 /* bougyo.wav */,
@@ -195,7 +192,6 @@
 				B6B487871F66BF8900E41389 /* bougyo.wav in Resources */,
 				54F6B1511C3CEEFF00B1D569 /* Main.storyboard in Resources */,
 				B6B487811F66BDC400E41389 /* move.wav in Resources */,
-				B669AF522014B8CF00F2595C /* smoke.sks in Resources */,
 				B6ED2EC81F44115D00567728 /* TitleScene.sks in Resources */,
 				B6E07F0D1F41CCEC007EB82F /* Assets.xcassets in Resources */,
 			);
