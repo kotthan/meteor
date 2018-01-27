@@ -495,6 +495,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: タッチ移動されたときに呼ばれる関数
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
     {
+        if( ultraAttackFlg == false ) //必殺技中は入力を受け付けない
+        {
         /*for touch: AnyObject in touches
         {
             let endedPos = touch.location(in: self)                          //タップを話した点を定義
@@ -538,6 +540,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 baseNode.addChild(touchPath)
             }
         }*/
+        }
     }
     
     //MARK: タッチアップされたときに呼ばれる関数
