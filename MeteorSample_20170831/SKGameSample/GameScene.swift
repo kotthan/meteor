@@ -101,6 +101,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var playerGravityCoefficient: CGFloat = 1                       //プレイヤーが受ける重力の影響を調整する係数
     var meteorSpeedAtGuard: CGFloat = 100                           //隕石が防御された時の速度
     var speedFromMeteorAtGuard : CGFloat = 350                      //隕石を防御した時にプレイヤーが受ける隕石の速度
+    var cameraMax : CGFloat = 1450                                  //カメラの上限
     
     //MARK: タッチ関係プロパティ
     var beganPos: CGPoint = CGPoint.zero
@@ -441,7 +442,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         if (jumping == true || falling == true) && (self.playerBaseNode.position.y + 200 > self.oneScreenSize.height/2)
         {
-            self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.playerBaseNode.position.y + 200 );
+            if( self.playerBaseNode.position.y < self.cameraMax ) //カメラの上限を超えない範囲で動かす
+            {
+                self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.playerBaseNode.position.y + 200 );
+            }
         }
         else
         {
