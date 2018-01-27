@@ -556,6 +556,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             for touch: AnyObject in touches
             {
                 let endPos = touch.location(in: self)
+                
+                let node:SKSpriteNode? = self.atPoint(endPos) as? SKSpriteNode;
+                //print("---タップを離したノード=\(String(describing: node?.name))---")
+                if node == ultraOkButton //必殺技ボタン
+                {
+                    ultraAttack()
+                    return
+                }
                 let cameraMoveY = ( (camera?.position.y)! -  beganPyPos )   //前回からのカメラの移動量を求める
                 beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
                 let xPos = beganPos.x - endPos.x
@@ -618,12 +626,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         touchPath.strokeColor = UIColor.white
                         print("---右スワイプ---")
                     }
-                }
-                let node:SKSpriteNode? = self.atPoint(endPos) as? SKSpriteNode;
-                //print("---タップを離したノード=\(String(describing: node?.name))---")
-                if node == ultraOkButton
-                {
-                    ultraAttack()
                 }
                 if( debug )
                 {
@@ -794,7 +796,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 ultraAttackJump()
                 break
             case .attacking:
-                ultraAttackState = .none
+                ultraAttackEnd()
                 break
             case .none:
                 //何もしない
@@ -954,8 +956,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //print("---隕石を攻撃---")
             if meteores.isEmpty == false
             {
-                attackShapes[0].physicsBody?.categoryBitMask = 0
-                attackShapes[0].physicsBody?.categoryBitMask = 0
+                if ultraAttackState == .none //必殺技のときは続けて攻撃するため
+                {
+                    attackShapes[0].physicsBody?.categoryBitMask = 0
+                    attackShapes[0].physicsBody?.categoryBitMask = 0
+                }
                 meteores[0].physicsBody?.categoryBitMask = 0
                 meteores[0].physicsBody?.contactTestBitMask = 0
                 meteores[0].removeFromParent()
@@ -1021,14 +1026,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else
         {
             ultraAttackState = .attacking
-            //攻撃Shapeを出す
             //大ジャンプ
             ultraAttackJump()
         }
         //ultraAttackフラグは地面に着いた時に落とす
     }
     func ultraAttackJump(){
+        //攻撃Shapeを出す
+        self.attackFlg = true
+        attackShapeMake()
         jumpingAction() //動作確認用
+    }
+    func ultraAttackEnd(){
+        self.attackFlg = false
+        //attackShapeを消す
+        self.attackShapes[0].removeFromParent()
+        self.attackShapes.remove(at: 0)
+        //フラグを落とす
+        ultraAttackState = .none
     }
     //MARK: 防御
     func guardShapeMake()
