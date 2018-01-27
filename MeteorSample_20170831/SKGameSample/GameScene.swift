@@ -1388,6 +1388,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func addParamSlider(){
         //デバッグ表示関連はすべてdebugViewに追加する
         debugView.frame.size = self.frame.size
+        debugView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         self.view!.addSubview(debugView)
         //
         params.append(&gravity)
@@ -1435,9 +1436,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                                      y: frame.maxY - btn.frame.size.height)
         btn.addTarget(self, action: #selector(self.setDefaultParam), for: .touchUpInside)
         debugView.addSubview(btn)
-        //スライダー表示、非表示ボタン
+        //　ポーズボタン
         let btn2 = UIButton(type: UIButtonType.roundedRect)
-        btn2.setTitle("Slider", for: .normal)
+        btn2.setTitle("Pause", for: .normal)
         btn2.sizeToFit()
         btn2.backgroundColor = UIColor.blue
         btn2.layer.position = CGPoint(x: frame.maxX - btn2.frame.size.width - 10,
@@ -1445,7 +1446,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         btn2.addTarget(self, action: #selector(self.sliderSwitchHidden), for: .touchUpInside)
         self.view!.addSubview(btn2)
         //デフォルト非表示
-        sliderSwitchHidden();
+        debugView.isHidden = true
     }
     //削除
     func removeParamSlider(){
@@ -1453,8 +1454,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     var sliderHidden: Bool = true
     @objc func sliderSwitchHidden( ){
-        debugView.isHidden = sliderHidden
         sliderHidden = !sliderHidden
+        debugView.isHidden = sliderHidden
+        self.view!.scene?.isPaused = !sliderHidden
     }
     @objc func setDefaultParam(){
         //調整用パラメータ
