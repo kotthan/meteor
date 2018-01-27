@@ -499,20 +499,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
         /*for touch: AnyObject in touches
         {
-            let endedPos = touch.location(in: self)                          //タップを話した点を定義
-            let cameraMoveY = ( (camera?.position.y)! -  self.beganPyPos )   //前回からのカメラの移動量を求める
-            self.beganPyPos = (camera?.position.y)!                          //次回計算時のために現在位置を覚える
-            self.beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
-            let xPos = beganPos.x - endedPos.x
-            let yPos = beganPos.y - endedPos.y
-            if( touchPath != nil )                                           //すでにタッチの軌跡が描かれていれば削除
-            {
-                touchPath.removeFromParent()
-            }
-            var points = [beganPos,endedPos]
-            touchPath = SKShapeNode(points: &points, count: points.count)   //デバッグ用に始点から現在地を線で結ぶ
-            if fabs(yPos) > fabs(xPos)
-            {
+                let endedPos = touch.location(in: self)                          //タップを話した点を定義
+                let cameraMoveY = ( (camera?.position.y)! -  self.beganPyPos )   //前回からのカメラの移動量を求める
+                self.beganPyPos = (camera?.position.y)!                          //次回計算時のために現在位置を覚える
+                self.beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
+                let xPos = beganPos.x - endedPos.x
+                let yPos = beganPos.y - endedPos.y
+                if( touchPath != nil )                                           //すでにタッチの軌跡が描かれていれば削除
+                {
+                    touchPath.removeFromParent()
+                }
+                var points = [beganPos,endedPos]
+                touchPath = SKShapeNode(points: &points, count: points.count)   //デバッグ用に始点から現在地を線で結ぶ
+                if fabs(yPos) > fabs(xPos)
+                {
                     if yPos > 0                                                 //下スワイプ
                     {
                         guardPower -= 100
@@ -523,9 +523,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     {
                         touchPath.strokeColor = UIColor.white
                     }
-            }
-            else
-            {
+                }
+                else
+                {
                     if xPos > 100                                             //左スワイプ
                     {
                         touchPath.strokeColor = UIColor.white
@@ -534,11 +534,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     {
                         touchPath.strokeColor = UIColor.white
                     }
-            }
-            if( debug )
-            {
-                baseNode.addChild(touchPath)
-            }
+                }
+                if( debug )
+                {
+                    baseNode.addChild(touchPath)
+                }
         }*/
         }
     }
@@ -550,25 +550,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
         for touch: AnyObject in touches
         {
-            let endPos = touch.location(in: self)
-            let cameraMoveY = ( (camera?.position.y)! -  beganPyPos )   //前回からのカメラの移動量を求める
-            beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
-            let xPos = beganPos.x - endPos.x
-            let floatYPos = beganPos.y - endPos.y
-            let yPos = round(floatYPos)
-            print("yPos : \(floatYPos),flooryPos : \(round(yPos))")
-            if( touchPath != nil )
-            { //すでにタッチの軌跡が描かれていれば削除
-                touchPath.removeFromParent()
-            }
-            var points = [beganPos,endPos]
-            touchPath = SKShapeNode(points: &points, count: points.count) //デバッグに始点から現在地を線で結ぶ
-            if gameoverFlg == true
-            {
-                return
-            }
-            else if (self.playerBaseNode.position.y > self.oneScreenSize.height/2)
-            {
+                let endPos = touch.location(in: self)
+                let cameraMoveY = ( (camera?.position.y)! -  beganPyPos )   //前回からのカメラの移動量を求める
+                beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
+                let xPos = beganPos.x - endPos.x
+                let floatYPos = beganPos.y - endPos.y
+                let yPos = round(floatYPos)
+                print("yPos : \(floatYPos),flooryPos : \(round(yPos))")
+                if( touchPath != nil )
+                { //すでにタッチの軌跡が描かれていれば削除
+                    touchPath.removeFromParent()
+                }
+                var points = [beganPos,endPos]
+                touchPath = SKShapeNode(points: &points, count: points.count) //デバッグに始点から現在地を線で結ぶ
+                if gameoverFlg == true
+                {
+                    return
+                }
+                else if (self.playerBaseNode.position.y > self.oneScreenSize.height/2)
+                {
                     if ( jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos) && (guardFlg == false)
                     {
                         attackAction()
@@ -581,9 +581,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         touchPath.strokeColor = UIColor.blue
                         print("---jump中にguardAction(),yPos=\(yPos)---")
                     }
-            }
-            else if (self.playerBaseNode.position.y < self.oneScreenSize.height/2)
-            {
+                }
+                else if (self.playerBaseNode.position.y < self.oneScreenSize.height/2)
+                {
                     if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos)) && (guardFlg == false)
                     {
                         attackAction()
@@ -613,17 +613,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         touchPath.strokeColor = UIColor.white
                         print("---右スワイプ---")
                     }
-            }
-            let node:SKSpriteNode? = self.atPoint(endPos) as? SKSpriteNode;
-            //print("---タップを離したノード=\(String(describing: node?.name))---")
-            if node == ultraOkButton
-            {
-                ultraAttack()
-            }
-            if( debug )
-            {
-                baseNode.addChild(touchPath)
-            }
+                }
+                let node:SKSpriteNode? = self.atPoint(endPos) as? SKSpriteNode;
+                //print("---タップを離したノード=\(String(describing: node?.name))---")
+                if node == ultraOkButton
+                {
+                    ultraAttack()
+                }
+                if( debug )
+                {
+                    baseNode.addChild(touchPath)
+                }
         }
         }
     }
