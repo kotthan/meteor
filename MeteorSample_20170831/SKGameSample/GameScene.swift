@@ -1352,6 +1352,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                                       y: frame.maxY - btn2.frame.size.height)
         btn2.addTarget(self, action: #selector(self.sliderSwitchHidden), for: .touchUpInside)
         self.view!.addSubview(btn2)
+        //デフォルト非表示
+        sliderSwitchHidden()
     }
     //削除
     func removeParamSlider(){
