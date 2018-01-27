@@ -794,6 +794,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 break
             case .attacking:
                 ultraAttackState = .none
+                break
+            case .none:
+                //何もしない
+                break
             }
         }
         else if (bitA == 0b0100 || bitB == 0b0100) && (bitA == 0b1000 || bitB == 0b1000)
