@@ -607,9 +607,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             let node:SKSpriteNode? = self.atPoint(endPos) as? SKSpriteNode;
             //print("---タップを離したノード=\(String(describing: node?.name))---")
-            if node == nil
+            if node == ultraOkButton
             {
-                return
+                ultraAttack()
             }
             if( debug )
             {
@@ -974,6 +974,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    //必殺技
+    func ultraAttack(){
+        print("!!!!!!!!!!ultraAttack!!!!!!!!!")
+    }
     //MARK: 防御
     func guardShapeMake()
     {
@@ -1353,7 +1357,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         btn2.addTarget(self, action: #selector(self.sliderSwitchHidden), for: .touchUpInside)
         self.view!.addSubview(btn2)
         //デフォルト非表示
-        sliderSwitchHidden()
+        sliderSwitchHidden();
     }
     //削除
     func removeParamSlider(){
