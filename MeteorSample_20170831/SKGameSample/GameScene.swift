@@ -977,6 +977,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //必殺技
     func ultraAttack(){
         print("!!!!!!!!!!ultraAttack!!!!!!!!!")
+        //ボタンを元に戻す
+        ultraButton.isHidden = false
+        ultraOkButton.isHidden = true
+        UltraPower = 0
     }
     //MARK: 防御
     func guardShapeMake()
