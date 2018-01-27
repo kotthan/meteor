@@ -1003,8 +1003,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             if meteores.isEmpty == true
             {
-                self.buildFlg = true
-                //print("---meteoresが空だったのでビルドフラグON---")
+                if ultraAttackState == .none //必殺技中は着地後に生成する
+                {
+                    self.buildFlg = true
+                    //print("---meteoresが空だったのでビルドフラグON---")
+                }
             }
         }
     }
@@ -1044,6 +1047,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.attackShapes.remove(at: 0)
         //フラグを落とす
         ultraAttackState = .none
+        if( meteores.isEmpty ){ //全て壊せているはずだが一応チェックする
+            //次のmeteores生成
+            self.buildFlg = true
+        }
     }
     //MARK: 防御
     func guardShapeMake()
