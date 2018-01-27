@@ -97,6 +97,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var meteorPos :CGFloat = 1320.0                                 //隕石の初期位置(1500.0)
     var meteorGravityCoefficient: CGFloat = 0.04                    //隕石が受ける重力の影響を調整する係数
     var pleyerJumpSpeed : CGFloat = 9.8 * 150 * 1.2                 //プレイヤーのジャンプ時の初速
+    var playerUltraAttackSpped : CGFloat = 9.8 * 150 * 2            //プレイヤーの必殺技ジャンプ時の初速
     var playerGravityCoefficient: CGFloat = 1                       //プレイヤーが受ける重力の影響を調整する係数
     var meteorSpeedAtGuard: CGFloat = 100                           //隕石が防御された時の速度
     var speedFromMeteorAtGuard : CGFloat = 350                      //隕石を防御した時にプレイヤーが受ける隕石の速度
@@ -1042,7 +1043,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //攻撃Shapeを出す
         self.attackFlg = true
         attackShapeMake()
-        jumpingAction() //動作確認用
+        //大ジャンプ
+        moving = false
+        jumping = true
+        playerSpeed = self.playerUltraAttackSpped
+        //サウンド
+        playSound(soundName: "jump")
     }
     func ultraAttackEnd(){
         self.attackFlg = false
