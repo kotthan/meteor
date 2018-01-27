@@ -979,7 +979,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 particle!.run(actionAll)
                 //print("---消すノードは\(meteores[0])です---")
                 meteores.remove(at: 0)
-                UltraPower += 1
                 //print("---UltraPowerは\(UltraPower)です---")
                 //self.meteorGravityCoefficient -= 0.06                   //数が減るごとに隕石の速度を遅くする
                 //スコア
@@ -988,10 +987,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 //コンボ
                 self.combo += 1;
                 self.comboLabel.text = String( self.combo )
-                if UltraPower >= 10
+                //必殺技
+                if( ultraAttackState == .none )
                 {
-                    ultraButton.isHidden = true
-                    ultraOkButton.isHidden = false
+                    UltraPower += 1
+                    if UltraPower >= 10
+                    {
+                        ultraButton.isHidden = true
+                        ultraOkButton.isHidden = false
+                    }
                 }
                 playSound(soundName: "hakai")
                 //隕石と接触していたら速度を0にする
