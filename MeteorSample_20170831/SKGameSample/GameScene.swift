@@ -1260,6 +1260,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func addParamSlider(){
         //デバッグ表示関連はすべてdebugViewに追加する
         debugView.frame.size = self.frame.size
+        debugView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         self.view!.addSubview(debugView)
         //
         params.append(&gravity)
