@@ -471,8 +471,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     {
         if( ultraAttackFlg == false ) //必殺技中は入力を受け付けない
         {
-        if let touch = touches.first as UITouch?
-        {
+            if let touch = touches.first as UITouch?
+            {
                 self.beganPos = touch.location(in: self)
                 self.beganPyPos = (camera?.position.y)!                     //カメラの移動量を計算するために覚えておく
                 if( touchPath != nil ){ //すでにタッチの軌跡が描かれていれば削除
@@ -488,7 +488,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 {
                     startButtonAction()
                 }
-        }
+            }
         }
     }
 
@@ -497,8 +497,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     {
         if( ultraAttackFlg == false ) //必殺技中は入力を受け付けない
         {
-        /*for touch: AnyObject in touches
-        {
+            /*for touch: AnyObject in touches
+            {
                 let endedPos = touch.location(in: self)                          //タップを話した点を定義
                 let cameraMoveY = ( (camera?.position.y)! -  self.beganPyPos )   //前回からのカメラの移動量を求める
                 self.beganPyPos = (camera?.position.y)!                          //次回計算時のために現在位置を覚える
@@ -539,7 +539,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 {
                     baseNode.addChild(touchPath)
                 }
-        }*/
+             }*/
         }
     }
     
@@ -548,8 +548,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     {
         if( ultraAttackFlg == false )
         {
-        for touch: AnyObject in touches
-        {
+            for touch: AnyObject in touches
+            {
                 let endPos = touch.location(in: self)
                 let cameraMoveY = ( (camera?.position.y)! -  beganPyPos )   //前回からのカメラの移動量を求める
                 beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
@@ -624,7 +624,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 {
                     baseNode.addChild(touchPath)
                 }
-        }
+            }
         }
     }
     //MARK: - 移動
