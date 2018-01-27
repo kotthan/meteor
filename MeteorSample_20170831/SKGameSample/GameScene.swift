@@ -64,6 +64,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gameFlg:Bool = false
     var meteorCollisionFlg = false
     var retryFlg = false                                            //リトライするときにそのままゲームスタートさせる
+    var ultraAttackFlg = false                                      //必殺技発動中フラグ
     
     //MARK: - プロパティ
 	//MARK: プレイヤーキャラプロパティ
@@ -468,6 +469,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: タッチダウンされたときに呼ばれる関数
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
     {
+        if( ultraAttackFlg == false ) //必殺技中は入力を受け付けない
+        {
         if let touch = touches.first as UITouch?
         {
             self.beganPos = touch.location(in: self)
@@ -485,6 +488,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
                 startButtonAction()
             }
+        }
         }
     }
 
@@ -539,6 +543,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: タッチアップされたときに呼ばれる関数
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
     {
+        if( ultraAttackFlg == false )
+        {
         for touch: AnyObject in touches
         {
             let endPos = touch.location(in: self)
@@ -615,6 +621,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
                 baseNode.addChild(touchPath)
             }
+        }
         }
     }
     //MARK: - 移動
@@ -770,6 +777,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             playSound(soundName: "tyakuti")
             self.playerSpeed = 0.0
             self.playerBaseNode.position.y = self.defaultYPosition
+            if( ultraAttackFlg == true ){ //必殺技終了
+                ultraAttackFlg = false
+            }
         }
         else if (bitA == 0b0100 || bitB == 0b0100) && (bitA == 0b1000 || bitB == 0b1000)
         {
@@ -981,6 +991,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ultraButton.isHidden = false
         ultraOkButton.isHidden = true
         UltraPower = 0
+        //入力を受け付けないようにフラグを立てる
+        ultraAttackFlg = true
+        //地面に戻る
+        //攻撃Shapeを出す
+        //大ジャンプ
+        jumpingAction() //動作確認用
+        //ultraAttackフラグは地面に着いた時に落とす
     }
     //MARK: 防御
     func guardShapeMake()
