@@ -473,21 +473,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
         if let touch = touches.first as UITouch?
         {
-            self.beganPos = touch.location(in: self)
-            self.beganPyPos = (camera?.position.y)!                     //カメラの移動量を計算するために覚えておく
-            if( touchPath != nil ){ //すでにタッチの軌跡が描かれていれば削除
-                touchPath.removeFromParent()
-            }
-            let node:SKSpriteNode? = self.atPoint(beganPos) as? SKSpriteNode;
-            //print("---タップをしたノード=\(String(describing: node?.name))---")
-            if node == nil
-            {
-                return
-            }
-            else if node?.name == "start0Node"
-            {
-                startButtonAction()
-            }
+                self.beganPos = touch.location(in: self)
+                self.beganPyPos = (camera?.position.y)!                     //カメラの移動量を計算するために覚えておく
+                if( touchPath != nil ){ //すでにタッチの軌跡が描かれていれば削除
+                    touchPath.removeFromParent()
+                }
+                let node:SKSpriteNode? = self.atPoint(beganPos) as? SKSpriteNode;
+                //print("---タップをしたノード=\(String(describing: node?.name))---")
+                if node == nil
+                {
+                    return
+                }
+                else if node?.name == "start0Node"
+                {
+                    startButtonAction()
+                }
         }
         }
     }
@@ -513,27 +513,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             touchPath = SKShapeNode(points: &points, count: points.count)   //デバッグ用に始点から現在地を線で結ぶ
             if fabs(yPos) > fabs(xPos)
             {
-                if yPos > 0                                                 //下スワイプ
-                {
-                    guardPower -= 100
-                    guardAction(endFlg: false)
-                    touchPath.strokeColor = UIColor.blue
-                }
-                else if yPos < 0                                           //上スワイプ
-                {
-                    touchPath.strokeColor = UIColor.white
-                }
+                    if yPos > 0                                                 //下スワイプ
+                    {
+                        guardPower -= 100
+                        guardAction(endFlg: false)
+                        touchPath.strokeColor = UIColor.blue
+                    }
+                    else if yPos < 0                                           //上スワイプ
+                    {
+                        touchPath.strokeColor = UIColor.white
+                    }
             }
             else
             {
-                if xPos > 100                                             //左スワイプ
-                {
-                    touchPath.strokeColor = UIColor.white
-                }
-                else if xPos < -100                                       //右スワイプ
-                {
-                    touchPath.strokeColor = UIColor.white
-                }
+                    if xPos > 100                                             //左スワイプ
+                    {
+                        touchPath.strokeColor = UIColor.white
+                    }
+                    else if xPos < -100                                       //右スワイプ
+                    {
+                        touchPath.strokeColor = UIColor.white
+                    }
             }
             if( debug )
             {
@@ -569,50 +569,50 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             else if (self.playerBaseNode.position.y > self.oneScreenSize.height/2)
             {
-                if ( jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos) && (guardFlg == false)
-                {
-                    attackAction()
-                    touchPath.strokeColor = UIColor.red
-                    //print("---jump中にattackAction(),yPos=\(yPos)---")
-                }
-                else if (jumping == true || falling == true) && (yPos > 10) || (guardFlg == true)
-                {
-                    guardAction(endFlg: true)
-                    touchPath.strokeColor = UIColor.blue
-                    print("---jump中にguardAction(),yPos=\(yPos)---")
-                }
+                    if ( jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos) && (guardFlg == false)
+                    {
+                        attackAction()
+                        touchPath.strokeColor = UIColor.red
+                        //print("---jump中にattackAction(),yPos=\(yPos)---")
+                    }
+                    else if (jumping == true || falling == true) && (yPos > 10) || (guardFlg == true)
+                    {
+                        guardAction(endFlg: true)
+                        touchPath.strokeColor = UIColor.blue
+                        print("---jump中にguardAction(),yPos=\(yPos)---")
+                    }
             }
             else if (self.playerBaseNode.position.y < self.oneScreenSize.height/2)
             {
-                if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos)) && (guardFlg == false)
-                {
-                    attackAction()
-                    touchPath.strokeColor = UIColor.red
-                    //print("---groundアタック---")
-                }
-                else if (yPos > 50) || (guardFlg == true)
-                {
-                    self.guardAction(endFlg: true)
-                    touchPath.strokeColor = UIColor.blue
-                    //print("---groundガード---")
-                }
-                else if yPos < -50
-                {
-                    self.jumpingAction()
-                    touchPath.strokeColor = UIColor.green
-                }
-                else if xPos > 50
-                {
-                    self.moveToLeft()
-                    touchPath.strokeColor = UIColor.white
-                    print("---左スワイプ---")
-                }
-                else if xPos < -50
-                {
-                    self.moveToRight()
-                    touchPath.strokeColor = UIColor.white
-                    print("---右スワイプ---")
-                }
+                    if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos)) && (guardFlg == false)
+                    {
+                        attackAction()
+                        touchPath.strokeColor = UIColor.red
+                        //print("---groundアタック---")
+                    }
+                    else if (yPos > 50) || (guardFlg == true)
+                    {
+                        self.guardAction(endFlg: true)
+                        touchPath.strokeColor = UIColor.blue
+                        //print("---groundガード---")
+                    }
+                    else if yPos < -50
+                    {
+                        self.jumpingAction()
+                        touchPath.strokeColor = UIColor.green
+                    }
+                    else if xPos > 50
+                    {
+                        self.moveToLeft()
+                        touchPath.strokeColor = UIColor.white
+                        print("---左スワイプ---")
+                    }
+                    else if xPos < -50
+                    {
+                        self.moveToRight()
+                        touchPath.strokeColor = UIColor.white
+                        print("---右スワイプ---")
+                    }
             }
             let node:SKSpriteNode? = self.atPoint(endPos) as? SKSpriteNode;
             //print("---タップを離したノード=\(String(describing: node?.name))---")
