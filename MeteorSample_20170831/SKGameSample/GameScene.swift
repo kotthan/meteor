@@ -791,6 +791,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
             case .landing:
                 ultraAttackState = .attacking
+                ultraAttackJump()
                 break
             case .attacking:
                 ultraAttackState = .none
@@ -1015,15 +1016,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if( jumping || falling ) //空中にいる場合
         {
             //地面に戻る
+            playerSpeed = -2000
         }
         else
         {
             ultraAttackState = .attacking
             //攻撃Shapeを出す
             //大ジャンプ
-            jumpingAction() //動作確認用
+            ultraAttackJump()
         }
         //ultraAttackフラグは地面に着いた時に落とす
+    }
+    func ultraAttackJump(){
+        jumpingAction() //動作確認用
     }
     //MARK: 防御
     func guardShapeMake()
