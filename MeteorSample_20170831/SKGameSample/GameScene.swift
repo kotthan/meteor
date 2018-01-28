@@ -479,6 +479,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: タッチダウンされたときに呼ばれる関数
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
     {
+        if( self.isPaused == true ){
+            return
+        }
         if( ultraAttackState == .none ) //必殺技中は入力を受け付けない
         {
             if let touch = touches.first as UITouch?
@@ -505,6 +508,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: タッチ移動されたときに呼ばれる関数
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
     {
+        if( self.isPaused == true ){
+            return
+        }
         if( ultraAttackState == .none ) //必殺技中は入力を受け付けない
         {
             /*for touch: AnyObject in touches
@@ -556,6 +562,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: タッチアップされたときに呼ばれる関数
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
     {
+        if( self.isPaused == true ){
+            return
+        }
         if( ultraAttackState == .none )
         {
             for touch: AnyObject in touches
