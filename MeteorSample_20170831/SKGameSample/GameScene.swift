@@ -852,7 +852,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: - 関数定義　自分で設定関係
     
     //MARK: 配列
-    var meteorNames: [String] = ["rect_001","250","350","450"]
+    var meteorNames: [String] = ["meteor_meteor_20180128","250","350","450"]
     var meteorInt: Int = 0
     var meteorDouble: Double = 70.0
     var meteores: [SKSpriteNode] = []
@@ -912,7 +912,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         else if firstBuildFlg == true
         {
-            buildMeteor(size: 0.3, meteorString: "rect_001", meteorZ: 70.0)
+            buildMeteor(size: 0.3, meteorString: "meteor_meteor_20180128", meteorZ: 70.0)
         }
         else if buildFlg == false
         {
@@ -1097,7 +1097,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: 防御
     func guardShapeMake()
     {
-        let guardShape = SKShapeNode(rect: CGRect(x: 0.0 - self.player.size.width/2, y: 0.0 - self.player.size.height/2, width: self.player.size.width, height: self.player.size.height))
+        let guardShape = SKShapeNode(rect: CGRect(x: 0.0 - self.player.size.width/2, y: 0.0 - self.player.size.height/2, width: self.player.size.width, height: self.player.size.height + 10))
         guardShape.name = "guardShape"
         let physicsBody = SKPhysicsBody(rectangleOf: guardShape.frame.size)
         if jumping == true
