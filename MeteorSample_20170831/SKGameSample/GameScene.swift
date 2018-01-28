@@ -346,6 +346,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         )
         self.highScoreLabel.zPosition = 4 //プレイヤーの後ろ
         self.baseNode.addChild(self.highScoreLabel) //背景に固定のつもりでbaseNodeに追加
+        // アプリがバックグラウンドから復帰した際に呼ぶ関数の登録
+        NotificationCenter.default.addObserver(self, selector: #selector(becomeActive(_:)), name: .UIApplicationDidBecomeActive, object: nil)
         
         if(debug)
         {
@@ -357,6 +359,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         setDefaultParam()
 	}
+    //アプリがバックグラウンドから復帰した際に呼ばれる関数
+    //起動時にも呼ばれる
+    @objc func becomeActive(_ notification: Notification) {
+        if( gameFlg == false )
+        {
+            //ゲームが始まっていなければなにもしない
+            return
+        }
+        isPaused = true
+        if( gameoverFlg == true || //ゲームオーバーの場合は画面を出さない
+            sliderHidden == false ) //バックグラウンド移行時にpauseボタンが押されていなかった
+        {
+            sliderSwitchHidden()
+        }
+    }
     
     //MARK: シーンのアップデート時に呼ばれる関数
     override func update(_ currentTime: TimeInterval)
