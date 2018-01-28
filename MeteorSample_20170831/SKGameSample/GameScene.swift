@@ -42,6 +42,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var ultraButtonString: String = "zan.png"
     var ultraButton: SKSpriteNode!
     var ultraOkButton: SKSpriteNode!
+    var pauseBtn: UIButton!                                         //ポーズボタン
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
 	let oneScreenSize = CGSize(width: 375, height: 667)             //１画面サイズ
@@ -891,6 +892,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func startButtonAction()
     {
         self.gameFlg = true
+        //self.pauseBtn.isHidden = false  //ポーズボタンを表示する
         play()
         start0Node.zPosition = -15
         /*
@@ -1187,6 +1189,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.gameoverFlg = true
             self.isPaused = true
             self.meteorTimer?.invalidate()
+            self.pauseBtn.isHidden = false  //ポーズボタンを非表示にする
             //ハイスコア更新
             print("------------score:\(self.score) high:\(self.highScore)------------")
             if( self.score > self.highScore ){
@@ -1470,7 +1473,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         btn2.layer.position = CGPoint(x: frame.maxX - btn2.frame.size.width - 10,
                                       y: frame.maxY - btn2.frame.size.height)
         btn2.addTarget(self, action: #selector(self.sliderSwitchHidden), for: .touchUpInside)
+        btn2.isHidden = true
         self.view!.addSubview(btn2)
+        pauseBtn = btn2
         //デフォルト非表示
         debugView.isHidden = true
     }
