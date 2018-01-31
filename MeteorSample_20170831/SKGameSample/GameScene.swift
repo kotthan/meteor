@@ -440,7 +440,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
         }
-        if (jumping == true || falling == true) && (self.playerBaseNode.position.y + 200 > self.oneScreenSize.height/2)
+        
+        if (gameFlg == false)
+        {
+            self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.start0Node.position.y)
+        }
+        else if (jumping == true || falling == true) && (self.playerBaseNode.position.y + 200 > self.oneScreenSize.height/2)
         {
             if( self.playerBaseNode.position.y < self.cameraMax ) //カメラの上限を超えない範囲で動かす
             {
@@ -864,9 +869,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     func startButtonAction()
     {
-        self.gameFlg = true
         play()
         start0Node.zPosition = -15
+        let action1 = SKAction.moveTo(y: self.player.position.y + 300, duration: 1)
+        camera?.run(action1)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1)
+        {
+            self.gameFlg = true
+        }
         /*
         //メニュー背景を動かすアクションを作成する。
         let action1 = SKAction.moveTo(y: -3000, duration: 1.0)
