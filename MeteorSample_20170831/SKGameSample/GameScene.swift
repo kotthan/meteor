@@ -71,6 +71,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case attacking  //攻撃中
     }
     var ultraAttackState = UAState.none                             //必殺技発動中フラグ
+    enum guardState{
+        case enable     //ガード可
+        case disable    //ガード不可
+        case broken     //破壊
+    }
+    var guardState = guardState.enable                              //ガードフラグ
     
     //MARK: - プロパティ
 	//MARK: プレイヤーキャラプロパティ
@@ -1161,6 +1167,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //print("---隕石をガード---")
             playSound(soundName: "bougyo")
             guardPower -= 1500
+            if( guardPower < 0 ){
+                
+            }
             for i in meteores
             {
                 i.removeAllActions()
