@@ -42,7 +42,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var ultraButtonString: String = "zan.png"
     var ultraButton: SKSpriteNode!
     var ultraOkButton: SKSpriteNode!
-    var pauseBtn: UIButton!                                         //ポーズボタン
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
 	let oneScreenSize = CGSize(width: 375, height: 667)             //１画面サイズ
@@ -71,12 +70,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case attacking  //攻撃中
     }
     var ultraAttackState = UAState.none                             //必殺技発動中フラグ
-    enum guardState{
-        case enable     //ガード可
-        case disable    //ガード不可
-        case broken     //破壊
-    }
-    var guardState = guardState.enable                              //ガードフラグ
     
     //MARK: - プロパティ
 	//MARK: プレイヤーキャラプロパティ
@@ -858,7 +851,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: - 関数定義　自分で設定関係
     
     //MARK: 配列
-    var meteorNames: [String] = ["meteor_meteor_20180128","250","350","450"]
+    var meteorNames: [String] = ["rect_001","250","350","450"]
     var meteorInt: Int = 0
     var meteorDouble: Double = 70.0
     var meteores: [SKSpriteNode] = []
@@ -898,7 +891,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func startButtonAction()
     {
         self.gameFlg = true
-        //self.pauseBtn.isHidden = false  //ポーズボタンを表示する
         play()
         start0Node.zPosition = -15
         /*
@@ -918,7 +910,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         else if firstBuildFlg == true
         {
-            buildMeteor(size: 0.3, meteorString: "meteor_meteor_20180128", meteorZ: 70.0)
+            buildMeteor(size: 0.3, meteorString: "rect_001", meteorZ: 70.0)
         }
         else if buildFlg == false
         {
@@ -1103,7 +1095,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: 防御
     func guardShapeMake()
     {
-        let guardShape = SKShapeNode(rect: CGRect(x: 0.0 - self.player.size.width/2, y: 0.0 - self.player.size.height/2, width: self.player.size.width, height: self.player.size.height + 10))
+        let guardShape = SKShapeNode(rect: CGRect(x: 0.0 - self.player.size.width/2, y: 0.0 - self.player.size.height/2, width: self.player.size.width, height: self.player.size.height))
         guardShape.name = "guardShape"
         let physicsBody = SKPhysicsBody(rectangleOf: guardShape.frame.size)
         if jumping == true
@@ -1167,9 +1159,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //print("---隕石をガード---")
             playSound(soundName: "bougyo")
             guardPower -= 1500
-            if( guardPower < 0 ){
-                
-            }
             for i in meteores
             {
                 i.removeAllActions()
@@ -1198,7 +1187,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.gameoverFlg = true
             self.isPaused = true
             self.meteorTimer?.invalidate()
-            self.pauseBtn.isHidden = false  //ポーズボタンを非表示にする
             //ハイスコア更新
             print("------------score:\(self.score) high:\(self.highScore)------------")
             if( self.score > self.highScore ){
@@ -1482,9 +1470,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         btn2.layer.position = CGPoint(x: frame.maxX - btn2.frame.size.width - 10,
                                       y: frame.maxY - btn2.frame.size.height)
         btn2.addTarget(self, action: #selector(self.sliderSwitchHidden), for: .touchUpInside)
-        btn2.isHidden = true
         self.view!.addSubview(btn2)
-        pauseBtn = btn2
         //デフォルト非表示
         debugView.isHidden = true
     }
