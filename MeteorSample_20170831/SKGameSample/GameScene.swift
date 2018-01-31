@@ -872,11 +872,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         play()
         start0Node.zPosition = -15
         let action1 = SKAction.moveTo(y: self.player.position.y + 300, duration: 1)
-        camera?.run(action1)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1)
-        {
+        let action2 = SKAction.run {
             self.gameFlg = true
         }
+        let actionAll = SKAction.sequence([action1,action2])
+        camera?.run(actionAll)
         /*
         //メニュー背景を動かすアクションを作成する。
         let action1 = SKAction.moveTo(y: -3000, duration: 1.0)
