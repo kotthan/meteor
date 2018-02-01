@@ -1360,20 +1360,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                       "ガード時の隕石速度",
                       "ガード時のプレイヤー速度"]
     var params = [UnsafeMutablePointer<CGFloat>]()
-    let paramMin:[Float] = [0,      //gravity
-                            0,      //meteorPos
-                            0,      //meteorGravityCoefficient
-                            0,      //pleyerJumpSpeed
-                            0,      //playerGravityCoefficient
-                            0,      //meteorSpeedAtGuard
-                            0]      //speedFromMeteorOnGuard
-    let paramMax:[Float] = [1000,   //gravity
+    let paramMin:[Float] = [0,       //gravity
+                            0,       //meteorPos
+                            0,       //meteorGravityCoefficient
+                            0,       //pleyerJumpSpeed
+                            0,       //playerGravityCoefficient
+                            0,       //meteorSpeedAtGuard
+                            0]       //speedFromMeteorOnGuard
+    let paramMax:[Float] = [1000,    //gravity
                             5000,    //meteorPos
-                            100,   //meteorGravityCoefficient
-                            2000,   //pleyerJumpSpeed
-                            100,   //playerGravityCoefficient
-                            1000,     //meteorSpeedAtGuard
-                            1000]   //speedFromMeteorOnGuard
+                            100,     //meteorGravityCoefficient
+                            2000,    //pleyerJumpSpeed
+                            100,     //playerGravityCoefficient
+                            1000,    //meteorSpeedAtGuard
+                            1000]    //speedFromMeteorOnGuard
     let paramTrans = [ {(a: Float) -> CGFloat in return -CGFloat(Int(a)) },
                        {(a: Float) -> CGFloat in return CGFloat(Int(a)) },
                        {(a: Float) -> CGFloat in return CGFloat(Int(a)) / 100 },
@@ -1470,13 +1470,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     @objc func setDefaultParam(){
         //調整用パラメータ
-        gravity = -900               //重力 9.8 [m/s^2] * 150 [pixels/m]
-        meteorPos = 1500                  //隕石の初期位置(1500)
-        meteorGravityCoefficient = 0.06      //隕石が受ける重力の影響を調整する係数
-        pleyerJumpSpeed = 1500   //プレイヤーのジャンプ時の初速
-        playerGravityCoefficient = 1        //隕石が受ける重力の影響を調整する係数
-        meteorSpeedAtGuard = 100            //隕石が防御された時の速度
-        speedFromMeteorAtGuard = -500        //隕石を防御した時にプレイヤーの速度
+        gravity = -900                               //重力 9.8 [m/s^2] * 150 [pixels/m]
+        meteorPos = 2400                             //隕石の初期位置
+        meteorGravityCoefficient = 0.06              //隕石が受ける重力の影響を調整する係数
+        pleyerJumpSpeed = 1500                       //プレイヤーのジャンプ時の初速
+        playerGravityCoefficient = 1                 //隕石が受ける重力の影響を調整する係数
+        meteorSpeedAtGuard = 100                     //隕石が防御された時の速度
+        speedFromMeteorAtGuard = -500                //隕石を防御した時にプレイヤーの速度
         var ix = 0
         for slider in paramSliders {
             slider.setValue( paramInv[ix](params[ix].pointee), animated: true)  // デフォルト値の設定
