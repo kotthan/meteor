@@ -762,6 +762,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             playSound(soundName: "jump")
         }
     }
+    //MARK: - 着地
+    func landingAction() {
+        let base = SKNode()
+        //ほこりっぽいパーティクル
+        let particleR = SKEmitterNode(fileNamed: "Landing.sks")
+        particleR!.position = CGPoint(x: playerBaseNode.position.x + player.size.width/4,
+                                     y: playerBaseNode.position.y - player.size.height/2 )
+        let particleL = SKEmitterNode(fileNamed: "Landing.sks")
+        particleL!.position = CGPoint(x: playerBaseNode.position.x - player.size.width/4,
+                                      y: playerBaseNode.position.y - player.size.height/2 )
+        particleL?.emissionAngle = 160
+        particleL?.xAcceleration *= -1
+        //0.5秒後にシーンから消すアクションを作成する。
+        let action1 = SKAction.wait(forDuration: 0.5)
+        let action2 = SKAction.removeFromParent()
+        let actionAll = SKAction.sequence([action1, action2])
+        //パーティクルをシーンに追加する。
+        base.addChild(particleR!)
+        base.addChild(particleL!)
+        self.addChild(base)
+        base.run(actionAll)
+    }
     
     //MARK: - 関数定義　接触判定
     func didBegin(_ contact: SKPhysicsContact) {
@@ -797,6 +819,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             jumping = false
             falling = false
             playSound(soundName: "tyakuti")
+            landingAction()
             self.playerSpeed = 0.0
             self.playerBaseNode.position.y = self.defaultYPosition
             switch ( ultraAttackState )
