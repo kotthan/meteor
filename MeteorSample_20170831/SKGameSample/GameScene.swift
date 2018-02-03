@@ -767,12 +767,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let base = SKNode()
         //ほこりっぽいパーティクル
         let particleR = SKEmitterNode(fileNamed: "Landing.sks")
-        particleR!.position = CGPoint(x: playerBaseNode.position.x + player.size.width/4,
-                                     y: playerBaseNode.position.y - player.size.height/2 )
+        particleR!.position = CGPoint(x: playerBaseNode.position.x,// + player.size.width/4,
+                                     y: playerBaseNode.position.y - player.size.height/4 )
         let particleL = SKEmitterNode(fileNamed: "Landing.sks")
-        particleL!.position = CGPoint(x: playerBaseNode.position.x - player.size.width/4,
-                                      y: playerBaseNode.position.y - player.size.height/2 )
-        particleL?.emissionAngle = 160
+        particleL!.position = CGPoint(x: playerBaseNode.position.x,// - player.size.width/4,
+                                      y: playerBaseNode.position.y - player.size.height/4 )
+        particleL?.emissionAngle = CGFloat.pi - particleR!.emissionAngle
         particleL?.xAcceleration *= -1
         //0.5秒後にシーンから消すアクションを作成する。
         let action1 = SKAction.wait(forDuration: 0.5)
