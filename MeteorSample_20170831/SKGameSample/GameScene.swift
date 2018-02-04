@@ -878,6 +878,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         let actionAll = SKAction.sequence([action1,action2])
         camera?.run(actionAll)
+        pauseButton.isHidden = false //ポーズボタンを表示する
         /*
         //メニュー背景を動かすアクションを作成する。
         let action1 = SKAction.moveTo(y: -3000, duration: 1.0)
@@ -1172,6 +1173,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.gameoverFlg = true
             self.isPaused = true
             self.meteorTimer?.invalidate()
+            pauseButton.isHidden = true//ポーズボタンを非表示にする
             //ハイスコア更新
             print("------------score:\(self.score) high:\(self.highScore)------------")
             if( self.score > self.highScore ){
@@ -1456,6 +1458,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pauseButton.layer.position = CGPoint(x: frame.maxX - pauseButton.frame.size.width - 10,
                                       y: frame.maxY - pauseButton.frame.size.height)
         pauseButton.addTarget(self, action: #selector(self.sliderSwitchHidden), for: .touchUpInside)
+        pauseButton.isHidden = true     //タイトル画面では非表示
         self.view!.addSubview(pauseButton)
         //デフォルト非表示
         debugView.isHidden = true
