@@ -319,10 +319,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.start0Node = start0Node
                 self.baseNode.addChild(start0Node)
             })
-            if( retryFlg )
-            { //リトライ時はそのままスタートする
-                startButtonAction()
-            }
 		}
         
         //===================
@@ -357,6 +353,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             playerBaseNode.addChild( playerBaseShape )
         }
         setDefaultParam()
+        if( retryFlg )
+        { //リトライ時はそのままスタートする
+            startButtonAction()
+        }
 	}
     
     //MARK: シーンのアップデート時に呼ばれる関数
