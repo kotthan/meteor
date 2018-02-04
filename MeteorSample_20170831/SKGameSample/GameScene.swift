@@ -1472,8 +1472,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pauseButton.setImage(UIImage(named:"pause"), for: .normal)
         pauseButton.imageView?.contentMode = UIViewContentMode.scaleAspectFit  //上記サイズに画像を合わせる
         pauseButton.backgroundColor = UIColor.clear    //背景は透明
-        pauseButton.layer.position = CGPoint(x: frame.maxX - pauseButton.frame.size.width - 10,
-                                      y: frame.maxY - pauseButton.frame.size.height)
+        pauseButton.layer.anchorPoint = CGPoint(x: 1, y: 0)//右上
+        pauseButton.layer.position = CGPoint(x: frame.maxX - 10, y: 25)
         pauseButton.addTarget(self, action: #selector(self.sliderSwitchHidden), for: .touchUpInside)
         pauseButton.isHidden = true     //タイトル画面では非表示
         self.view!.addSubview(pauseButton)
