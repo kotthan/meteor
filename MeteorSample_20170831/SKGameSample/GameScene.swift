@@ -872,12 +872,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     {
         play()
         start0Node.zPosition = -15
-        let action1 = SKAction.moveTo(y: self.player.position.y + 300, duration: 1)
-        let action2 = SKAction.run {
-            self.gameFlg = true
+        if( retryFlg == false ){
+            //リトライ時はカメラ動かさない
+            let action1 = SKAction.moveTo(y: self.player.position.y + 300, duration: 1)
+            let action2 = SKAction.run {
+                self.gameFlg = true
+            }
+            let actionAll = SKAction.sequence([action1,action2])
+            camera?.run(actionAll)
         }
-        let actionAll = SKAction.sequence([action1,action2])
-        camera?.run(actionAll)
+        else{
+            gameFlg = true
+        }
         pauseButton.isHidden = false //ポーズボタンを表示する
         /*
         //メニュー背景を動かすアクションを作成する。
