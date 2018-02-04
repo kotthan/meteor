@@ -1198,24 +1198,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                                                   width: self.view!.frame.size.width * 0.9,
                                                   height: self.view!.frame.size.height * 0.9))
         backGroundView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        var buttonX:CGFloat = 10    //左端の余白
+        var buttonY = backGroundView.frame.size.height - 10    //下端の余白
         //Titleボタン
-        let newGameBtn = UIButton(type: UIButtonType.custom)
-        newGameBtn.frame = CGRect(x: 0, y: 0, width: 75, height: 75) //ボタンのサイズをここで決めている
-        newGameBtn.setImage(UIImage(named:"home"), for: .normal)
-        newGameBtn.imageView?.contentMode = UIViewContentMode.scaleAspectFit  //上記サイズに画像を合わせる
-        newGameBtn.backgroundColor = UIColor.clear    //背景は透明
-        newGameBtn.layer.position = CGPoint(x: newGameBtn.frame.size.width,
-                                     y: backGroundView.frame.size.height - newGameBtn.frame.size.height)
+        let newGameBtn = buttonIcon(image:"home", color:UIColor(red: 0.1, green: 0.8, blue: 0.6, alpha: 1))
+        newGameBtn.layer.position = CGPoint(x: buttonX, y: buttonY )
         newGameBtn.addTarget(self, action: #selector(self.newGameButtonAction), for: .touchUpInside)
         backGroundView.addSubview(newGameBtn)
+        buttonX += newGameBtn.frame.size.width + 10
         //Retryボタン
-        let retryBtn = UIButton(type: UIButtonType.custom)
-        retryBtn.frame = CGRect(x: 0, y: 0, width: 75, height: 75) //ボタンのサイズをここで決めている
-        retryBtn.setImage(UIImage(named:"restart"), for: .normal)
-        retryBtn.imageView?.contentMode = UIViewContentMode.scaleAspectFit  //上記サイズに画像を合わせる
-        retryBtn.backgroundColor = UIColor.clear    //背景は透明
-        retryBtn.layer.position = CGPoint(x: newGameBtn.frame.size.width + retryBtn.frame.size.width,
-                                            y: backGroundView.frame.size.height - retryBtn.frame.size.height)
+        let retryBtn = buttonIcon(image: "restart", color: UIColor(red: 0.2, green: 0.6, blue: 0.8, alpha: 1))
+        retryBtn.layer.position = CGPoint(x: buttonX, y: buttonY)
         retryBtn.addTarget(self, action: #selector(self.retryButtonAction), for: .touchUpInside)
         backGroundView.addSubview(retryBtn)
         //スコアラベル
@@ -1235,6 +1228,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         highScoreLabel.layer.position.x = backGroundView.frame.size.width/2
         backGroundView.addSubview(highScoreLabel)
         self.view!.addSubview(backGroundView)
+    }
+    
+    //ボタンの見た目を揃えるための関数
+    func buttonIcon(image:String,color:UIColor) -> UIButton{
+        let btn = UIButton(type: UIButtonType.roundedRect)              //角丸四角のボタンをつくる
+        btn.frame = CGRect(x: 0, y: 0, width: 75, height: 75)           //ボタンのサイズ
+        btn.setImage(UIImage(named:image), for: .normal)                //画像
+        btn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)          //余白
+        btn.imageView?.contentMode = UIViewContentMode.scaleAspectFit   //ボタンのサイズに画像を合わせる
+        btn.backgroundColor = color                                     //背景色
+        btn.tintColor = UIColor.white                                   //画像の色
+        btn.layer.cornerRadius = 10.0                                   //角の丸み
+        //btn.layer.borderColor = UIColor.white.cgColor                   //枠線の色
+        //btn.layer.borderWidth = 5                                       //枠線の太さ
+        btn.layer.anchorPoint = CGPoint(x: 0, y: 1)                     //アンカーポイントを左下にする
+        return btn
     }
     
     @objc func newGameButtonAction(_ sender: UIButton ){
