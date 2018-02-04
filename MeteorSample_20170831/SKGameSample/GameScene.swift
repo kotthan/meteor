@@ -1447,10 +1447,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         btn.addTarget(self, action: #selector(self.setDefaultParam), for: .touchUpInside)
         debugView.addSubview(btn)
         //　ポーズボタン
-        let btn2 = UIButton(type: UIButtonType.roundedRect)
-        btn2.setTitle("Pause", for: .normal)
-        btn2.sizeToFit()
-        btn2.backgroundColor = UIColor.blue
+        let btn2 = UIButton( type: UIButtonType.custom )
+        btn2.frame = CGRect(x: 0, y: 0, width: 50, height: 50) //ボタンのサイズをここで決めている
+        btn2.setImage(UIImage(named:"pause"), for: .normal)
+        btn2.imageView?.contentMode = UIViewContentMode.scaleAspectFit  //上記サイズに画像を合わせる
+        btn2.backgroundColor = UIColor.clear    //背景は透明
         btn2.layer.position = CGPoint(x: frame.maxX - btn2.frame.size.width - 10,
                                       y: frame.maxY - btn2.frame.size.height)
         btn2.addTarget(self, action: #selector(self.sliderSwitchHidden), for: .touchUpInside)
