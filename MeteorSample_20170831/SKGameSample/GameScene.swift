@@ -1209,10 +1209,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         newGameBtn.addTarget(self, action: #selector(self.newGameButtonAction), for: .touchUpInside)
         backGroundView.addSubview(newGameBtn)
         //Retryボタン
-        let retryBtn = UIButton(type: UIButtonType.roundedRect)
-        retryBtn.setTitle("Rerty", for: .normal)
-        retryBtn.sizeToFit()
-        retryBtn.backgroundColor = UIColor.blue
+        let retryBtn = UIButton(type: UIButtonType.custom)
+        retryBtn.frame = CGRect(x: 0, y: 0, width: 75, height: 75) //ボタンのサイズをここで決めている
+        retryBtn.setImage(UIImage(named:"restart"), for: .normal)
+        retryBtn.imageView?.contentMode = UIViewContentMode.scaleAspectFit  //上記サイズに画像を合わせる
+        retryBtn.backgroundColor = UIColor.clear    //背景は透明
         retryBtn.layer.position = CGPoint(x: newGameBtn.frame.size.width + retryBtn.frame.size.width,
                                             y: backGroundView.frame.size.height - retryBtn.frame.size.height)
         retryBtn.addTarget(self, action: #selector(self.retryButtonAction), for: .touchUpInside)
