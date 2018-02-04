@@ -1199,10 +1199,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                                                   height: self.view!.frame.size.height * 0.9))
         backGroundView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         //Titleボタン
-        let newGameBtn = UIButton(type: UIButtonType.roundedRect)
-        newGameBtn.setTitle("Title", for: .normal)
-        newGameBtn.sizeToFit()
-        newGameBtn.backgroundColor = UIColor.blue
+        let newGameBtn = UIButton(type: UIButtonType.custom)
+        newGameBtn.frame = CGRect(x: 0, y: 0, width: 75, height: 75) //ボタンのサイズをここで決めている
+        newGameBtn.setImage(UIImage(named:"home"), for: .normal)
+        newGameBtn.imageView?.contentMode = UIViewContentMode.scaleAspectFit  //上記サイズに画像を合わせる
+        newGameBtn.backgroundColor = UIColor.clear    //背景は透明
         newGameBtn.layer.position = CGPoint(x: newGameBtn.frame.size.width,
                                      y: backGroundView.frame.size.height - newGameBtn.frame.size.height)
         newGameBtn.addTarget(self, action: #selector(self.newGameButtonAction), for: .touchUpInside)
