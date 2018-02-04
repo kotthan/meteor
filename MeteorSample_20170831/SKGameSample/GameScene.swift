@@ -42,6 +42,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var ultraButtonString: String = "zan.png"
     var ultraButton: SKSpriteNode!
     var ultraOkButton: SKSpriteNode!
+    var pauseButton: UIButton!                                      //ポーズボタン
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
 	let oneScreenSize = CGSize(width: 375, height: 667)             //１画面サイズ
@@ -1447,15 +1448,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         btn.addTarget(self, action: #selector(self.setDefaultParam), for: .touchUpInside)
         debugView.addSubview(btn)
         //　ポーズボタン
-        let btn2 = UIButton( type: UIButtonType.custom )
-        btn2.frame = CGRect(x: 0, y: 0, width: 50, height: 50) //ボタンのサイズをここで決めている
-        btn2.setImage(UIImage(named:"pause"), for: .normal)
-        btn2.imageView?.contentMode = UIViewContentMode.scaleAspectFit  //上記サイズに画像を合わせる
-        btn2.backgroundColor = UIColor.clear    //背景は透明
-        btn2.layer.position = CGPoint(x: frame.maxX - btn2.frame.size.width - 10,
-                                      y: frame.maxY - btn2.frame.size.height)
-        btn2.addTarget(self, action: #selector(self.sliderSwitchHidden), for: .touchUpInside)
-        self.view!.addSubview(btn2)
+        pauseButton = UIButton( type: UIButtonType.custom )
+        pauseButton.frame = CGRect(x: 0, y: 0, width: 50, height: 50) //ボタンのサイズをここで決めている
+        pauseButton.setImage(UIImage(named:"pause"), for: .normal)
+        pauseButton.imageView?.contentMode = UIViewContentMode.scaleAspectFit  //上記サイズに画像を合わせる
+        pauseButton.backgroundColor = UIColor.clear    //背景は透明
+        pauseButton.layer.position = CGPoint(x: frame.maxX - pauseButton.frame.size.width - 10,
+                                      y: frame.maxY - pauseButton.frame.size.height)
+        pauseButton.addTarget(self, action: #selector(self.sliderSwitchHidden), for: .touchUpInside)
+        self.view!.addSubview(pauseButton)
         //デフォルト非表示
         debugView.isHidden = true
     }
@@ -1468,6 +1469,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         sliderHidden = !sliderHidden
         debugView.isHidden = sliderHidden
         self.view!.scene?.isPaused = !sliderHidden
+        if( sliderHidden == true )
+        {
+            pauseButton.setImage(UIImage(named:"pause"), for: .normal)
+        }
+        else
+        {
+            pauseButton.setImage(UIImage(named:"restart"), for: .normal)
+        }
     }
     @objc func setDefaultParam(){
         //調整用パラメータ
