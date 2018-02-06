@@ -1156,6 +1156,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //print("---隕石をガード---")
             playSound(soundName: "bougyo")
             guardPower -= 1500
+            //ガードシェイプ削除
+            if( !self.guardShapes.isEmpty ){
+                self.guardShapes[0].removeFromParent()
+                self.guardShapes.remove(at: 0)
+            }
             for i in meteores
             {
                 i.removeAllActions()
