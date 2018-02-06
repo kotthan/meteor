@@ -53,7 +53,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: フラグ
     var gameoverFlg : Bool = false                                  //ゲームオーバーフラグ
     var attackFlg : Bool = false                                    //攻撃フラグ
-    var guardFlg : Bool = false                                     //ガードフラグ
     enum guardState{    //ガード状態
         case enable     //ガード可
         case disable    //ガード不可
@@ -599,13 +598,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 else if (self.playerBaseNode.position.y > self.oneScreenSize.height/2)
                 {
-                    if ( jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos) && (guardFlg == false)
+                    if ( jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos) && (guardStatus != .guarding)
                     {
                         attackAction()
                         touchPath.strokeColor = UIColor.red
                         //print("---jump中にattackAction(),yPos=\(yPos)---")
                     }
-                    else if (jumping == true || falling == true) && (yPos > 10) || (guardFlg == true)
+                    else if (jumping == true || falling == true) && (yPos > 10) || (guardStatus == .guarding)
                     {
                         guardAction(endFlg: true)
                         touchPath.strokeColor = UIColor.blue
@@ -614,13 +613,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 else if (self.playerBaseNode.position.y < self.oneScreenSize.height/2)
                 {
-                    if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos)) && (guardFlg == false)
+                    if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos)) && (guardStatus != .guarding)
                     {
                         attackAction()
                         touchPath.strokeColor = UIColor.red
                         //print("---groundアタック---")
                     }
-                    else if (yPos > 50) || (guardFlg == true)
+                    else if (yPos > 50) || (guardStatus == .guarding)
                     {
                         self.guardAction(endFlg: true)
                         touchPath.strokeColor = UIColor.blue
@@ -1127,10 +1126,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         else if (guardPower >= 0)
         {
-            if( guardFlg == false )
+            if( guardStatus != .guarding )
             {   //ガード開始
                 //print("---ガードフラグをON---")
-                self.guardFlg = true
+                self.guardStatus = .guarding
                 let names = ["guard01","player00"]
                 self.guardTextureAnimation(self.player, names: names)
                 guardShapeMake()
@@ -1139,7 +1138,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
                 {
-                    self.guardFlg = false
+                    self.guardStatus = .enable
                     if( !self.guardShapes.isEmpty ){
                         self.guardShapes[0].removeFromParent()
                         self.guardShapes.remove(at: 0)
@@ -1152,7 +1151,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     func guardMeteor()
     {
-        if (guardFlg == true)
+        if (guardStatus == .guarding)
         {
             //print("---隕石をガード---")
             playSound(soundName: "bougyo")
