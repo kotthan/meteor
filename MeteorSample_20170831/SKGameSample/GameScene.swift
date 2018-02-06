@@ -54,6 +54,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gameoverFlg : Bool = false                                  //ゲームオーバーフラグ
     var attackFlg : Bool = false                                    //攻撃フラグ
     var guardFlg : Bool = false                                     //ガードフラグ
+    enum guardState{    //ガード状態
+        case enable     //ガード可
+        case disable    //ガード不可
+        case guarding   //ガード中
+    }
+    var guardStatus = guardState.enable                             //ガード状態
     var moving: Bool = false                                        //移動中フラグ
     var jumping: Bool = false                                       //ジャンプ中フラグ
     var falling: Bool = false                                       //落下中フラグ
