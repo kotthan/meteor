@@ -477,7 +477,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         else if guardPower <= 4500
         {
-            guardPower += 50
+            guardPower += 10
         }
         guardGage.yScale = CGFloat(guardPower / 1000)
         
@@ -1156,6 +1156,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //print("---隕石をガード---")
             playSound(soundName: "bougyo")
             guardPower -= 1500
+            if( guardPower < 0 ){
+                print( "guardBroken!!" )
+                guardStatus = .disable
+            }
             //ガードシェイプ削除
             if( !self.guardShapes.isEmpty ){
                 self.guardShapes[0].removeFromParent()
