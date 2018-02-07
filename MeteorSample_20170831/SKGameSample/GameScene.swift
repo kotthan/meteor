@@ -39,9 +39,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var combo = 0                                                   //スコア
     let highScoreLabel = SKLabelNode()                              //ハイスコア表示ラベル
     var highScore = 0                                               //ハイスコア
-    var ultraButtonString: String = "zan.png"
     var ultraButton: SKSpriteNode!
     var ultraOkButton: SKSpriteNode!
+    var pauseButton: UIButton!                                      //ポーズボタン
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
 	let oneScreenSize = CGSize(width: 375, height: 667)             //１画面サイズ
@@ -258,7 +258,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     self.baseNode.addChild(titleLogo)
                     //print("---SKSファイルより背景＝\(titleLogo)を読み込みました---")
             })
-
             //===================
             //MARK: スコア
             //===================
@@ -280,20 +279,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //===================
             //MARK: 必殺技ボタン
             //===================
-            ultraButton = SKSpriteNode(imageNamed: ultraButtonString)
-            self.ultraButton.position = CGPoint(                 //表示位置をplayerのサイズ分左に
-                x: -self.player.size.width,
-                y: 0
+            ultraButton = SKSpriteNode(imageNamed: "UltraButtun")
+            self.ultraButton.position = CGPoint(                          //表示位置をplayerのサイズ分左に
+                x: 0,
+                y: +self.player.size.height / 2
             )
-            self.playerBaseNode.addChild(self.ultraButton)               //playerにaddchiledすることでplayerに追従させる
-            
-            ultraOkButton = SKSpriteNode(imageNamed: "renzan.png")
-            self.ultraOkButton.position = CGPoint(                 //表示位置をplayerのサイズ分左上に
-                x: -self.player.size.width,
-                y: 0
+            self.ultraButton.xScale = 1 / 18
+            self.ultraButton.yScale = 1 / 18
+            self.ultraButton.zPosition = 2
+            self.playerBaseNode.addChild(self.ultraButton)               //playerにaddchiledすることでplayerに追従
+            ultraOkButton = SKSpriteNode(imageNamed: "UltaraOkButtun")
+            self.ultraOkButton.position = CGPoint(                       //表示位置をplayerのサイズ分左上に
+                x: 0,
+                y: +self.player.size.height / 2
             )
+            self.ultraOkButton.xScale = 1 / 18
+            self.ultraOkButton.yScale = 1 / 18
+            self.ultraOkButton.zPosition = 2
             ultraOkButton.removeFromParent()
-            self.playerBaseNode.addChild(self.ultraOkButton)               //playerにaddchiledすることでplayerに追従させる
+            self.playerBaseNode.addChild(self.ultraOkButton)             //playerにaddchiledすることでplayerに追従させる
             self.ultraOkButton.isHidden = true
             
             //===================
@@ -318,10 +322,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.start0Node = start0Node
                 self.baseNode.addChild(start0Node)
             })
-            if( retryFlg )
-            { //リトライ時はそのままスタートする
-                startButtonAction()
-            }
 		}
         
         //===================
@@ -330,7 +330,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guardGage = SKShapeNode(rect:CGRect(x: 0, y: 0, width: 10, height: 15))
         guardGage.name = "guardGage"
         guardGage.position = CGPoint(x: -player.size.width/2, y: -player.size.height/2)
-        guardGage.zPosition = 90
+        guardGage.zPosition = -1                                    //プレイヤーの後ろ
         guardGage.fillColor = UIColor.red
         self.playerBaseNode.addChild(self.guardGage)               //playerにaddchiledすることでplayerに追従させる
         //ハイスコアラベル
@@ -344,18 +344,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             x: 280.0,
             y: 85.0
         )
-        self.highScoreLabel.zPosition = 4 //プレイヤーの後ろ
-        self.baseNode.addChild(self.highScoreLabel) //背景に固定のつもりでbaseNodeに追加
+        self.highScoreLabel.zPosition = -1                  //プレイヤーの後ろ
+        self.baseNode.addChild(self.highScoreLabel)         //背景に固定のつもりでbaseNodeに追加
         
         if(debug)
         {
-            addParamSlider()    //パラメータ調整用スライダー
+            addParamSlider()                                //パラメータ調整用スライダー
             view.showsPhysics = false
             let playerBaseShape = SKShapeNode(rect: CGRect(x: 0, y: 0, width: 10, height: 10))
-            playerBaseShape.zPosition = 1500
+            playerBaseShape.zPosition = -50
             playerBaseNode.addChild( playerBaseShape )
         }
         setDefaultParam()
+        if( retryFlg )
+        { //リトライ時はそのままスタートする
+            startButtonAction()
+        }
 	}
     
     //MARK: シーンのアップデート時に呼ばれる関数
@@ -893,13 +897,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func startButtonAction()
     {
         play()
-        start0Node.zPosition = -15
-        let action1 = SKAction.moveTo(y: self.player.position.y + 300, duration: 1)
-        let action2 = SKAction.run {
-            self.gameFlg = true
+        start0Node.zPosition = -50
+        if( retryFlg == false ){
+            //リトライ時はカメラ動かさない
+            let action1 = SKAction.moveTo(y: self.player.position.y + 300, duration: 1)
+            let action2 = SKAction.run {
+                self.gameFlg = true
+            }
+            let actionAll = SKAction.sequence([action1,action2])
+            camera?.run(actionAll)
         }
-        let actionAll = SKAction.sequence([action1,action2])
-        camera?.run(actionAll)
+        else{
+            gameFlg = true
+        }
+        pauseButton.isHidden = false //ポーズボタンを表示する
         /*
         //メニュー背景を動かすアクションを作成する。
         let action1 = SKAction.moveTo(y: -3000, duration: 1.0)
@@ -917,7 +928,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         else if firstBuildFlg == true
         {
-            buildMeteor(size: 0.3, meteorString: "meteor_meteor_20180128", meteorZ: 70.0)
+            buildMeteor(size: 0.3, meteorString: "meteor_meteor_20180128", meteorZ: 20.0)
         }
         else if buildFlg == false
         {
@@ -926,7 +937,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else if buildFlg == true
         {
             meteorInt += 1
-            meteorDouble = 70.0
+            meteorDouble = 20.0
             self.meteorSpeed = 0.0
             self.meteorGravityCoefficient = CGFloat(0.06 + 0.01 * Double(meteorInt))
             //print("--meteorGravityCoeffient\(meteorGravityCoefficient)--")
@@ -951,7 +962,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let physicsBody = SKPhysicsBody(rectangleOf: attackShape.frame.size)
         attackShape.position = CGPoint(x: 0, y: player.size.height)
         attackShape.fillColor = UIColor.clear
-        attackShape.zPosition = 7.0
+        attackShape.zPosition = 1
         attackShape.physicsBody = physicsBody
         attackShape.physicsBody?.affectedByGravity = false      //重力判定を無視
         attackShape.physicsBody?.isDynamic = false              //固定物に設定
@@ -1116,7 +1127,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             guardShape.position = CGPoint(x: 0, y: 0)
         }
         guardShape.fillColor = UIColor.clear
-        guardShape.zPosition = 7.0
+        guardShape.zPosition = 1
         guardShape.physicsBody = physicsBody
         guardShape.physicsBody?.affectedByGravity = false      //重力判定を無視
         guardShape.physicsBody?.isDynamic = false              //固定物に設定
@@ -1194,6 +1205,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.gameoverFlg = true
             self.isPaused = true
             self.meteorTimer?.invalidate()
+            pauseButton.isHidden = true//ポーズボタンを非表示にする
             //ハイスコア更新
             print("------------score:\(self.score) high:\(self.highScore)------------")
             if( self.score > self.highScore ){
@@ -1218,22 +1230,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                                                   width: self.view!.frame.size.width * 0.9,
                                                   height: self.view!.frame.size.height * 0.9))
         backGroundView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        var buttonX:CGFloat = 10    //左端の余白
+        var buttonY = backGroundView.frame.size.height - 10    //下端の余白
         //Titleボタン
-        let newGameBtn = UIButton(type: UIButtonType.roundedRect)
-        newGameBtn.setTitle("Title", for: .normal)
-        newGameBtn.sizeToFit()
-        newGameBtn.backgroundColor = UIColor.blue
-        newGameBtn.layer.position = CGPoint(x: newGameBtn.frame.size.width,
-                                     y: backGroundView.frame.size.height - newGameBtn.frame.size.height)
+        let newGameBtn = buttonIcon(image:"home", color:UIColor(red: 0.1, green: 0.8, blue: 0.6, alpha: 1))
+        newGameBtn.layer.position = CGPoint(x: buttonX, y: buttonY )
         newGameBtn.addTarget(self, action: #selector(self.newGameButtonAction), for: .touchUpInside)
         backGroundView.addSubview(newGameBtn)
+        buttonX += newGameBtn.frame.size.width + 10
         //Retryボタン
-        let retryBtn = UIButton(type: UIButtonType.roundedRect)
-        retryBtn.setTitle("Rerty", for: .normal)
-        retryBtn.sizeToFit()
-        retryBtn.backgroundColor = UIColor.blue
-        retryBtn.layer.position = CGPoint(x: newGameBtn.frame.size.width + retryBtn.frame.size.width,
-                                            y: backGroundView.frame.size.height - retryBtn.frame.size.height)
+        let retryBtn = buttonIcon(image: "restart", color: UIColor(red: 0.2, green: 0.6, blue: 0.8, alpha: 1))
+        retryBtn.layer.position = CGPoint(x: buttonX, y: buttonY)
         retryBtn.addTarget(self, action: #selector(self.retryButtonAction), for: .touchUpInside)
         backGroundView.addSubview(retryBtn)
         //スコアラベル
@@ -1253,6 +1260,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         highScoreLabel.layer.position.x = backGroundView.frame.size.width/2
         backGroundView.addSubview(highScoreLabel)
         self.view!.addSubview(backGroundView)
+    }
+    
+    //ボタンの見た目を揃えるための関数
+    func buttonIcon(image:String,color:UIColor) -> UIButton{
+        let btn = UIButton(type: UIButtonType.roundedRect)              //角丸四角のボタンをつくる
+        btn.frame = CGRect(x: 0, y: 0, width: 75, height: 75)           //ボタンのサイズ
+        btn.setImage(UIImage(named:image), for: .normal)                //画像
+        btn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)          //余白
+        btn.imageView?.contentMode = UIViewContentMode.scaleAspectFit   //ボタンのサイズに画像を合わせる
+        btn.backgroundColor = color                                     //背景色
+        btn.tintColor = UIColor.white                                   //画像の色
+        btn.layer.cornerRadius = 10.0                                   //角の丸み
+        //btn.layer.borderColor = UIColor.white.cgColor                   //枠線の色
+        //btn.layer.borderWidth = 5                                       //枠線の太さ
+        btn.layer.anchorPoint = CGPoint(x: 0, y: 1)                     //アンカーポイントを左下にする
+        return btn
     }
     
     @objc func newGameButtonAction(_ sender: UIButton ){
@@ -1368,7 +1391,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         frameRect.lineWidth = 2.0
         frameRect.xScale = 1 / node.xScale  //縮小されている場合はその分拡大する
         frameRect.yScale = 1 / node.yScale  //縮小されている場合はその分拡大する
-        frameRect.zPosition = 1000          //とにかく手前
+        frameRect.zPosition = 1500          //とにかく手前
         frameRect.name = "frame"
         node.addChild( frameRect )
     }
@@ -1470,14 +1493,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         btn.addTarget(self, action: #selector(self.setDefaultParam), for: .touchUpInside)
         debugView.addSubview(btn)
         //　ポーズボタン
-        let btn2 = UIButton(type: UIButtonType.roundedRect)
-        btn2.setTitle("Pause", for: .normal)
-        btn2.sizeToFit()
-        btn2.backgroundColor = UIColor.blue
-        btn2.layer.position = CGPoint(x: frame.maxX - btn2.frame.size.width - 10,
-                                      y: frame.maxY - btn2.frame.size.height)
-        btn2.addTarget(self, action: #selector(self.sliderSwitchHidden), for: .touchUpInside)
-        self.view!.addSubview(btn2)
+        pauseButton = UIButton( type: UIButtonType.custom )
+        pauseButton.frame = CGRect(x: 0, y: 0, width: 50, height: 50) //ボタンのサイズをここで決めている
+        pauseButton.setImage(UIImage(named:"pause"), for: .normal)
+        pauseButton.imageView?.contentMode = UIViewContentMode.scaleAspectFit  //上記サイズに画像を合わせる
+        pauseButton.backgroundColor = UIColor.clear    //背景は透明
+        pauseButton.layer.anchorPoint = CGPoint(x: 1, y: 0)//右上
+        pauseButton.layer.position = CGPoint(x: frame.maxX - 10, y: 25)
+        pauseButton.addTarget(self, action: #selector(self.sliderSwitchHidden), for: .touchUpInside)
+        pauseButton.isHidden = true     //タイトル画面では非表示
+        self.view!.addSubview(pauseButton)
         //デフォルト非表示
         debugView.isHidden = true
     }
@@ -1490,6 +1515,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         sliderHidden = !sliderHidden
         debugView.isHidden = sliderHidden
         self.view!.scene?.isPaused = !sliderHidden
+        if( sliderHidden == true )
+        {
+            pauseButton.setImage(UIImage(named:"pause"), for: .normal)
+        }
+        else
+        {
+            pauseButton.setImage(UIImage(named:"restart"), for: .normal)
+        }
     }
     @objc func setDefaultParam(){
         //調整用パラメータ
