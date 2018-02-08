@@ -609,13 +609,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if ( jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos) && (guardStatus != .guarding)
                     {
                         attackAction()
-                        touchPath.strokeColor = UIColor.red
+                        touchPath.strokeColor = UIColor.clear // red
                         //print("---jump中にattackAction(),yPos=\(yPos)---")
                     }
                     else if (jumping == true || falling == true) && (yPos > 10) || (guardStatus == .guarding)
                     {
                         guardAction(endFlg: true)
-                        touchPath.strokeColor = UIColor.blue
+                        touchPath.strokeColor = UIColor.clear //blue
                         print("---jump中にguardAction(),yPos=\(yPos)---")
                     }
                 }
@@ -624,30 +624,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos)) && (guardStatus != .guarding)
                     {
                         attackAction()
-                        touchPath.strokeColor = UIColor.red
+                        touchPath.strokeColor = UIColor.clear//red
                         //print("---groundアタック---")
                     }
                     else if (yPos > 50) || (guardStatus == .guarding)
                     {
                         self.guardAction(endFlg: true)
-                        touchPath.strokeColor = UIColor.blue
+                        touchPath.strokeColor = UIColor.clear//blue
                         //print("---groundガード---")
                     }
                     else if yPos < -50
                     {
                         self.jumpingAction()
-                        touchPath.strokeColor = UIColor.green
+                        touchPath.strokeColor = UIColor.clear//green
                     }
                     else if xPos > 50
                     {
                         self.moveToLeft()
-                        touchPath.strokeColor = UIColor.white
+                        touchPath.strokeColor = UIColor.clear//white
                         print("---左スワイプ---")
                     }
                     else if xPos < -50
                     {
                         self.moveToRight()
-                        touchPath.strokeColor = UIColor.white
+                        touchPath.strokeColor = UIColor.clear//white
                         print("---右スワイプ---")
                     }
                 }
