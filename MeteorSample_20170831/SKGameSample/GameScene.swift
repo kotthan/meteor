@@ -478,6 +478,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else if guardPower <= 4500
         {
             guardPower += 10
+            if( ( guardPower >= 4500 ) && ( guardStatus == .disable ) ){
+                guardStatus = .enable
+            }
         }
         guardGage.yScale = CGFloat(guardPower / 1000)
         
@@ -1124,12 +1127,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             return
         }
-        else if (guardPower >= 0)
+        else if (guardStatus != .disable)
         {
             if( guardStatus != .guarding )
             {   //ガード開始
                 //print("---ガードフラグをON---")
                 self.guardStatus = .guarding
+                print(self.guardStatus)
                 let names = ["guard01","player00"]
                 self.guardTextureAnimation(self.player, names: names)
                 guardShapeMake()
@@ -1138,10 +1142,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
                 {
-                    self.guardStatus = .enable
-                    if( !self.guardShapes.isEmpty ){
+                    if( !self.guardShapes.isEmpty ){ //guardMeteorが呼ばれていない場合のみ
                         self.guardShapes[0].removeFromParent()
                         self.guardShapes.remove(at: 0)
+                    }
+                    if( self.guardStatus != .disable ){
+                        self.guardStatus = .enable
                     }
                     //print("---ガードフラグをOFF---")
                 }
@@ -1159,11 +1165,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if( guardPower < 0 ){
                 print( "guardBroken!!" )
                 guardStatus = .disable
+                print(self.guardStatus)
             }
             //ガードシェイプ削除
             if( !self.guardShapes.isEmpty ){
                 self.guardShapes[0].removeFromParent()
                 self.guardShapes.remove(at: 0)
+            }
+            if( guardStatus != .disable ){
+                guardStatus = .enable
             }
             for i in meteores
             {
