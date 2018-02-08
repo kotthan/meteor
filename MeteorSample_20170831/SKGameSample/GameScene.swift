@@ -863,7 +863,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         meteor.yScale = CGFloat(size)
         if meteores.isEmpty
         {
-            meteor.position = CGPoint(x: 187, y: self.meteorPos + (meteor.size.height)/2)
+            //meteor.position = CGPoint(x: 187, y: self.meteorPos + (meteor.size.height)/2)
+            meteor.position = CGPoint(x:187, y: self.playerBaseNode.position.y + 700 + (meteor.size.height) / 2)
         } else
         {
             meteor.position = CGPoint(x: 187, y: (meteores.first?.position.y)!)
@@ -926,7 +927,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             meteorInt += 1
             meteorDouble = 20.0
             self.meteorSpeed = 0.0
-            self.meteorGravityCoefficient = CGFloat(0.06 + 0.01 * Double(meteorInt))
+            self.meteorGravityCoefficient = CGFloat(0.05 + 0.01 * Double(meteorInt))
             //print("--meteorGravityCoeffient\(meteorGravityCoefficient)--")
             for i in (0...meteorInt).reversed()
             {
