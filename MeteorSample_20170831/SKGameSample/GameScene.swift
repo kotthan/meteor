@@ -357,7 +357,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if(debug)
         {
             addParamSlider()                                //パラメータ調整用スライダー
-            view.showsPhysics = true
+            view.showsPhysics = false
             let playerBaseShape = SKShapeNode(rect: CGRect(x: 0, y: 0, width: 10, height: 10))
             playerBaseShape.zPosition = -50
             playerBaseNode.addChild( playerBaseShape )
@@ -408,7 +408,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                             collisionLine.removeFromParent()
                         }
                         collisionLine = SKShapeNode(points: &points, count: points.count)
-                        collisionLine.strokeColor = UIColor.orange
+                        collisionLine.strokeColor = UIColor.clear
                         baseNode.addChild(collisionLine)
                     }
                 }
@@ -949,6 +949,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let physicsBody = SKPhysicsBody(rectangleOf: attackShape.frame.size)
         attackShape.position = CGPoint(x: 0, y: player.size.height)
         attackShape.fillColor = UIColor.clear
+        attackShape.strokeColor = UIColor.clear
         attackShape.zPosition = 1
         attackShape.physicsBody = physicsBody
         attackShape.physicsBody?.affectedByGravity = false      //重力判定を無視
@@ -1114,6 +1115,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             guardShape.position = CGPoint(x: 0, y: 0)
         }
         guardShape.fillColor = UIColor.clear
+        guardShape.strokeColor = UIColor.clear
         guardShape.zPosition = 1
         guardShape.physicsBody = physicsBody
         guardShape.physicsBody?.affectedByGravity = false      //重力判定を無視
