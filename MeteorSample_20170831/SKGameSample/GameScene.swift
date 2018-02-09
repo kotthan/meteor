@@ -52,7 +52,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: フラグ
     var gameoverFlg : Bool = false                                  //ゲームオーバーフラグ
     var attackFlg : Bool = false                                    //攻撃フラグ
-    var guardFlg : Bool = false                                     //ガードフラグ
+    enum guardState{    //ガード状態
+        case enable     //ガード可
+        case disable    //ガード不可
+        case guarding   //ガード中
+    }
+    var guardStatus = guardState.enable                             //ガード状態
     var moving: Bool = false                                        //移動中フラグ
     var jumping: Bool = false                                       //ジャンプ中フラグ
     var falling: Bool = false                                       //落下中フラグ
@@ -221,7 +226,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 			scene.enumerateChildNodes(withName: "player", using: { (node, stop) -> Void in
 				let player = node as! SKSpriteNode
                 player.name = "player"
-                player.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 64, height: 64), center: CGPoint(x: 0, y: 0))
+                //player.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 64, height: 64), center: CGPoint(x: 0, y: 0))
+                let texture = SKTexture(imageNamed: "player")
+                player.physicsBody = SKPhysicsBody(texture: texture, size: player.size)
                 player.physicsBody!.friction = 1.0                      //摩擦
                 player.physicsBody!.allowsRotation = false              //回転禁止
                 player.physicsBody!.restitution = 0.0                   //跳ね返り値
@@ -422,7 +429,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                             collisionLine.removeFromParent()
                         }
                         collisionLine = SKShapeNode(points: &points, count: points.count)
-                        collisionLine.strokeColor = UIColor.orange
+                        collisionLine.strokeColor = UIColor.clear
                         baseNode.addChild(collisionLine)
                     }
                 }
@@ -496,7 +503,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         else if guardPower <= 4500
         {
-            guardPower += 50
+            guardPower += 10
+            if( ( guardPower >= 4500 ) && ( guardStatus == .disable ) ){
+                guardStatus = .enable
+            }
         }
         guardGage.yScale = CGFloat(guardPower / 1000)
         
@@ -617,48 +627,48 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 else if (self.playerBaseNode.position.y > self.oneScreenSize.height/2)
                 {
-                    if ( jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos) && (guardFlg == false)
+                    if ( jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos) && (guardStatus != .guarding)
                     {
                         attackAction()
-                        touchPath.strokeColor = UIColor.red
+                        touchPath.strokeColor = UIColor.clear // red
                         //print("---jump中にattackAction(),yPos=\(yPos)---")
                     }
-                    else if (jumping == true || falling == true) && (yPos > 10) || (guardFlg == true)
+                    else if (jumping == true || falling == true) && (yPos > 10) || (guardStatus == .guarding)
                     {
                         guardAction(endFlg: true)
-                        touchPath.strokeColor = UIColor.blue
+                        touchPath.strokeColor = UIColor.clear //blue
                         print("---jump中にguardAction(),yPos=\(yPos)---")
                     }
                 }
                 else if (self.playerBaseNode.position.y < self.oneScreenSize.height/2)
                 {
-                    if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos)) && (guardFlg == false)
+                    if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos)) && (guardStatus != .guarding)
                     {
                         attackAction()
-                        touchPath.strokeColor = UIColor.red
+                        touchPath.strokeColor = UIColor.clear//red
                         //print("---groundアタック---")
                     }
-                    else if (yPos > 50) || (guardFlg == true)
+                    else if (yPos > 50) || (guardStatus == .guarding)
                     {
                         self.guardAction(endFlg: true)
-                        touchPath.strokeColor = UIColor.blue
+                        touchPath.strokeColor = UIColor.clear//blue
                         //print("---groundガード---")
                     }
                     else if yPos < -50
                     {
                         self.jumpingAction()
-                        touchPath.strokeColor = UIColor.green
+                        touchPath.strokeColor = UIColor.clear//green
                     }
                     else if xPos > 50
                     {
                         self.moveToLeft()
-                        touchPath.strokeColor = UIColor.white
+                        touchPath.strokeColor = UIColor.clear//white
                         print("---左スワイプ---")
                     }
                     else if xPos < -50
                     {
                         self.moveToRight()
-                        touchPath.strokeColor = UIColor.white
+                        touchPath.strokeColor = UIColor.clear//white
                         print("---右スワイプ---")
                     }
                 }
@@ -855,7 +865,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: - 関数定義　自分で設定関係
     
     //MARK: 配列
-    var meteorNames: [String] = ["meteor_meteor_20180128","250","350","450"]
+    var meteorNames: [String] = ["normal_meteor"]
     var meteorInt: Int = 0
     var meteorDouble: Double = 70.0
     var meteores: [SKSpriteNode] = []
@@ -874,7 +884,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         meteor.yScale = CGFloat(size)
         if meteores.isEmpty
         {
-            meteor.position = CGPoint(x: 187, y: self.meteorPos + (meteor.size.height)/2)
+            //meteor.position = CGPoint(x: 187, y: self.meteorPos + (meteor.size.height)/2)
+            meteor.position = CGPoint(x:187, y: self.playerBaseNode.position.y + 700 + (meteor.size.height) / 2)
         } else
         {
             meteor.position = CGPoint(x: 187, y: (meteores.first?.position.y)!)
@@ -937,7 +948,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             meteorInt += 1
             meteorDouble = 20.0
             self.meteorSpeed = 0.0
-            self.meteorGravityCoefficient = CGFloat(0.06 + 0.01 * Double(meteorInt))
+            self.meteorGravityCoefficient = CGFloat(0.05 + 0.01 * Double(meteorInt))
             //print("--meteorGravityCoeffient\(meteorGravityCoefficient)--")
             for i in (0...meteorInt).reversed()
             {
@@ -960,6 +971,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let physicsBody = SKPhysicsBody(rectangleOf: attackShape.frame.size)
         attackShape.position = CGPoint(x: 0, y: player.size.height)
         attackShape.fillColor = UIColor.clear
+        attackShape.strokeColor = UIColor.clear
         attackShape.zPosition = 1
         attackShape.physicsBody = physicsBody
         attackShape.physicsBody?.affectedByGravity = false      //重力判定を無視
@@ -1125,6 +1137,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             guardShape.position = CGPoint(x: 0, y: 0)
         }
         guardShape.fillColor = UIColor.clear
+        guardShape.strokeColor = UIColor.clear
         guardShape.zPosition = 1
         guardShape.physicsBody = physicsBody
         guardShape.physicsBody?.affectedByGravity = false      //重力判定を無視
@@ -1143,12 +1156,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             return
         }
-        else if (guardPower >= 0)
+        else if (guardStatus != .disable)
         {
-            if( guardFlg == false )
+            if( guardStatus != .guarding )
             {   //ガード開始
                 //print("---ガードフラグをON---")
-                self.guardFlg = true
+                self.guardStatus = .guarding
+                print(self.guardStatus)
                 let names = ["guard01","player00"]
                 self.guardTextureAnimation(self.player, names: names)
                 guardShapeMake()
@@ -1157,10 +1171,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
                 {
-                    self.guardFlg = false
-                    if( !self.guardShapes.isEmpty ){
+                    if( !self.guardShapes.isEmpty ){ //guardMeteorが呼ばれていない場合のみ
                         self.guardShapes[0].removeFromParent()
                         self.guardShapes.remove(at: 0)
+                    }
+                    if( self.guardStatus != .disable ){
+                        self.guardStatus = .enable
                     }
                     //print("---ガードフラグをOFF---")
                 }
@@ -1170,11 +1186,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     func guardMeteor()
     {
-        if (guardFlg == true)
+        if (guardStatus == .guarding)
         {
             //print("---隕石をガード---")
             playSound(soundName: "bougyo")
             guardPower -= 1500
+            if( guardPower < 0 ){
+                print( "guardBroken!!" )
+                guardStatus = .disable
+                print(self.guardStatus)
+            }
+            //ガードシェイプ削除
+            if( !self.guardShapes.isEmpty ){
+                self.guardShapes[0].removeFromParent()
+                self.guardShapes.remove(at: 0)
+            }
+            if( guardStatus != .disable ){
+                guardStatus = .enable
+            }
             for i in meteores
             {
                 i.removeAllActions()
