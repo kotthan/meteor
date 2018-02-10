@@ -1010,6 +1010,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func attackMeteor()
     {
+        if gameoverFlg == true
+        {
+            return
+        }
         if attackFlg == true
         {
             //print("---隕石を攻撃---")
@@ -1186,6 +1190,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     func guardMeteor()
     {
+        if gameoverFlg == true
+        {
+            return
+        }
         if (guardStatus == .guarding)
         {
             //print("---隕石をガード---")
