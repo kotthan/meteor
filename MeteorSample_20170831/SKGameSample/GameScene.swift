@@ -656,8 +656,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     }
                     else if yPos < -50
                     {
-                        self.jumpingAction()
-                        touchPath.strokeColor = UIColor.clear//green
+                        if meteorCollisionFlg == false
+                        {
+                            self.jumpingAction()
+                            touchPath.strokeColor = UIColor.clear//green
+                        }
                     }
                     else if xPos > 50
                     {
