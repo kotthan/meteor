@@ -114,6 +114,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var beganPyPos: CGFloat = 0.0
     var endPyPos:CGFloat = 0.0
     var movePyPos:CGFloat = 0.0
+    var touchNode: SKSpriteNode!
     
     //MARK: 画面移動プロパティ
 	var screenSpeed: CGFloat = 28.0
@@ -530,16 +531,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if( touchPath != nil ){ //すでにタッチの軌跡が描かれていれば削除
                 touchPath.removeFromParent()
             }
-            let node:SKSpriteNode? = self.atPoint(beganPos) as? SKSpriteNode;
-            //print("---タップをしたノード=\(String(describing: node?.name))---")
-            if node == nil
-            {
-                return
-            }
-            else if node?.name == "start0Node"
-            {
-                startButtonAction()
-            }
+            //タッチしたノードを記録しておく
+            //print("---タップをしたノード=\(String(describing: touchNode?.name))---")
+            touchNode = self.atPoint(beganPos) as? SKSpriteNode
         }
     }
 
@@ -605,14 +599,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for touch: AnyObject in touches
         {
             let endPos = touch.location(in: self)
-            
+            //ボタンタップ判定
             let node:SKSpriteNode? = self.atPoint(endPos) as? SKSpriteNode;
-            //print("---タップを離したノード=\(String(describing: node?.name))---")
-            if node == ultraOkButton //必殺技ボタン
-            {
-                ultraAttack()
-                return
+            if( node == touchNode ) { // タッチ開始時と同じノードで離した
+                //print("---タップを離したノード=\(String(describing: node?.name))---")
+                var buttonPushFlg = true
+                switch node{ //押したボタン別処理
+                    case let node where node == start0Node : startButtonAction()
+                    case let node where node == ultraOkButton : ultraAttack()
+                    default:buttonPushFlg = false
+                }
+                if buttonPushFlg { return }//ボタンが押されたら他のアクションはしない
             }
+            //スワイプ判定
             let cameraMoveY = ( (camera?.position.y)! -  beganPyPos )   //前回からのカメラの移動量を求める
             beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
             let xPos = beganPos.x - endPos.x
