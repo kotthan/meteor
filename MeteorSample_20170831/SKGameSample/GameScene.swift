@@ -523,7 +523,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: すべてのアクションと物理シミュレーション処理後、1フレーム毎に呼び出される
     override func didSimulatePhysics()
     {   }
-    var touchPath: SKShapeNode! = nil
     //MARK: - 関数定義　タッチ処理
     //MARK: タッチダウンされたときに呼ばれる関数
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
@@ -633,32 +632,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 if buttonPushFlg { return }//ボタンが押されたら他のアクションはしない
             }
             //スワイプ判定
-            let cameraMoveY = ( (camera?.position.y)! -  beganPyPos )   //前回からのカメラの移動量を求める
-            beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
-            let xPos = endPos.x - beganPos.x
-            let floatYPos = endPos.y - beganPos.y
-            let yPos = round(floatYPos)
-            print("yPos : \(floatYPos),flooryPos : \(round(yPos))")
-            if( touchPath != nil )
-            { //すでにタッチの軌跡が描かれていれば削除
-                touchPath.removeFromParent()
-            }
-            var points = [beganPos,endPos]
-            touchPath = SKShapeNode(points: &points, count: points.count) //デバッグに始点から現在地を線で結ぶ
+            drawTouchPath(begin: beganPosOnView, end: endPosOnView)
             switch getTouchAction(begin: beganPosOnView, end: endPosOnView) {
             case .tap:
                 attackAction()
-                touchPath.strokeColor = UIColor.red
             case .swipeDown:
                 guardAction(endFlg: true)
-                touchPath.strokeColor = UIColor.blue
             case .swipeUp:
                 if( jumping == true || falling == true ){
                     break   //何もしない
                 }
                 else{
                     jumpingAction()
-                    touchPath.strokeColor = UIColor.green
                 }
             case .swipeLeft:
                 if( jumping == true || falling == true ){
@@ -666,7 +651,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 else{
                     moveToLeft()
-                    touchPath.strokeColor = UIColor.yellow
                 }
             case .swipeRight:
                 if( jumping == true || falling == true ){
@@ -674,7 +658,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 else{
                     moveToRight()
-                    touchPath.strokeColor = UIColor.yellow
                 }
             }
             /*                                   //カメラが動いた分だけタッチ開始点も動かす
@@ -738,10 +721,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     print("---右スワイプ---")
                 }
             }*/
-            if( debug )
-            {
-                baseNode.addChild(touchPath)
-            }
         }
     }
     func getTouchAction(begin: CGPoint, end:CGPoint) ->TouchAction
@@ -770,6 +749,40 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         print("ありえないTouchAction x:\(moveX),y:\(moveY)")
         return TouchAction.tap
     }
+    var touchPath: SKShapeNode! = nil
+    func drawTouchPath(begin: CGPoint, end:CGPoint){
+        //カメラが存在するかどうかのチェック
+        guard let camera = camera else{
+            return
+        }
+        //すでにタッチの軌跡が描かれていれば削除
+        if( touchPath != nil ){
+            touchPath.removeFromParent()
+        }
+        //カメラの移動分平行移動する
+        let moveX = camera.position.x - oneScreenSize.width / 2
+        let moveY = camera.position.y - oneScreenSize.height / 2
+        var points = [ CGPoint( x: begin.x + moveX, y: begin.y + moveY ),
+                       CGPoint( x: end.x + moveX, y: end.y + moveY ) ]
+        //線の作成
+        touchPath = SKShapeNode(points: &points, count: points.count)
+        //色の設定
+        switch getTouchAction(begin: begin, end: end){
+        case .tap:
+            touchPath.strokeColor = UIColor.red
+        case .swipeUp:
+            touchPath.strokeColor = UIColor.green
+        case .swipeDown:
+            touchPath.strokeColor = UIColor.blue
+        case .swipeLeft:
+            touchPath.strokeColor = UIColor.yellow
+        case .swipeRight:
+            touchPath.strokeColor = UIColor.yellow
+        }
+        //線の描画
+        baseNode.addChild(touchPath)
+    }
+    
     //MARK: - 移動
     let moveL = SKAction.moveTo(x: 93.75, duration: 0.15)
     let moveC = SKAction.moveTo(x: 187.5, duration: 0.15)
