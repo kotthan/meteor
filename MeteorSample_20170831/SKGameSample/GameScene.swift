@@ -31,7 +31,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var lowestShape: SKShapeNode!                                   //落下判定シェイプノード
     var attackShape: SKShapeNode!                                   //攻撃判定シェイプノード
     var guardShape: SKShapeNode!                                    //防御判定シェイプノード
-    var guardGage: SKShapeNode!                                     //ガードゲージ
+    var guardGage = SKSpriteNode()                                     //ガードゲージ
     var start0Node: SKSpriteNode!
     let scoreLabel = SKLabelNode()                                  //スコア表示ラベル
     var score = 0                                                   //スコア
@@ -294,7 +294,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //===================
             //MARK: 必殺技ボタン
             //===================
-            ultraButton = SKSpriteNode(imageNamed: "UltraButtun")
+            ultraButton = SKSpriteNode(imageNamed: "ultraButtun")
             self.ultraButton.position = CGPoint(                          //表示位置をplayerのサイズ分左に
                 x: 0,
                 y: +self.player.size.height / 2
@@ -303,7 +303,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.ultraButton.yScale = 1 / 18
             self.ultraButton.zPosition = 2
             self.playerBaseNode.addChild(self.ultraButton)               //playerにaddchiledすることでplayerに追従
-            ultraOkButton = SKSpriteNode(imageNamed: "UltaraOkButtun")
+            ultraOkButton = SKSpriteNode(imageNamed: "ultraOkButtun")
             self.ultraOkButton.position = CGPoint(                       //表示位置をplayerのサイズ分左上に
                 x: 0,
                 y: +self.player.size.height / 2
@@ -342,12 +342,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //===================
         //MARK: ガードゲージ
         //===================
-        guardGage = SKShapeNode(rect:CGRect(x: 0, y: 0, width: 10, height: 15))
+        guardGage = SKSpriteNode(imageNamed: "pod9")
         guardGage.name = "guardGage"
-        guardGage.position = CGPoint(x: -player.size.width/2, y: -player.size.height/2)
-        guardGage.zPosition = -1                                    //プレイヤーの後ろ
-        guardGage.fillColor = UIColor.red
+        guardGage.position = CGPoint(x: player.position.x - 30, y: player.position.y )
+        guardGage.zPosition = -1
+        guardGage.xScale = 1 / 5
+        guardGage.yScale = 1 / 5
         self.playerBaseNode.addChild(self.guardGage)               //playerにaddchiledすることでplayerに追従させる
+        
         //ハイスコアラベル
         if ( UserDefaults.standard.object(forKey: keyHighScore) != nil )
         {
@@ -359,8 +361,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             x: 280.0,
             y: 85.0
         )
-        self.highScoreLabel.zPosition = -1 //プレイヤーの後ろ
-        self.baseNode.addChild(self.highScoreLabel) //背景に固定のつもりでbaseNodeに追加
+        self.highScoreLabel.zPosition = -1                  //プレイヤーの後ろ
+        self.baseNode.addChild(self.highScoreLabel)         //背景に固定のつもりでbaseNodeに追加
         // アプリがバックグラウンドから復帰した際に呼ぶ関数の登録
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(becomeActive(_:)),
@@ -511,7 +513,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 guardStatus = .enable
             }
         }
-        guardGage.yScale = CGFloat(guardPower / 1000)
+        //guardGage.yScale = CGFloat(guardPower / 1000)
         
     }
     //MARK: すべてのアクションと物理シミュレーション処理後、1フレーム毎に呼び出される
