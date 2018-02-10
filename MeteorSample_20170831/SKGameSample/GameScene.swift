@@ -1556,10 +1556,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if( sliderHidden == true )
         {
             pauseButton.setImage(UIImage(named:"pause"), for: .normal)
+            play()
         }
         else
         {
             pauseButton.setImage(UIImage(named:"restart"), for: .normal)
+            pause()
         }
     }
     @objc func setDefaultParam(){
