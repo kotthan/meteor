@@ -115,6 +115,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var endPyPos:CGFloat = 0.0
     var movePyPos:CGFloat = 0.0
     var touchNode: SKSpriteNode!
+    enum TouchAction {  //タッチアクション
+        case tap        //タップ
+        case swipeUp    //上スワイプ
+        case swipeDown  //下スワイプ
+        case swipeLeft  //左スワイプ
+        case swipeRight //右スワイプ
+    }
     
     //MARK: 画面移動プロパティ
 	var screenSpeed: CGFloat = 28.0
@@ -688,6 +695,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 baseNode.addChild(touchPath)
             }
         }
+    }
+    func getTouchAction(moveX: CGFloat, moveY:CGFloat) ->TouchAction
+    {
+        let margin:CGFloat = 50
+        //移動量が少なかったらタップ
+        if( fabs(moveX) < margin && fabs(moveY) < margin ){
+            return TouchAction.tap
+        }
+        // 絶対値が大きいほうの動作を優先、値の正負で方向を判定する
+        switch( moveX,moveY ){
+        case (let x, let y) where fabs(x) > fabs(y) && x > 0:
+            return TouchAction.swipeRight
+        case (let x, let y) where fabs(x) > fabs(y) && x < 0:
+            return TouchAction.swipeLeft
+        case (let x, let y) where fabs(x) <= fabs(y) && y > 0:
+            return TouchAction.swipeUp
+        case (let x, let y) where fabs(x) <= fabs(y) && y < 0:
+            return TouchAction.swipeDown
+        default:
+            break
+        }
+        //ここは通らないはず
+        print("ありえないTouchAction x:\(moveX),y:\(moveY)")
+        return TouchAction.tap
     }
     //MARK: - 移動
     let moveL = SKAction.moveTo(x: 93.75, duration: 0.15)
