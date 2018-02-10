@@ -630,6 +630,49 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //スワイプ判定
             let cameraMoveY = ( (camera?.position.y)! -  beganPyPos )   //前回からのカメラの移動量を求める
             beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
+            let xPos = endPos.x - beganPos.x
+            let floatYPos = endPos.y - beganPos.y
+            let yPos = round(floatYPos)
+            print("yPos : \(floatYPos),flooryPos : \(round(yPos))")
+            if( touchPath != nil )
+            { //すでにタッチの軌跡が描かれていれば削除
+                touchPath.removeFromParent()
+            }
+            var points = [beganPos,endPos]
+            touchPath = SKShapeNode(points: &points, count: points.count) //デバッグに始点から現在地を線で結ぶ
+            switch getTouchAction(moveX: xPos, moveY: yPos) {
+            case .tap:
+                attackAction()
+                touchPath.strokeColor = UIColor.red
+            case .swipeDown:
+                guardAction(endFlg: true)
+                touchPath.strokeColor = UIColor.blue
+            case .swipeUp:
+                if( jumping == true || falling == true ){
+                    break   //何もしない
+                }
+                else{
+                    jumpingAction()
+                    touchPath.strokeColor = UIColor.green
+                }
+            case .swipeLeft:
+                if( jumping == true || falling == true ){
+                    break   //何もしない
+                }
+                else{
+                    moveToLeft()
+                    touchPath.strokeColor = UIColor.yellow
+                }
+            case .swipeRight:
+                if( jumping == true || falling == true ){
+                    break   //何もしない
+                }
+                else{
+                    moveToRight()
+                    touchPath.strokeColor = UIColor.yellow
+                }
+            }
+            /*                                   //カメラが動いた分だけタッチ開始点も動かす
             let xPos = beganPos.x - endPos.x
             let floatYPos = beganPos.y - endPos.y
             let yPos = round(floatYPos)
@@ -689,7 +732,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     touchPath.strokeColor = UIColor.clear//white
                     print("---右スワイプ---")
                 }
-            }
+            }*/
             if( debug )
             {
                 baseNode.addChild(touchPath)
