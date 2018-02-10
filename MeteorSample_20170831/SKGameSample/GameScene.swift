@@ -523,6 +523,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guard ( ultraAttackState == .none ) else { //必殺技中でなければ次の処理に進む
             return
         }
+        guard ( gameoverFlg == false ) else {  //ゲームオーバでなければ次の処理に進む
+            return
+        }
         
         if let touch = touches.first as UITouch?
         {
@@ -541,6 +544,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
     {
         guard ( ultraAttackState == .none ) else { //必殺技中でなければ次の処理に進む
+            return
+        }
+        guard ( gameoverFlg == false ) else {  //ゲームオーバでなければ次の処理に進む
             return
         }
         
@@ -595,6 +601,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guard ( ultraAttackState == .none ) else { //必殺技中でなければ次の処理に進む
             return
         }
+        guard ( gameoverFlg == false ) else {  //ゲームオーバでなければ次の処理に進む
+            return
+        }
         
         for touch: AnyObject in touches
         {
@@ -624,11 +633,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             var points = [beganPos,endPos]
             touchPath = SKShapeNode(points: &points, count: points.count) //デバッグに始点から現在地を線で結ぶ
-            if gameoverFlg == true
-            {
-                return
-            }
-            else if (self.playerBaseNode.position.y > self.oneScreenSize.height/2)
+            if (self.playerBaseNode.position.y > self.oneScreenSize.height/2)
             {
                 if ( jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos) && (guardStatus != .guarding)
                 {
