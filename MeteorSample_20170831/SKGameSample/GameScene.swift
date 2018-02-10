@@ -519,8 +519,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: タッチダウンされたときに呼ばれる関数
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
     {
-        if( ultraAttackState == .none ) //必殺技中は入力を受け付けない
-        {
+        guard ( ultraAttackState == .none ) else { //必殺技中でなければ次の処理に進む
+            return
+        }
             if let touch = touches.first as UITouch?
             {
                 self.beganPos = touch.location(in: self)
@@ -539,14 +540,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     startButtonAction()
                 }
             }
-        }
     }
 
     //MARK: タッチ移動されたときに呼ばれる関数
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
     {
-        if( ultraAttackState == .none ) //必殺技中は入力を受け付けない
-        {
+        guard ( ultraAttackState == .none ) else { //必殺技中でなければ次の処理に進む
+            return
+        }
             /*for touch: AnyObject in touches
             {
                 let endedPos = touch.location(in: self)                          //タップを話した点を定義
@@ -590,14 +591,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     baseNode.addChild(touchPath)
                 }
              }*/
-        }
     }
     
     //MARK: タッチアップされたときに呼ばれる関数
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
     {
-        if( ultraAttackState == .none )
-        {
+        guard ( ultraAttackState == .none ) else { //必殺技中でなければ次の処理に進む
+            return
+        }
             for touch: AnyObject in touches
             {
                 let endPos = touch.location(in: self)
@@ -680,7 +681,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     baseNode.addChild(touchPath)
                 }
             }
-        }
     }
     //MARK: - 移動
     let moveL = SKAction.moveTo(x: 93.75, duration: 0.15)
