@@ -632,27 +632,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 attackAction()
             case .swipeDown:
                 guardAction(endFlg: true)
-            case .swipeUp:
-                if( jumping == true ){
-                    break   //何もしない
-                }
-                else{
-                    jumpingAction()
-                }
-            case .swipeLeft:
-                if( jumping == true ){
-                    break   //何もしない
-                }
-                else{
-                    moveToLeft()
-                }
-            case .swipeRight:
-                if( jumping == true ){
-                    break   //何もしない
-                }
-                else{
-                    moveToRight()
-                }
+            case .swipeUp where jumping == false: //ジャンプしてない場合のみ
+                jumpingAction()
+            case .swipeLeft where jumping == false: //ジャンプしてない場合のみ
+                moveToLeft()
+            case .swipeRight where jumping == false://ジャンプしてない場合のみ
+                moveToRight()
+            default:
+                break   //何もしない
             }
         }
     }
