@@ -32,6 +32,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var attackShape: SKShapeNode!                                   //攻撃判定シェイプノード
     var attackShapeName: String = "attackShape"
     var guardShape: SKShapeNode!                                    //防御判定シェイプノード
+    var guardShapeName: String = "guardShape"
     var guardGage = SKSpriteNode()                                     //ガードゲージ
     var start0Node: SKSpriteNode!
     let scoreLabel = SKLabelNode()                                  //スコア表示ラベル
@@ -339,7 +340,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.baseNode.addChild(start0Node)
             })
 		}
+        //攻撃判定用シェイプ
         attackShapeMake()
+        //ガード判定用シェイプ
+        guardShapeMake()
         //===================
         //MARK: ガードゲージ
         //===================
@@ -919,7 +923,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var meteorInt: Int = 0
     var meteorDouble: Double = 70.0
     var meteores: [SKSpriteNode] = []
-    var guardShapes: [SKShapeNode] = []
     
     //MARK: 隕石落下
     func buildMeteor(size: Double, meteorString: String, meteorZ: Double){
@@ -1204,9 +1207,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guardShape.physicsBody?.categoryBitMask = 0b100000     //接触判定用マスク設定
         guardShape.physicsBody?.collisionBitMask = 0b0000      //接触対象をなしに設定
         guardShape.physicsBody?.contactTestBitMask = 0b1000    //接触対象をmeteorに設定
-        self.playerBaseNode.addChild(guardShape)
+        self.guardShape = guardShape
         //print("---guardShapeを生成しました---")
-        self.guardShapes.append(guardShape)
     }
     
     func guardAction(endFlg: Bool)
@@ -1224,20 +1226,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 print(self.guardStatus)
                 let names = ["guard01","player00"]
                 self.guardTextureAnimation(self.player, names: names)
-                guardShapeMake()
+                playerBaseNode.addChild( guardShape )
             }
             if( endFlg == true )
             {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
-                {
-                    if( !self.guardShapes.isEmpty ){ //guardMeteorが呼ばれていない場合のみ
-                        self.guardShapes[0].removeFromParent()
-                        self.guardShapes.remove(at: 0)
+                if let guardNode = playerBaseNode.childNode(withName: guardShapeName) {
+                    let action1 = SKAction.wait(forDuration: 0.1)
+                    let action2 = SKAction.removeFromParent()
+                    let action3 = SKAction.run{
+                        if( self.guardStatus != .disable ){
+                            self.guardStatus = .enable
+                            //print("---ガードフラグをOFF---")
+                        }
                     }
-                    if( self.guardStatus != .disable ){
-                        self.guardStatus = .enable
-                    }
-                    //print("---ガードフラグをOFF---")
+                    let actions = SKAction.sequence([action1,action2,action3])
+                    guardNode.run(actions)
                 }
             }
         }
@@ -1260,9 +1263,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 print(self.guardStatus)
             }
             //ガードシェイプ削除
-            if( !self.guardShapes.isEmpty ){
-                self.guardShapes[0].removeFromParent()
-                self.guardShapes.remove(at: 0)
+            if let guardNode = playerBaseNode.childNode(withName: guardShapeName) {
+                guardNode.removeFromParent()
             }
             if( guardStatus != .disable ){
                 guardStatus = .enable
