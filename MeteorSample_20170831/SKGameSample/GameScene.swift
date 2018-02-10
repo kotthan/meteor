@@ -60,7 +60,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var guardStatus = guardState.enable                             //ガード状態
     var moving: Bool = false                                        //移動中フラグ
     var jumping: Bool = false                                       //ジャンプ中フラグ
-    var falling: Bool = false                                       //落下中フラグ
     var centerPosFlg: Bool = true                                   //中央位置フラグ
     var leftPosFlg: Bool = false                                    //左位置フラグ
     var rightPosFlg: Bool = false                                   //右位置フラグ
@@ -410,7 +409,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 m.position.y += self.meteorSpeed / 60
             }
         }
-        if (jumping == true || falling == true)
+        if jumping == true
         {
             // 次の位置を計算する
             self.playerSpeed += self.gravity * self.playerGravityCoefficient / 60   // [pixcel/s^2] / 60[fps]
@@ -486,7 +485,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.start0Node.position.y)
         }
-        else if (jumping == true || falling == true) && (self.playerBaseNode.position.y + 200 > self.oneScreenSize.height/2)
+        else if (jumping == true) && (self.playerBaseNode.position.y + 200 > self.oneScreenSize.height/2)
         {
             if( self.playerBaseNode.position.y < self.cameraMax ) //カメラの上限を超えない範囲で動かす
             {
@@ -496,11 +495,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else
         {
             self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.oneScreenSize.height/2)
-        }
-        if self.player.physicsBody?.velocity.dy < -9.8 && self.falling == false
-        {
-            self.jumping = false
-            self.falling = true
         }
         if( debug )
         {
@@ -639,21 +633,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             case .swipeDown:
                 guardAction(endFlg: true)
             case .swipeUp:
-                if( jumping == true || falling == true ){
+                if( jumping == true ){
                     break   //何もしない
                 }
                 else{
                     jumpingAction()
                 }
             case .swipeLeft:
-                if( jumping == true || falling == true ){
+                if( jumping == true ){
                     break   //何もしない
                 }
                 else{
                     moveToLeft()
                 }
             case .swipeRight:
-                if( jumping == true || falling == true ){
+                if( jumping == true ){
                     break   //何もしない
                 }
                 else{
@@ -729,7 +723,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: - 右移動
     func moveCtoR()
     {
-        if (jumping == false) && (falling == false)
+        if jumping == false
         {
             self.centerPosFlg = false
             self.leftPosFlg = false
@@ -747,7 +741,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     func moveLtoC()
     {
-        if (jumping == false) && (falling == false)
+        if jumping == false
         {
             self.centerPosFlg = true
             self.leftPosFlg = false
@@ -777,7 +771,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: - 左移動
     func moveCtoL()
     {
-        if (jumping == false) && (falling == false)
+        if jumping == false
         {
             self.centerPosFlg = false
             self.leftPosFlg = true
@@ -794,7 +788,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     func moveRtoC()
     {
-        if (self.jumping == false) && (self.falling == false)
+        if jumping == false
         {
             self.centerPosFlg = true
             self.leftPosFlg = false
@@ -824,7 +818,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: - 停止
     func moveStop() {
         moving = false
-        if (jumping == false) && (self.falling == false) {
+        if jumping == false {
             self.player.physicsBody!.velocity = CGVector(dx: 0, dy: 0)
         }
         let names = ["stand01","stand02"]
@@ -833,7 +827,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //MARK: - ジャンプ
     func jumpingAction() {
-        if (jumping == false) && (falling == false) {
+        if jumping == false {
             moving = false
             jumping = true
             playerSpeed = pleyerJumpSpeed
@@ -873,7 +867,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             //print("---Playerと地面が接触しました---")
             jumping = false
-            falling = false
             playSound(soundName: "tyakuti")
             self.playerSpeed = 0.0
             self.playerBaseNode.position.y = self.defaultYPosition
@@ -1131,7 +1124,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         UltraPower = 0
         //入力を受け付けないようにフラグを立てる
         ultraAttackState = .landing
-        if( jumping || falling ) //空中にいる場合
+        if( jumping ) //空中にいる場合
         {
             //地面に戻る
             playerSpeed = -2000
@@ -1173,16 +1166,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let guardShape = SKShapeNode(rect: CGRect(x: 0.0 - self.player.size.width/2, y: 0.0 - self.player.size.height/2, width: self.player.size.width, height: self.player.size.height + 10))
         guardShape.name = "guardShape"
         let physicsBody = SKPhysicsBody(rectangleOf: guardShape.frame.size)
-        if jumping == true
-        {
-            guardShape.position = CGPoint(x: 0, y: 0)
-        } else if falling == true
-        {
-            guardShape.position = CGPoint(x: 0, y: 0)
-        } else
-        {
-            guardShape.position = CGPoint(x: 0, y: 0)
-        }
+        guardShape.position = CGPoint(x: 0, y: 0)
         guardShape.fillColor = UIColor.clear
         guardShape.strokeColor = UIColor.clear
         guardShape.zPosition = 1
@@ -1258,7 +1242,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             for i in meteores
             {
                 i.removeAllActions()
-                if( jumping == true || falling == true ){
+                if jumping == true {
                     self.playerSpeed = self.speedFromMeteorAtGuard  //プレイヤーの速度が上がる
                     let meteor = self.meteores.first
                     let meteorMinY = (meteor?.position.y)! - ((meteor?.size.height)!/2)
