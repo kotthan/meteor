@@ -619,11 +619,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 //print("---タップを離したノード=\(String(describing: node?.name))---")
                 var buttonPushFlg = true
                 switch node{ //押したボタン別処理
-                    case let node where node == start0Node : startButtonAction()
-                    case let node where node == ultraOkButton : ultraAttack()
-                    default:buttonPushFlg = false
+                case let node where node == start0Node :
+                    startButtonAction()
+                case let node where node == ultraOkButton :
+                    ultraAttack()
+                default:
+                    buttonPushFlg = false
                 }
-                if buttonPushFlg { return }//ボタンが押されたら他のアクションはしない
+                // ボタンが押されていればスワイプ処理はしないので抜ける
+                if buttonPushFlg == true
+                {
+                    return
+                }
             }
             //スワイプ判定
             drawTouchPath(begin: beganPosOnView, end: endPosOnView)
