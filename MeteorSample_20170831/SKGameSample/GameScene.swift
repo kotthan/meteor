@@ -1021,7 +1021,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.attackTextureAnimation(self.player, names: names)
             playSound(soundName: "slash")
             attackShapeMake()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3)
                 {
                     self.attackFlg = false
                     self.attackShapes[0].removeFromParent()
