@@ -522,24 +522,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guard ( ultraAttackState == .none ) else { //必殺技中でなければ次の処理に進む
             return
         }
-            if let touch = touches.first as UITouch?
-            {
-                self.beganPos = touch.location(in: self)
-                self.beganPyPos = (camera?.position.y)!                     //カメラの移動量を計算するために覚えておく
-                if( touchPath != nil ){ //すでにタッチの軌跡が描かれていれば削除
-                    touchPath.removeFromParent()
-                }
-                let node:SKSpriteNode? = self.atPoint(beganPos) as? SKSpriteNode;
-                //print("---タップをしたノード=\(String(describing: node?.name))---")
-                if node == nil
-                {
-                    return
-                }
-                else if node?.name == "start0Node"
-                {
-                    startButtonAction()
-                }
+        
+        if let touch = touches.first as UITouch?
+        {
+            self.beganPos = touch.location(in: self)
+            self.beganPyPos = (camera?.position.y)!                     //カメラの移動量を計算するために覚えておく
+            if( touchPath != nil ){ //すでにタッチの軌跡が描かれていれば削除
+                touchPath.removeFromParent()
             }
+            let node:SKSpriteNode? = self.atPoint(beganPos) as? SKSpriteNode;
+            //print("---タップをしたノード=\(String(describing: node?.name))---")
+            if node == nil
+            {
+                return
+            }
+            else if node?.name == "start0Node"
+            {
+                startButtonAction()
+            }
+        }
     }
 
     //MARK: タッチ移動されたときに呼ばれる関数
@@ -548,49 +549,50 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guard ( ultraAttackState == .none ) else { //必殺技中でなければ次の処理に進む
             return
         }
-            /*for touch: AnyObject in touches
+        
+        /*for touch: AnyObject in touches
+        {
+            let endedPos = touch.location(in: self)                          //タップを話した点を定義
+            let cameraMoveY = ( (camera?.position.y)! -  self.beganPyPos )   //前回からのカメラの移動量を求める
+            self.beganPyPos = (camera?.position.y)!                          //次回計算時のために現在位置を覚える
+            self.beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
+            let xPos = beganPos.x - endedPos.x
+            let yPos = beganPos.y - endedPos.y
+            if( touchPath != nil )                                           //すでにタッチの軌跡が描かれていれば削除
             {
-                let endedPos = touch.location(in: self)                          //タップを話した点を定義
-                let cameraMoveY = ( (camera?.position.y)! -  self.beganPyPos )   //前回からのカメラの移動量を求める
-                self.beganPyPos = (camera?.position.y)!                          //次回計算時のために現在位置を覚える
-                self.beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
-                let xPos = beganPos.x - endedPos.x
-                let yPos = beganPos.y - endedPos.y
-                if( touchPath != nil )                                           //すでにタッチの軌跡が描かれていれば削除
+                touchPath.removeFromParent()
+            }
+            var points = [beganPos,endedPos]
+            touchPath = SKShapeNode(points: &points, count: points.count)   //デバッグ用に始点から現在地を線で結ぶ
+            if fabs(yPos) > fabs(xPos)
+            {
+                if yPos > 0                                                 //下スワイプ
                 {
-                    touchPath.removeFromParent()
+                    guardPower -= 100
+                    guardAction(endFlg: false)
+                    touchPath.strokeColor = UIColor.blue
                 }
-                var points = [beganPos,endedPos]
-                touchPath = SKShapeNode(points: &points, count: points.count)   //デバッグ用に始点から現在地を線で結ぶ
-                if fabs(yPos) > fabs(xPos)
+                else if yPos < 0                                           //上スワイプ
                 {
-                    if yPos > 0                                                 //下スワイプ
-                    {
-                        guardPower -= 100
-                        guardAction(endFlg: false)
-                        touchPath.strokeColor = UIColor.blue
-                    }
-                    else if yPos < 0                                           //上スワイプ
-                    {
-                        touchPath.strokeColor = UIColor.white
-                    }
+                    touchPath.strokeColor = UIColor.white
                 }
-                else
+            }
+            else
+            {
+                if xPos > 100                                             //左スワイプ
                 {
-                    if xPos > 100                                             //左スワイプ
-                    {
-                        touchPath.strokeColor = UIColor.white
-                    }
-                    else if xPos < -100                                       //右スワイプ
-                    {
-                        touchPath.strokeColor = UIColor.white
-                    }
+                    touchPath.strokeColor = UIColor.white
                 }
-                if( debug )
+                else if xPos < -100                                       //右スワイプ
                 {
-                    baseNode.addChild(touchPath)
+                    touchPath.strokeColor = UIColor.white
                 }
-             }*/
+            }
+            if( debug )
+            {
+                baseNode.addChild(touchPath)
+            }
+         }*/
     }
     
     //MARK: タッチアップされたときに呼ばれる関数
@@ -599,88 +601,89 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guard ( ultraAttackState == .none ) else { //必殺技中でなければ次の処理に進む
             return
         }
-            for touch: AnyObject in touches
+        
+        for touch: AnyObject in touches
+        {
+            let endPos = touch.location(in: self)
+            
+            let node:SKSpriteNode? = self.atPoint(endPos) as? SKSpriteNode;
+            //print("---タップを離したノード=\(String(describing: node?.name))---")
+            if node == ultraOkButton //必殺技ボタン
             {
-                let endPos = touch.location(in: self)
-                
-                let node:SKSpriteNode? = self.atPoint(endPos) as? SKSpriteNode;
-                //print("---タップを離したノード=\(String(describing: node?.name))---")
-                if node == ultraOkButton //必殺技ボタン
+                ultraAttack()
+                return
+            }
+            let cameraMoveY = ( (camera?.position.y)! -  beganPyPos )   //前回からのカメラの移動量を求める
+            beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
+            let xPos = beganPos.x - endPos.x
+            let floatYPos = beganPos.y - endPos.y
+            let yPos = round(floatYPos)
+            print("yPos : \(floatYPos),flooryPos : \(round(yPos))")
+            if( touchPath != nil )
+            { //すでにタッチの軌跡が描かれていれば削除
+                touchPath.removeFromParent()
+            }
+            var points = [beganPos,endPos]
+            touchPath = SKShapeNode(points: &points, count: points.count) //デバッグに始点から現在地を線で結ぶ
+            if gameoverFlg == true
+            {
+                return
+            }
+            else if (self.playerBaseNode.position.y > self.oneScreenSize.height/2)
+            {
+                if ( jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos) && (guardStatus != .guarding)
                 {
-                    ultraAttack()
-                    return
+                    attackAction()
+                    touchPath.strokeColor = UIColor.clear // red
+                    //print("---jump中にattackAction(),yPos=\(yPos)---")
                 }
-                let cameraMoveY = ( (camera?.position.y)! -  beganPyPos )   //前回からのカメラの移動量を求める
-                beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
-                let xPos = beganPos.x - endPos.x
-                let floatYPos = beganPos.y - endPos.y
-                let yPos = round(floatYPos)
-                print("yPos : \(floatYPos),flooryPos : \(round(yPos))")
-                if( touchPath != nil )
-                { //すでにタッチの軌跡が描かれていれば削除
-                    touchPath.removeFromParent()
-                }
-                var points = [beganPos,endPos]
-                touchPath = SKShapeNode(points: &points, count: points.count) //デバッグに始点から現在地を線で結ぶ
-                if gameoverFlg == true
+                else if (jumping == true || falling == true) && (yPos > 10) || (guardStatus == .guarding)
                 {
-                    return
-                }
-                else if (self.playerBaseNode.position.y > self.oneScreenSize.height/2)
-                {
-                    if ( jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos) && (guardStatus != .guarding)
-                    {
-                        attackAction()
-                        touchPath.strokeColor = UIColor.clear // red
-                        //print("---jump中にattackAction(),yPos=\(yPos)---")
-                    }
-                    else if (jumping == true || falling == true) && (yPos > 10) || (guardStatus == .guarding)
-                    {
-                        guardAction(endFlg: true)
-                        touchPath.strokeColor = UIColor.clear //blue
-                        print("---jump中にguardAction(),yPos=\(yPos)---")
-                    }
-                }
-                else if (self.playerBaseNode.position.y < self.oneScreenSize.height/2)
-                {
-                    if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos)) && (guardStatus != .guarding)
-                    {
-                        attackAction()
-                        touchPath.strokeColor = UIColor.clear//red
-                        //print("---groundアタック---")
-                    }
-                    else if (yPos > 50) || (guardStatus == .guarding)
-                    {
-                        self.guardAction(endFlg: true)
-                        touchPath.strokeColor = UIColor.clear//blue
-                        //print("---groundガード---")
-                    }
-                    else if yPos < -50
-                    {
-                        if meteorCollisionFlg == false
-                        {
-                            self.jumpingAction()
-                            touchPath.strokeColor = UIColor.clear//green
-                        }
-                    }
-                    else if xPos > 50
-                    {
-                        self.moveToLeft()
-                        touchPath.strokeColor = UIColor.clear//white
-                        print("---左スワイプ---")
-                    }
-                    else if xPos < -50
-                    {
-                        self.moveToRight()
-                        touchPath.strokeColor = UIColor.clear//white
-                        print("---右スワイプ---")
-                    }
-                }
-                if( debug )
-                {
-                    baseNode.addChild(touchPath)
+                    guardAction(endFlg: true)
+                    touchPath.strokeColor = UIColor.clear //blue
+                    print("---jump中にguardAction(),yPos=\(yPos)---")
                 }
             }
+            else if (self.playerBaseNode.position.y < self.oneScreenSize.height/2)
+            {
+                if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos)) && (guardStatus != .guarding)
+                {
+                    attackAction()
+                    touchPath.strokeColor = UIColor.clear//red
+                    //print("---groundアタック---")
+                }
+                else if (yPos > 50) || (guardStatus == .guarding)
+                {
+                    self.guardAction(endFlg: true)
+                    touchPath.strokeColor = UIColor.clear//blue
+                    //print("---groundガード---")
+                }
+                else if yPos < -50
+                {
+                    if meteorCollisionFlg == false
+                    {
+                        self.jumpingAction()
+                        touchPath.strokeColor = UIColor.clear//green
+                    }
+                }
+                else if xPos > 50
+                {
+                    self.moveToLeft()
+                    touchPath.strokeColor = UIColor.clear//white
+                    print("---左スワイプ---")
+                }
+                else if xPos < -50
+                {
+                    self.moveToRight()
+                    touchPath.strokeColor = UIColor.clear//white
+                    print("---右スワイプ---")
+                }
+            }
+            if( debug )
+            {
+                baseNode.addChild(touchPath)
+            }
+        }
     }
     //MARK: - 移動
     let moveL = SKAction.moveTo(x: 93.75, duration: 0.15)
