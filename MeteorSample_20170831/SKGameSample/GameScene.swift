@@ -555,8 +555,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             return
         }
         
-        /*for touch: AnyObject in touches
+        for touch: AnyObject in touches
         {
+            let endPosOnView = CGPoint(x: touch.location(in: view).x,
+                                       y: frame.maxY - touch.location(in: view).y )
+            drawTouchPath(begin: beganPosOnView, end: endPosOnView)
+            switch getTouchAction(begin: beganPosOnView, end: endPosOnView) {
+            case .tap:
+                break   //何もしない
+            case .swipeDown:
+                guardAction(endFlg: false)
+            case .swipeUp: //ジャンプしてない場合のみ
+                break   //何もしない
+            case .swipeLeft: //ジャンプしてない場合のみ
+                break   //何もしない
+            case .swipeRight://ジャンプしてない場合のみ
+                break   //何もしない
+            }
+            /*
             let endedPos = touch.location(in: self)                          //タップを話した点を定義
             let cameraMoveY = ( (camera?.position.y)! -  self.beganPyPos )   //前回からのカメラの移動量を求める
             self.beganPyPos = (camera?.position.y)!                          //次回計算時のために現在位置を覚える
@@ -597,7 +613,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
                 baseNode.addChild(touchPath)
             }
-         }*/
+            */
+         }
     }
     
     //MARK: タッチアップされたときに呼ばれる関数
@@ -621,11 +638,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 //print("---タップを離したノード=\(String(describing: node?.name))---")
                 var buttonPushFlg = true
                 switch node{ //押したボタン別処理
-                    case let node where node == start0Node : startButtonAction()
-                    case let node where node == ultraOkButton : ultraAttack()
-                    default:buttonPushFlg = false
+                case let node where node == start0Node :
+                    startButtonAction()
+                case let node where node == ultraOkButton :
+                    ultraAttack()
+                default:
+                    buttonPushFlg = false
                 }
-                if buttonPushFlg { return }//ボタンが押されたら他のアクションはしない
+                // ボタンが押されていればスワイプ処理はしないので抜ける
+                if buttonPushFlg == true
+                {
+                    return
+                }
             }
             //スワイプ判定
             drawTouchPath(begin: beganPosOnView, end: endPosOnView)
