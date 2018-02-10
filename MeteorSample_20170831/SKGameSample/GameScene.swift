@@ -410,7 +410,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 let meteor = self.meteores.first
                 let meteorMinY = (meteor?.position.y)! - ((meteor?.size.height)!/2)
                 let playerMaxY = playerBaseNode.position.y + ((player?.size.height)!/2)
-                let playerHalfSize = (player?.size.height)!/2
+                let playerHalfSize: CGFloat = 20 // playerPhisicsBody / 2 の実測値
                 if( meteorCollisionFlg ){ //衝突する
                     self.playerBaseNode.position.y = meteorMinY - playerHalfSize
                     self.playerSpeed -= self.meteorSpeed / 60
