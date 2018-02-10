@@ -227,7 +227,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 				let player = node as! SKSpriteNode
                 player.name = "player"
                 //player.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 64, height: 64), center: CGPoint(x: 0, y: 0))
-                let texture = SKTexture(imageNamed: "player")
+                let texture = SKTexture(imageNamed: "player00")
                 player.physicsBody = SKPhysicsBody(texture: texture, size: player.size)
                 player.physicsBody!.friction = 1.0                      //摩擦
                 player.physicsBody!.allowsRotation = false              //回転禁止
@@ -362,7 +362,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if(debug)
         {
             addParamSlider()                                //パラメータ調整用スライダー
-            view.showsPhysics = false
+            view.showsPhysics = true
             let playerBaseShape = SKShapeNode(rect: CGRect(x: 0, y: 0, width: 10, height: 10))
             playerBaseShape.zPosition = -50
             playerBaseNode.addChild( playerBaseShape )
