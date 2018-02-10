@@ -4,6 +4,7 @@
 import UIKit
 import SpriteKit
 import AVFoundation
+import AudioToolbox
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
   case let (l?, r?):
@@ -1120,6 +1121,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     }
                 }
                 playSound(soundName: "hakai")
+                vibrate()
                 //隕石と接触していたら速度を0にする
                 if( meteorCollisionFlg )
                 {
@@ -1419,6 +1421,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     {
         audioPlayer.stop()
         audioPlayer.currentTime = 0
+    }
+    
+    func vibrate() {
+        AudioServicesPlaySystemSound(1519)
+        AudioServicesDisposeSystemSoundID(1519)
     }
 
     //==========================================================
