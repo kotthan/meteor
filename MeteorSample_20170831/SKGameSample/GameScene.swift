@@ -30,6 +30,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var ground: SKSpriteNode!                                       //地面
     var lowestShape: SKShapeNode!                                   //落下判定シェイプノード
     var attackShape: SKShapeNode!                                   //攻撃判定シェイプノード
+    var attackShapeName: String = "attackShape"
     var guardShape: SKShapeNode!                                    //防御判定シェイプノード
     var guardGage = SKSpriteNode()                                     //ガードゲージ
     var start0Node: SKSpriteNode!
@@ -338,7 +339,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.baseNode.addChild(start0Node)
             })
 		}
-        
+        attackShapeMake()
         //===================
         //MARK: ガードゲージ
         //===================
@@ -918,7 +919,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var meteorInt: Int = 0
     var meteorDouble: Double = 70.0
     var meteores: [SKSpriteNode] = []
-    var attackShapes: [SKShapeNode] = []
     var guardShapes: [SKShapeNode] = []
     
     //MARK: 隕石落下
@@ -1016,7 +1016,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func attackShapeMake()
     {
         let attackShape = SKShapeNode(rect: CGRect(x: 0.0 - self.player.size.width/2, y: 0.0 - self.player.size.height/2, width: self.player.size.width, height: self.player.size.height))
-        attackShape.name = "attackShape"
+        attackShape.name = attackShapeName
         let physicsBody = SKPhysicsBody(rectangleOf: attackShape.frame.size)
         attackShape.position = CGPoint(x: 0, y: player.size.height)
         attackShape.fillColor = UIColor.clear
@@ -1028,9 +1028,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         attackShape.physicsBody?.categoryBitMask = 0b10000      //接触判定用マスク設定
         attackShape.physicsBody?.collisionBitMask = 0b0000      //接触対象をなしに設定
         attackShape.physicsBody?.contactTestBitMask = 0b1000    //接触対象をmeteorに設定
-        self.playerBaseNode.addChild(attackShape)
         //print("---attackShapeを生成しました---")
-        self.attackShapes.append(attackShape)
+        self.attackShape = attackShape
     }
     
     func attackAction()
@@ -1046,14 +1045,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let names = ["attack01","attack02","player00"]
             self.attackTextureAnimation(self.player, names: names)
             playSound(soundName: "slash")
-            attackShapeMake()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3)
-                {
+            if playerBaseNode.childNode(withName: attackShapeName) == nil {
+                self.playerBaseNode.addChild(attackShape)
+                let action1 = SKAction.wait(forDuration: 0.3)
+                let action2 = SKAction.removeFromParent()
+                let action3 = SKAction.run{
                     self.attackFlg = false
-                    self.attackShapes[0].removeFromParent()
-                    self.attackShapes.remove(at: 0)
                     //print("---アタックフラグをOFF---")
                 }
+                let actions = SKAction.sequence([action1,action2,action3])
+                attackShape.run(actions)
+            }
         }
     }
     
@@ -1070,8 +1072,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
                 if ultraAttackState == .none //必殺技のときは続けて攻撃するため
                 {
-                    attackShapes[0].physicsBody?.categoryBitMask = 0
-                    attackShapes[0].physicsBody?.categoryBitMask = 0
+                    if let attackNode = playerBaseNode.childNode(withName: attackShapeName)
+                    {
+                        attackNode.removeAllActions()
+                        attackNode.removeFromParent()
+                    }
+                    attackFlg = false
+                    //print("---アタックフラグをOFF---")
                 }
                 meteores[0].physicsBody?.categoryBitMask = 0
                 meteores[0].physicsBody?.contactTestBitMask = 0
@@ -1080,7 +1087,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 let particle = SKEmitterNode(fileNamed: "MeteorBroken.sks")
                 //接触座標にパーティクルを放出するようにする。
                 particle!.position = CGPoint(x: playerBaseNode.position.x,
-                                             y: playerBaseNode.position.y + (attackShapes[0].position.y))
+                                             y: playerBaseNode.position.y + (attackShape.position.y))
                 //0.7秒後にシーンから消すアクションを作成する。
                 let action1 = SKAction.wait(forDuration: 0.5)
                 let action2 = SKAction.removeFromParent()
@@ -1153,7 +1160,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func ultraAttackJump(){
         //攻撃Shapeを出す
         self.attackFlg = true
-        attackShapeMake()
+        if let attackNode = playerBaseNode.childNode(withName: attackShapeName) {
+            attackNode.removeAllActions()
+            attackNode.removeFromParent()
+        }
+        else{
+            self.playerBaseNode.addChild(attackShape)
+        }
         //大ジャンプ
         moving = false
         jumping = true
@@ -1164,8 +1177,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func ultraAttackEnd(){
         self.attackFlg = false
         //attackShapeを消す
-        self.attackShapes[0].removeFromParent()
-        self.attackShapes.remove(at: 0)
+        if let attackNode = playerBaseNode.childNode(withName: attackShapeName)
+        {
+            attackNode.removeFromParent()
+        }
         //フラグを落とす
         ultraAttackState = .none
         if( meteores.isEmpty ){ //全て壊せているはずだが一応チェックする
