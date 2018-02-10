@@ -362,7 +362,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if(debug)
         {
             addParamSlider()                                //パラメータ調整用スライダー
-            view.showsPhysics = false
+            //view.showsPhysics = false
             let playerBaseShape = SKShapeNode(rect: CGRect(x: 0, y: 0, width: 10, height: 10))
             playerBaseShape.zPosition = -50
             playerBaseNode.addChild( playerBaseShape )
