@@ -1038,7 +1038,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             return
         }
-        else
+        if attackFlg == false
         {
             //print("---アタックフラグをON---")
             self.attackFlg = true
