@@ -110,6 +110,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //MARK: タッチ関係プロパティ
     var beganPos: CGPoint = CGPoint.zero
+    var beganPosOnView: CGPoint = CGPoint.zero  //viewの座標系でのタッチ位置
 	var tapPoint: CGPoint = CGPoint.zero
     var beganPyPos: CGFloat = 0.0
     var endPyPos:CGFloat = 0.0
@@ -536,6 +537,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if let touch = touches.first as UITouch?
         {
+            self.beganPosOnView = CGPoint(x: touch.location(in: view).x,
+                                          y: frame.maxY - touch.location(in: view).y ) //y座標を反転する
             self.beganPos = touch.location(in: self)
             self.beganPyPos = (camera?.position.y)!                     //カメラの移動量を計算するために覚えておく
             if( touchPath != nil ){ //すでにタッチの軌跡が描かれていれば削除
@@ -614,6 +617,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         for touch: AnyObject in touches
         {
+            let endPosOnView = CGPoint(x: touch.location(in: view).x,
+                                       y: frame.maxY - touch.location(in: view).y )
             let endPos = touch.location(in: self)
             //ボタンタップ判定
             let node:SKSpriteNode? = self.atPoint(endPos) as? SKSpriteNode;
@@ -640,7 +645,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             var points = [beganPos,endPos]
             touchPath = SKShapeNode(points: &points, count: points.count) //デバッグに始点から現在地を線で結ぶ
-            switch getTouchAction(moveX: xPos, moveY: yPos) {
+            switch getTouchAction(begin: beganPosOnView, end: endPosOnView) {
             case .tap:
                 attackAction()
                 touchPath.strokeColor = UIColor.red
@@ -739,8 +744,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
-    func getTouchAction(moveX: CGFloat, moveY:CGFloat) ->TouchAction
+    func getTouchAction(begin: CGPoint, end:CGPoint) ->TouchAction
     {
+        let moveX = end.x - begin.x
+        let moveY = end.y - begin.y
         let margin:CGFloat = 50
         //移動量が少なかったらタップ
         if( fabs(moveX) < margin && fabs(moveY) < margin ){
