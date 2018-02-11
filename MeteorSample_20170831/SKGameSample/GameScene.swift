@@ -44,7 +44,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var highScore = 0                                               //ハイスコア
     var ultraButton: SKSpriteNode!
     var ultraOkButton: SKSpriteNode!
-    var pauseButton: UIButton!                                      //ポーズボタン
+    var pauseButton: PauseButton!                                      //ポーズボタン
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
 	let oneScreenSize = CGSize(width: 375, height: 667)             //１画面サイズ
@@ -1592,11 +1592,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         btn.addTarget(self, action: #selector(self.setDefaultParam), for: .touchUpInside)
         debugView.addSubview(btn)
         //　ポーズボタン
-        pauseButton = UIButton( type: UIButtonType.custom )
-        pauseButton.frame = CGRect(x: 0, y: 0, width: 50, height: 50) //ボタンのサイズをここで決めている
-        pauseButton.setImage(UIImage(named:"pause"), for: .normal)
-        pauseButton.imageView?.contentMode = UIViewContentMode.scaleAspectFit  //上記サイズに画像を合わせる
-        pauseButton.backgroundColor = UIColor.clear    //背景は透明
+        pauseButton = PauseButton()
         pauseButton.layer.anchorPoint = CGPoint(x: 1, y: 0)//右上
         pauseButton.layer.position = CGPoint(x: frame.maxX - 10, y: 25)
         pauseButton.addTarget(self, action: #selector(self.sliderSwitchHidden), for: .touchUpInside)
@@ -1616,12 +1612,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.view!.scene?.isPaused = !sliderHidden
         if( sliderHidden == true )
         {
-            pauseButton.setImage(UIImage(named:"pause"), for: .normal)
+            pauseButton.setImage(type: .Pause)
             play()
         }
         else
         {
-            pauseButton.setImage(UIImage(named:"restart"), for: .normal)
+            pauseButton.setImage(type: .Restart)
             pause()
         }
     }
