@@ -44,7 +44,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var highScore = 0                                               //ハイスコア
     var ultraButton: SKSpriteNode!
     var ultraOkButton: SKSpriteNode!
-    var pauseButton: PauseButton!                                      //ポーズボタン
+    var pauseButton: PauseButton!                                   //ポーズボタン
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
 	let oneScreenSize = CGSize(width: 375, height: 667)             //１画面サイズ
@@ -100,7 +100,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: 隕石・プレイヤー動作プロパティ
     var playerSpeed : CGFloat = 0.0                                 //プレイヤーの速度
     var meteorSpeed : CGFloat = 0.0                                 //隕石のスピード[pixels/s]
-    var meteorUpScale : CGFloat = 0.8                                 //隕石の増加倍率
+    var meteorUpScale : CGFloat = 0.8                               //隕石の増加倍率
     //調整用パラメータ
     var gravity : CGFloat = -900                                    //重力 9.8 [m/s^2] * 150 [pixels/m]
     var meteorPos :CGFloat = 1320.0                                 //隕石の初期位置(1500.0)
@@ -111,7 +111,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var meteorSpeedAtGuard: CGFloat = 100                           //隕石が防御された時の速度
     var speedFromMeteorAtGuard : CGFloat = 350                      //隕石を防御した時にプレイヤーが受ける隕石の速度
     var cameraMax : CGFloat = 1450                                  //カメラの上限
-    
     //MARK: タッチ関係プロパティ
     var beganPos: CGPoint = CGPoint.zero
     var beganPosOnView: CGPoint = CGPoint.zero  //viewの座標系でのタッチ位置

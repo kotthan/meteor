@@ -20,6 +20,7 @@
 		A304F203203175310086BED8 /* GameOverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A304F202203175310086BED8 /* GameOverView.swift */; };
 		A304F2052031795C0086BED8 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A304F2042031795C0086BED8 /* IconButton.swift */; };
 		A3B2A1852013036B004E6F75 /* MeteorBroken.sks in Resources */ = {isa = PBXBuildFile; fileRef = A3B2A1842013036B004E6F75 /* MeteorBroken.sks */; };
+		B61C66672031C12C00FE167A /* GuardPod.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61C66662031C12C00FE167A /* GuardPod.swift */; };
 		B6B4877B1F66BA1A00E41389 /* slash.wav in Resources */ = {isa = PBXBuildFile; fileRef = B6B4877A1F66BA1A00E41389 /* slash.wav */; };
 		B6B4877F1F66BC0C00E41389 /* jump.wav in Resources */ = {isa = PBXBuildFile; fileRef = B6B4877E1F66BC0C00E41389 /* jump.wav */; };
 		B6B487811F66BDC400E41389 /* move.wav in Resources */ = {isa = PBXBuildFile; fileRef = B6B487801F66BDC400E41389 /* move.wav */; };
@@ -27,7 +28,6 @@
 		B6B487851F66BEE700E41389 /* tyakuti.wav in Resources */ = {isa = PBXBuildFile; fileRef = B6B487841F66BEE700E41389 /* tyakuti.wav */; };
 		B6B487871F66BF8900E41389 /* bougyo.wav in Resources */ = {isa = PBXBuildFile; fileRef = B6B487861F66BF8900E41389 /* bougyo.wav */; };
 		B6BBD46A1F5A777500DEC894 /* GameViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6BBD4691F5A777500DEC894 /* GameViewController.xib */; };
-		B6BBD46C1F5A872700DEC894 /* reStartButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6BBD46B1F5A872700DEC894 /* reStartButton.swift */; };
 		B6BE9F2F1F6800DE00348B5E /* bgm.mid in Resources */ = {isa = PBXBuildFile; fileRef = B6BE9F2E1F6800DE00348B5E /* bgm.mid */; };
 		B6BE9F311F680D4F00348B5E /* bgmn.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B6BE9F301F680D4F00348B5E /* bgmn.mp3 */; };
 		B6E07F0D1F41CCEC007EB82F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6E07F0C1F41CCEC007EB82F /* Assets.xcassets */; };
@@ -52,6 +52,7 @@
 		A304F202203175310086BED8 /* GameOverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverView.swift; sourceTree = "<group>"; };
 		A304F2042031795C0086BED8 /* IconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
 		A3B2A1842013036B004E6F75 /* MeteorBroken.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MeteorBroken.sks; sourceTree = "<group>"; };
+		B61C66662031C12C00FE167A /* GuardPod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuardPod.swift; sourceTree = "<group>"; };
 		B6B4877A1F66BA1A00E41389 /* slash.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = slash.wav; sourceTree = "<group>"; };
 		B6B4877E1F66BC0C00E41389 /* jump.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = jump.wav; sourceTree = "<group>"; };
 		B6B487801F66BDC400E41389 /* move.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = move.wav; sourceTree = "<group>"; };
@@ -59,7 +60,6 @@
 		B6B487841F66BEE700E41389 /* tyakuti.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tyakuti.wav; sourceTree = "<group>"; };
 		B6B487861F66BF8900E41389 /* bougyo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = bougyo.wav; sourceTree = "<group>"; };
 		B6BBD4691F5A777500DEC894 /* GameViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GameViewController.xib; sourceTree = "<group>"; };
-		B6BBD46B1F5A872700DEC894 /* reStartButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = reStartButton.swift; sourceTree = "<group>"; };
 		B6BE9F2E1F6800DE00348B5E /* bgm.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = bgm.mid; sourceTree = "<group>"; };
 		B6BE9F301F680D4F00348B5E /* bgmn.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bgmn.mp3; sourceTree = "<group>"; };
 		B6E07F0C1F41CCEC007EB82F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -98,15 +98,17 @@
 		54F6B14A1C3CEEFF00B1D569 /* SKGameSample */ = {
 			isa = PBXGroup;
 			children = (
-				A3B2A1842013036B004E6F75 /* MeteorBroken.sks */,
+				54F6B15D1C3CEFA000B1D569 /* GameScene.swift */,
 				54F6B14D1C3CEEFF00B1D569 /* ViewController.swift */,
 				54F6B15E1C3CEFA000B1D569 /* GameView.swift */,
 				B6ED2EC91F4417C600567728 /* TitleScene.swift */,
 				A304F1FC202FE8DD0086BED8 /* PauseButton.swift */,
+				B61C66662031C12C00FE167A /* GuardPod.swift */,
 				A304F1FE203095E10086BED8 /* PauseView.swift */,
-				54F6B15D1C3CEFA000B1D569 /* GameScene.swift */,
 				A304F202203175310086BED8 /* GameOverView.swift */,
+				A304F2042031795C0086BED8 /* IconButton.swift */,
 				B6BE9F301F680D4F00348B5E /* bgmn.mp3 */,
+				A3B2A1842013036B004E6F75 /* MeteorBroken.sks */,
 				B6B4877A1F66BA1A00E41389 /* slash.wav */,
 				B6BE9F2E1F6800DE00348B5E /* bgm.mid */,
 				B6ED2EC71F44115D00567728 /* TitleScene.sks */,
@@ -117,7 +119,6 @@
 				B6B487861F66BF8900E41389 /* bougyo.wav */,
 				B6B487841F66BEE700E41389 /* tyakuti.wav */,
 				B6B487821F66BE4800E41389 /* hakai.wav */,
-				B6BBD46B1F5A872700DEC894 /* reStartButton.swift */,
 				548199491C3F3FB00017838C /* GameScene.sks */,
 				54F6B14F1C3CEEFF00B1D569 /* Main.storyboard */,
 				B6BBD4691F5A777500DEC894 /* GameViewController.xib */,
@@ -125,7 +126,6 @@
 				54F6B14B1C3CEEFF00B1D569 /* AppDelegate.swift */,
 				B6E07F0C1F41CCEC007EB82F /* Assets.xcassets */,
 				54F6B1571C3CEEFF00B1D569 /* Info.plist */,
-				A304F2042031795C0086BED8 /* IconButton.swift */,
 			);
 			path = SKGameSample;
 			sourceTree = "<group>";
@@ -221,11 +221,11 @@
 				B6ED2ECA1F4417C600567728 /* TitleScene.swift in Sources */,
 				54F6B1611C3CEFA000B1D569 /* GameScene.swift in Sources */,
 				A304F1FF203095E10086BED8 /* PauseView.swift in Sources */,
-				B6BBD46C1F5A872700DEC894 /* reStartButton.swift in Sources */,
 				54F6B14E1C3CEEFF00B1D569 /* ViewController.swift in Sources */,
 				54F6B1621C3CEFA000B1D569 /* GameView.swift in Sources */,
 				A304F2052031795C0086BED8 /* IconButton.swift in Sources */,
 				A304F1FD202FE8DD0086BED8 /* PauseButton.swift in Sources */,
+				B61C66672031C12C00FE167A /* GuardPod.swift in Sources */,
 				54F6B14C1C3CEEFF00B1D569 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
