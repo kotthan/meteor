@@ -1305,7 +1305,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     {
         if( !gameoverFlg ){ //既にGameOverの場合はなにもしない
             self.gameoverFlg = true
-            self.isPaused = true
             self.meteorTimer?.invalidate()
             pauseButton.isHidden = true//ポーズボタンを非表示にする
             //ハイスコア更新
@@ -1318,7 +1317,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             print("------------gameover------------")
             stop()
-            gameOverViewCreate()
+            //墜落演出
+            let circle = SKShapeNode(circleOfRadius:1)
+            circle.position = playerBaseNode.position
+            circle.zPosition = 1500.0
+            circle.fillColor = UIColor.white
+            self.addChild(circle)
+            let actions = SKAction.sequence(
+                [ SKAction.scale(to: 1000, duration: 1.0),
+                  SKAction.wait(forDuration: 0.5),
+                  SKAction.fadeOut(withDuration: 1),
+                  SKAction.removeFromParent(),
+                  SKAction.run{self.isPaused = true},
+                  SKAction.run(gameOverViewCreate)])
+            circle.run(actions)
         }
     }
     
