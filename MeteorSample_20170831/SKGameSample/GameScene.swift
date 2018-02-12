@@ -1339,13 +1339,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var buttonX:CGFloat = 10    //左端の余白
         var buttonY = gameOverView.frame.size.height - 10    //下端の余白
         //Titleボタン
-        let newGameBtn = buttonIcon(image:"home", color:UIColor(red: 0.1, green: 0.8, blue: 0.6, alpha: 1))
+        let newGameBtn = IconButton(image:"home", color:UIColor(red: 0.1, green: 0.8, blue: 0.6, alpha: 1))
         newGameBtn.layer.position = CGPoint(x: buttonX, y: buttonY )
         newGameBtn.addTarget(self, action: #selector(self.newGameButtonAction), for: .touchUpInside)
         gameOverView.addSubview(newGameBtn)
         buttonX += newGameBtn.frame.size.width + 10
         //Retryボタン
-        let retryBtn = buttonIcon(image: "restart", color: UIColor(red: 0.2, green: 0.6, blue: 0.8, alpha: 1))
+        let retryBtn = IconButton(image: "restart", color: UIColor(red: 0.2, green: 0.6, blue: 0.8, alpha: 1))
         retryBtn.layer.position = CGPoint(x: buttonX, y: buttonY)
         retryBtn.addTarget(self, action: #selector(self.retryButtonAction), for: .touchUpInside)
         gameOverView.addSubview(retryBtn)
@@ -1369,7 +1369,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
          */
         self.view!.addSubview(gameOverView)
     }
-    
+    /*
     //ボタンの見た目を揃えるための関数
     func buttonIcon(image:String,color:UIColor) -> UIButton{
         let btn = UIButton(type: UIButtonType.roundedRect)              //角丸四角のボタンをつくる
@@ -1385,6 +1385,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         btn.layer.anchorPoint = CGPoint(x: 0, y: 1)                     //アンカーポイントを左下にする
         return btn
     }
+ */
     
     @objc func newGameButtonAction(_ sender: UIButton ){
         removeParamSlider()
