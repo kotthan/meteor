@@ -376,6 +376,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //===================
         pauseView.isHidden = true
         self.view!.addSubview(pauseView)
+        //　ポーズボタン
+        pauseButton = PauseButton()
+        pauseButton.layer.anchorPoint = CGPoint(x: 1, y: 0)//右上
+        pauseButton.layer.position = CGPoint(x: frame.maxX - 10, y: 25)
+        pauseButton.setPauseFunc{
+            self.sliderHidden = !self.sliderHidden
+            self.pauseView.isHidden = self.sliderHidden
+            self.view!.scene?.isPaused = !self.sliderHidden
+            self.pause()
+        }
+        pauseButton.setResumeFunc{
+            self.sliderHidden = !self.sliderHidden
+            self.pauseView.isHidden = self.sliderHidden
+            self.view!.scene?.isPaused = !self.sliderHidden
+            self.play()
+        }
+        pauseButton.isHidden = true     //タイトル画面では非表示
+        self.view!.addSubview(pauseButton)
         
         // アプリがバックグラウンドから復帰した際に呼ぶ関数の登録
         NotificationCenter.default.addObserver(self,
@@ -1577,24 +1595,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         btn.addTarget(self, action: #selector(self.setDefaultParam), for: .touchUpInside)
         debugView.addSubview(btn)
          */
-        //　ポーズボタン
-        pauseButton = PauseButton()
-        pauseButton.layer.anchorPoint = CGPoint(x: 1, y: 0)//右上
-        pauseButton.layer.position = CGPoint(x: frame.maxX - 10, y: 25)
-        pauseButton.setPauseFunc{
-            self.sliderHidden = !self.sliderHidden
-            self.pauseView.isHidden = self.sliderHidden
-            self.view!.scene?.isPaused = !self.sliderHidden
-            self.pause()
-        }
-        pauseButton.setResumeFunc{
-            self.sliderHidden = !self.sliderHidden
-            self.pauseView.isHidden = self.sliderHidden
-            self.view!.scene?.isPaused = !self.sliderHidden
-            self.play()
-        }
-        pauseButton.isHidden = true     //タイトル画面では非表示
-        self.view!.addSubview(pauseButton)
         //デフォルト非表示
         debugView.isHidden = true
     }
