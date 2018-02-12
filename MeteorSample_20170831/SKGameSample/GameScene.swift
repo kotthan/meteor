@@ -1318,33 +1318,38 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             print("------------gameover------------")
             stop()
-            gameOverView()
+            gameOverViewCreate()
         }
     }
     
-    var backGroundView: UIView!
-    func gameOverView(){
+    var gameOverView: GameOverView!
+    func gameOverViewCreate(){
         
         print("gameOverViewCreate")
+        //ゲームオーバー画面
+        gameOverView = GameOverView(score: self.score, highScore: self.highScore )
+        /*
         //背景兼ベース
         backGroundView = UIView(frame: CGRect(x: self.view!.frame.size.width * 0.05,
                                                   y: self.view!.frame.size.height * 0.05,
                                                   width: self.view!.frame.size.width * 0.9,
                                                   height: self.view!.frame.size.height * 0.9))
         backGroundView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+         */
         var buttonX:CGFloat = 10    //左端の余白
-        var buttonY = backGroundView.frame.size.height - 10    //下端の余白
+        var buttonY = gameOverView.frame.size.height - 10    //下端の余白
         //Titleボタン
         let newGameBtn = buttonIcon(image:"home", color:UIColor(red: 0.1, green: 0.8, blue: 0.6, alpha: 1))
         newGameBtn.layer.position = CGPoint(x: buttonX, y: buttonY )
         newGameBtn.addTarget(self, action: #selector(self.newGameButtonAction), for: .touchUpInside)
-        backGroundView.addSubview(newGameBtn)
+        gameOverView.addSubview(newGameBtn)
         buttonX += newGameBtn.frame.size.width + 10
         //Retryボタン
         let retryBtn = buttonIcon(image: "restart", color: UIColor(red: 0.2, green: 0.6, blue: 0.8, alpha: 1))
         retryBtn.layer.position = CGPoint(x: buttonX, y: buttonY)
         retryBtn.addTarget(self, action: #selector(self.retryButtonAction), for: .touchUpInside)
-        backGroundView.addSubview(retryBtn)
+        gameOverView.addSubview(retryBtn)
+        /*
         //スコアラベル
         let scoreLabel = UILabel( )
         scoreLabel.text = "Score: " + String( self.score )
@@ -1361,7 +1366,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         highScoreLabel.layer.position.y = backGroundView.frame.size.height/4 + scoreLabel.frame.size.height
         highScoreLabel.layer.position.x = backGroundView.frame.size.width/2
         backGroundView.addSubview(highScoreLabel)
-        self.view!.addSubview(backGroundView)
+         */
+        self.view!.addSubview(gameOverView)
     }
     
     //ボタンの見た目を揃えるための関数
@@ -1382,12 +1388,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     @objc func newGameButtonAction(_ sender: UIButton ){
         removeParamSlider()
-        backGroundView.removeFromSuperview()
+        gameOverView.removeFromSuperview()
         newGame()
     }
     @objc func retryButtonAction(_ sender: UIButton ){
         removeParamSlider()
-        backGroundView.removeFromSuperview()
+        gameOverView.removeFromSuperview()
         let scene = GameScene(size: self.scene!.size)
         scene.scaleMode = SKSceneScaleMode.aspectFill
         scene.retryFlg = true
