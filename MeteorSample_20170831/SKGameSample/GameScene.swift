@@ -1426,8 +1426,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func vibrate() {
-        AudioServicesPlaySystemSound(1519)
-        AudioServicesDisposeSystemSoundID(1519)
+        //AudioServicesPlaySystemSound(1519)
+        //AudioServicesDisposeSystemSoundID(1519)
     }
 
     //==========================================================
