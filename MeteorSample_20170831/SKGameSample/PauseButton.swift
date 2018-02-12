@@ -13,11 +13,9 @@ class PauseButton: UIButton {
     let pauseImage = UIImage(named:"pause")         //ポーズ時の画像
     let restartImage = UIImage(named:"restart")     //再開時の画像
     let buttonSize = CGSize(width: 50, height: 50)  //ボタンのサイズ
-    
-    enum ImageType{
-        case Pause
-        case Restart
-    }
+    var isPaused = false                            //ポーズ中かどうか
+    private var resume: (() -> Void)?               //再開時に呼ばれる関数
+    private var pause: (() -> Void)?               //再開時に呼ばれる関数
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -29,15 +27,29 @@ class PauseButton: UIButton {
         self.imageView?.contentMode = UIViewContentMode.scaleAspectFit
         //背景は透明
         self.backgroundColor = UIColor.clear
+        //ボタン押下時に呼ばれる関数の設定
+        self.addTarget(self, action: #selector(self.tapped(sender:)), for: .touchUpInside)
+    }
+
+    //ポーズ時の動作を設定する関数
+    func setPauseFunc(action: @escaping () -> Void) {
+        self.pause = action
     }
     
-    //ボタンの画像を変更する
-    func setImage(type: ImageType) {
-        switch type {
-        case .Pause:
-            self.setImage(pauseImage, for: .normal)
-        case .Restart:
+    //ポーズ解除時の動作を設定する関数
+    func setResumeFunc(action: @escaping () -> Void) {
+        self.resume = action
+    }
+    
+    @objc func tapped(sender: PauseButton) {
+        isPaused = !isPaused
+        if( isPaused == true ){
             self.setImage(restartImage, for: .normal)
+            self.pause?()
+        }
+        else{
+            self.setImage(pauseImage, for: .normal)
+            self.resume?()
         }
     }
     

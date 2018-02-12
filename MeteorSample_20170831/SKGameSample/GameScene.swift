@@ -1605,7 +1605,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pauseButton = PauseButton()
         pauseButton.layer.anchorPoint = CGPoint(x: 1, y: 0)//右上
         pauseButton.layer.position = CGPoint(x: frame.maxX - 10, y: 25)
-        pauseButton.addTarget(self, action: #selector(self.sliderSwitchHidden), for: .touchUpInside)
+        pauseButton.setPauseFunc{
+            self.sliderHidden = !self.sliderHidden
+            self.pauseView.isHidden = self.sliderHidden
+            self.view!.scene?.isPaused = !self.sliderHidden
+            self.pause()
+        }
+        pauseButton.setResumeFunc{
+            self.sliderHidden = !self.sliderHidden
+            self.pauseView.isHidden = self.sliderHidden
+            self.view!.scene?.isPaused = !self.sliderHidden
+            self.play()
+        }
         pauseButton.isHidden = true     //タイトル画面では非表示
         self.view!.addSubview(pauseButton)
         //デフォルト非表示
@@ -1618,19 +1629,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var sliderHidden: Bool = true
     @objc func sliderSwitchHidden( ){
         sliderHidden = !sliderHidden
-        //debugView.isHidden = sliderHidden
-        pauseView.isHidden = sliderHidden
-        self.view!.scene?.isPaused = !sliderHidden
-        if( sliderHidden == true )
-        {
-            pauseButton.setImage(type: .Pause)
-            play()
-        }
-        else
-        {
-            pauseButton.setImage(type: .Restart)
-            pause()
-        }
+        debugView.isHidden = sliderHidden
     }
     @objc func setDefaultParam(){
         //調整用パラメータ
