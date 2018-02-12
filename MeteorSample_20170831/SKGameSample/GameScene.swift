@@ -1328,14 +1328,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         print("gameOverViewCreate")
         //ゲームオーバー画面
         gameOverView = GameOverView(score: self.score, highScore: self.highScore )
-        /*
-        //背景兼ベース
-        backGroundView = UIView(frame: CGRect(x: self.view!.frame.size.width * 0.05,
-                                                  y: self.view!.frame.size.height * 0.05,
-                                                  width: self.view!.frame.size.width * 0.9,
-                                                  height: self.view!.frame.size.height * 0.9))
-        backGroundView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
-         */
         var buttonX:CGFloat = 10    //左端の余白
         var buttonY = gameOverView.frame.size.height - 10    //下端の余白
         //Titleボタン
@@ -1349,44 +1341,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         retryBtn.layer.position = CGPoint(x: buttonX, y: buttonY)
         retryBtn.addTarget(self, action: #selector(self.retryButtonAction), for: .touchUpInside)
         gameOverView.addSubview(retryBtn)
-        /*
-        //スコアラベル
-        let scoreLabel = UILabel( )
-        scoreLabel.text = "Score: " + String( self.score )
-        scoreLabel.sizeToFit()
-        scoreLabel.textColor = UIColor.white
-        scoreLabel.layer.position.y = backGroundView.frame.size.height/4
-        scoreLabel.layer.position.x = backGroundView.frame.size.width/2
-        backGroundView.addSubview(scoreLabel)
-        //ハイスコアラベル
-        let highScoreLabel = UILabel( )
-        highScoreLabel.text = "High Score: " + String( self.highScore )
-        highScoreLabel.sizeToFit()
-        highScoreLabel.textColor = UIColor.white
-        highScoreLabel.layer.position.y = backGroundView.frame.size.height/4 + scoreLabel.frame.size.height
-        highScoreLabel.layer.position.x = backGroundView.frame.size.width/2
-        backGroundView.addSubview(highScoreLabel)
-         */
         self.view!.addSubview(gameOverView)
     }
-    /*
-    //ボタンの見た目を揃えるための関数
-    func buttonIcon(image:String,color:UIColor) -> UIButton{
-        let btn = UIButton(type: UIButtonType.roundedRect)              //角丸四角のボタンをつくる
-        btn.frame = CGRect(x: 0, y: 0, width: 75, height: 75)           //ボタンのサイズ
-        btn.setImage(UIImage(named:image), for: .normal)                //画像
-        btn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)          //余白
-        btn.imageView?.contentMode = UIViewContentMode.scaleAspectFit   //ボタンのサイズに画像を合わせる
-        btn.backgroundColor = color                                     //背景色
-        btn.tintColor = UIColor.white                                   //画像の色
-        btn.layer.cornerRadius = 10.0                                   //角の丸み
-        //btn.layer.borderColor = UIColor.white.cgColor                   //枠線の色
-        //btn.layer.borderWidth = 5                                       //枠線の太さ
-        btn.layer.anchorPoint = CGPoint(x: 0, y: 1)                     //アンカーポイントを左下にする
-        return btn
-    }
- */
-    
+
     @objc func newGameButtonAction(_ sender: UIButton ){
         removeParamSlider()
         gameOverView.removeFromSuperview()
