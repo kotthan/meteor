@@ -4,6 +4,7 @@
 import UIKit
 import SpriteKit
 import AVFoundation
+import AudioToolbox
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
   case let (l?, r?):
@@ -30,8 +31,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var ground: SKSpriteNode!                                       //地面
     var lowestShape: SKShapeNode!                                   //落下判定シェイプノード
     var attackShape: SKShapeNode!                                   //攻撃判定シェイプノード
+    var attackShapeName: String = "attackShape"
     var guardShape: SKShapeNode!                                    //防御判定シェイプノード
-    var guardGage: SKShapeNode!                                     //ガードゲージ
+    var guardShapeName: String = "guardShape"
+    var guardGage = SKSpriteNode()                                     //ガードゲージ
     var start0Node: SKSpriteNode!
     let scoreLabel = SKLabelNode()                                  //スコア表示ラベル
     var score = 0                                                   //スコア
@@ -41,10 +44,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var highScore = 0                                               //ハイスコア
     var ultraButton: SKSpriteNode!
     var ultraOkButton: SKSpriteNode!
-    var pauseButton: UIButton!                                      //ポーズボタン
+    var pauseButton: PauseButton!                                      //ポーズボタン
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
 	let oneScreenSize = CGSize(width: 375, height: 667)             //１画面サイズ
+    static let ScreenSize = CGSize(width: 375, height: 667) //テスト
+    let pauseView = PauseView()                                     //ポース画面
     
     //MARK: タイマー
     var meteorTimer: Timer?                                         //隕石用タイマー
@@ -52,10 +57,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: フラグ
     var gameoverFlg : Bool = false                                  //ゲームオーバーフラグ
     var attackFlg : Bool = false                                    //攻撃フラグ
-    var guardFlg : Bool = false                                     //ガードフラグ
+    enum guardState{    //ガード状態
+        case enable     //ガード可
+        case disable    //ガード不可
+        case guarding   //ガード中
+    }
+    var guardStatus = guardState.enable                             //ガード状態
     var moving: Bool = false                                        //移動中フラグ
     var jumping: Bool = false                                       //ジャンプ中フラグ
-    var falling: Bool = false                                       //落下中フラグ
     var centerPosFlg: Bool = true                                   //中央位置フラグ
     var leftPosFlg: Bool = false                                    //左位置フラグ
     var rightPosFlg: Bool = false                                   //右位置フラグ
@@ -105,10 +114,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //MARK: タッチ関係プロパティ
     var beganPos: CGPoint = CGPoint.zero
+    var beganPosOnView: CGPoint = CGPoint.zero  //viewの座標系でのタッチ位置
 	var tapPoint: CGPoint = CGPoint.zero
     var beganPyPos: CGFloat = 0.0
     var endPyPos:CGFloat = 0.0
     var movePyPos:CGFloat = 0.0
+    var touchNode: SKSpriteNode!
+    enum TouchAction {  //タッチアクション
+        case tap        //タップ
+        case swipeUp    //上スワイプ
+        case swipeDown  //下スワイプ
+        case swipeLeft  //左スワイプ
+        case swipeRight //右スワイプ
+    }
     
     //MARK: 画面移動プロパティ
 	var screenSpeed: CGFloat = 28.0
@@ -222,7 +240,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 				let player = node as! SKSpriteNode
                 player.name = "player"
                 //player.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 64, height: 64), center: CGPoint(x: 0, y: 0))
-                let texture = SKTexture(imageNamed: "player")
+                let texture = SKTexture(imageNamed: "player00")
                 player.physicsBody = SKPhysicsBody(texture: texture, size: player.size)
                 player.physicsBody!.friction = 1.0                      //摩擦
                 player.physicsBody!.allowsRotation = false              //回転禁止
@@ -281,7 +299,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //===================
             //MARK: 必殺技ボタン
             //===================
-            ultraButton = SKSpriteNode(imageNamed: "UltraButtun")
+            ultraButton = SKSpriteNode(imageNamed: "ultraButtun")
             self.ultraButton.position = CGPoint(                          //表示位置をplayerのサイズ分左に
                 x: 0,
                 y: +self.player.size.height / 2
@@ -290,7 +308,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.ultraButton.yScale = 1 / 18
             self.ultraButton.zPosition = 2
             self.playerBaseNode.addChild(self.ultraButton)               //playerにaddchiledすることでplayerに追従
-            ultraOkButton = SKSpriteNode(imageNamed: "UltaraOkButtun")
+            ultraOkButton = SKSpriteNode(imageNamed: "ultraOkButtun")
             self.ultraOkButton.position = CGPoint(                       //表示位置をplayerのサイズ分左上に
                 x: 0,
                 y: +self.player.size.height / 2
@@ -325,16 +343,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.baseNode.addChild(start0Node)
             })
 		}
-        
+        //攻撃判定用シェイプ
+        attackShapeMake()
+        //ガード判定用シェイプ
+        guardShapeMake()
         //===================
         //MARK: ガードゲージ
         //===================
-        guardGage = SKShapeNode(rect:CGRect(x: 0, y: 0, width: 10, height: 15))
+        guardGage = SKSpriteNode(imageNamed: "pod9")
         guardGage.name = "guardGage"
-        guardGage.position = CGPoint(x: -player.size.width/2, y: -player.size.height/2)
-        guardGage.zPosition = -1                                    //プレイヤーの後ろ
-        guardGage.fillColor = UIColor.red
+        guardGage.position = CGPoint(x: player.position.x - 30, y: player.position.y )
+        guardGage.zPosition = -1
+        guardGage.xScale = 1 / 5
+        guardGage.yScale = 1 / 5
         self.playerBaseNode.addChild(self.guardGage)               //playerにaddchiledすることでplayerに追従させる
+        
         //ハイスコアラベル
         if ( UserDefaults.standard.object(forKey: keyHighScore) != nil )
         {
@@ -348,6 +371,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         )
         self.highScoreLabel.zPosition = -1                  //プレイヤーの後ろ
         self.baseNode.addChild(self.highScoreLabel)         //背景に固定のつもりでbaseNodeに追加
+        //===================
+        //MARK: ポーズ画面
+        //===================
+        pauseView.isHidden = true
+        self.view!.addSubview(pauseView)
+        //　ポーズボタン
+        pauseButton = PauseButton()
+        pauseButton.layer.anchorPoint = CGPoint(x: 1, y: 0)//右上
+        pauseButton.layer.position = CGPoint(x: frame.maxX - 10, y: 25)
+        pauseButton.setPauseFunc{
+            self.sliderHidden = !self.sliderHidden
+            self.pauseView.isHidden = self.sliderHidden
+            self.view!.scene?.isPaused = !self.sliderHidden
+            self.pause()
+        }
+        pauseButton.setResumeFunc{
+            self.sliderHidden = !self.sliderHidden
+            self.pauseView.isHidden = self.sliderHidden
+            self.view!.scene?.isPaused = !self.sliderHidden
+            self.play()
+        }
+        pauseButton.isHidden = true     //タイトル画面では非表示
+        self.view!.addSubview(pauseButton)
+        
+        // アプリがバックグラウンドから復帰した際に呼ぶ関数の登録
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(becomeActive(_:)),
+                                               name: .UIApplicationDidBecomeActive,
+                                               object: nil)
         
         if(debug)
         {
@@ -364,6 +416,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
 	}
     
+    //アプリがバックグラウンドから復帰した際に呼ばれる関数
+    //起動時にも呼ばれる
+    @objc func becomeActive(_ notification: Notification) {
+        if( gameFlg == false )
+        {
+            //ゲームが始まっていなければなにもしない
+            return
+        }
+        isPaused = true     //ポーズ状態にする
+        if( sliderHidden == true ){ //ポーズボタンが押されていなかった
+            if( gameoverFlg == false ){ //ゲームオーバになっていない時
+                sliderSwitchHidden()    //ポーズ画面を表示する
+            }
+        }
+    }
+    
     //MARK: シーンのアップデート時に呼ばれる関数
     override func update(_ currentTime: TimeInterval)
     {
@@ -375,7 +443,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 m.position.y += self.meteorSpeed / 60
             }
         }
-        if (jumping == true || falling == true)
+        if jumping == true
         {
             // 次の位置を計算する
             self.playerSpeed += self.gravity * self.playerGravityCoefficient / 60   // [pixcel/s^2] / 60[fps]
@@ -384,7 +452,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 let meteor = self.meteores.first
                 let meteorMinY = (meteor?.position.y)! - ((meteor?.size.height)!/2)
                 let playerMaxY = playerBaseNode.position.y + ((player?.size.height)!/2)
-                let playerHalfSize = (player?.size.height)!/2
+                let playerHalfSize: CGFloat = 20 // playerPhisicsBody / 2 の実測値
                 if( meteorCollisionFlg ){ //衝突する
                     self.playerBaseNode.position.y = meteorMinY - playerHalfSize
                     self.playerSpeed -= self.meteorSpeed / 60
@@ -403,7 +471,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                             collisionLine.removeFromParent()
                         }
                         collisionLine = SKShapeNode(points: &points, count: points.count)
-                        collisionLine.strokeColor = UIColor.orange
+                        collisionLine.strokeColor = UIColor.clear
                         baseNode.addChild(collisionLine)
                     }
                 }
@@ -451,7 +519,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.start0Node.position.y)
         }
-        else if (jumping == true || falling == true) && (self.playerBaseNode.position.y + 200 > self.oneScreenSize.height/2)
+        else if (jumping == true) && (self.playerBaseNode.position.y + 200 > self.oneScreenSize.height/2)
         {
             if( self.playerBaseNode.position.y < self.cameraMax ) //カメラの上限を超えない範囲で動かす
             {
@@ -461,11 +529,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else
         {
             self.camera!.position = CGPoint(x: self.oneScreenSize.width/2,y: self.oneScreenSize.height/2)
-        }
-        if self.player.physicsBody?.velocity.dy < -9.8 && self.falling == false
-        {
-            self.jumping = false
-            self.falling = true
         }
         if( debug )
         {
@@ -477,179 +540,227 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         else if guardPower <= 4500
         {
-            guardPower += 50
+            guardPower += 10
+            if( ( guardPower >= 4500 ) && ( guardStatus == .disable ) ){
+                guardStatus = .enable
+            }
         }
-        guardGage.yScale = CGFloat(guardPower / 1000)
+        //guardGage.yScale = CGFloat(guardPower / 1000)
         
     }
     //MARK: すべてのアクションと物理シミュレーション処理後、1フレーム毎に呼び出される
     override func didSimulatePhysics()
     {   }
-    var touchPath: SKShapeNode! = nil
     //MARK: - 関数定義　タッチ処理
     //MARK: タッチダウンされたときに呼ばれる関数
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
     {
-        if( ultraAttackState == .none ) //必殺技中は入力を受け付けない
+        guard ( ultraAttackState == .none ) else { //必殺技中でなければ次の処理に進む
+            return
+        }
+        guard ( gameoverFlg == false ) else {  //ゲームオーバでなければ次の処理に進む
+            return
+        }
+        
+        if let touch = touches.first as UITouch?
         {
-            if let touch = touches.first as UITouch?
-            {
-                self.beganPos = touch.location(in: self)
-                self.beganPyPos = (camera?.position.y)!                     //カメラの移動量を計算するために覚えておく
-                if( touchPath != nil ){ //すでにタッチの軌跡が描かれていれば削除
-                    touchPath.removeFromParent()
-                }
-                let node:SKSpriteNode? = self.atPoint(beganPos) as? SKSpriteNode;
-                //print("---タップをしたノード=\(String(describing: node?.name))---")
-                if node == nil
-                {
-                    return
-                }
-                else if node?.name == "start0Node"
-                {
-                    startButtonAction()
-                }
+            self.beganPosOnView = CGPoint(x: touch.location(in: view).x,
+                                          y: frame.maxY - touch.location(in: view).y ) //y座標を反転する
+            self.beganPos = touch.location(in: self)
+            self.beganPyPos = (camera?.position.y)!                     //カメラの移動量を計算するために覚えておく
+            if( touchPath != nil ){ //すでにタッチの軌跡が描かれていれば削除
+                touchPath.removeFromParent()
             }
+            //タッチしたノードを記録しておく
+            //print("---タップをしたノード=\(String(describing: touchNode?.name))---")
+            touchNode = self.atPoint(beganPos) as? SKSpriteNode
         }
     }
 
     //MARK: タッチ移動されたときに呼ばれる関数
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
     {
-        if( ultraAttackState == .none ) //必殺技中は入力を受け付けない
-        {
-            /*for touch: AnyObject in touches
-            {
-                let endedPos = touch.location(in: self)                          //タップを話した点を定義
-                let cameraMoveY = ( (camera?.position.y)! -  self.beganPyPos )   //前回からのカメラの移動量を求める
-                self.beganPyPos = (camera?.position.y)!                          //次回計算時のために現在位置を覚える
-                self.beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
-                let xPos = beganPos.x - endedPos.x
-                let yPos = beganPos.y - endedPos.y
-                if( touchPath != nil )                                           //すでにタッチの軌跡が描かれていれば削除
-                {
-                    touchPath.removeFromParent()
-                }
-                var points = [beganPos,endedPos]
-                touchPath = SKShapeNode(points: &points, count: points.count)   //デバッグ用に始点から現在地を線で結ぶ
-                if fabs(yPos) > fabs(xPos)
-                {
-                    if yPos > 0                                                 //下スワイプ
-                    {
-                        guardPower -= 100
-                        guardAction(endFlg: false)
-                        touchPath.strokeColor = UIColor.blue
-                    }
-                    else if yPos < 0                                           //上スワイプ
-                    {
-                        touchPath.strokeColor = UIColor.white
-                    }
-                }
-                else
-                {
-                    if xPos > 100                                             //左スワイプ
-                    {
-                        touchPath.strokeColor = UIColor.white
-                    }
-                    else if xPos < -100                                       //右スワイプ
-                    {
-                        touchPath.strokeColor = UIColor.white
-                    }
-                }
-                if( debug )
-                {
-                    baseNode.addChild(touchPath)
-                }
-             }*/
+        guard ( ultraAttackState == .none ) else { //必殺技中でなければ次の処理に進む
+            return
         }
+        guard ( gameoverFlg == false ) else {  //ゲームオーバでなければ次の処理に進む
+            return
+        }
+        
+        for touch: AnyObject in touches
+        {
+            let endPosOnView = CGPoint(x: touch.location(in: view).x,
+                                       y: frame.maxY - touch.location(in: view).y )
+            drawTouchPath(begin: beganPosOnView, end: endPosOnView)
+            switch getTouchAction(begin: beganPosOnView, end: endPosOnView) {
+            case .tap:
+                break   //何もしない
+            case .swipeDown:
+                guardAction(endFlg: false)
+            case .swipeUp: //ジャンプしてない場合のみ
+                break   //何もしない
+            case .swipeLeft: //ジャンプしてない場合のみ
+                break   //何もしない
+            case .swipeRight://ジャンプしてない場合のみ
+                break   //何もしない
+            }
+            /*
+            let endedPos = touch.location(in: self)                          //タップを話した点を定義
+            let cameraMoveY = ( (camera?.position.y)! -  self.beganPyPos )   //前回からのカメラの移動量を求める
+            self.beganPyPos = (camera?.position.y)!                          //次回計算時のために現在位置を覚える
+            self.beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
+            let xPos = beganPos.x - endedPos.x
+            let yPos = beganPos.y - endedPos.y
+            if( touchPath != nil )                                           //すでにタッチの軌跡が描かれていれば削除
+            {
+                touchPath.removeFromParent()
+            }
+            var points = [beganPos,endedPos]
+            touchPath = SKShapeNode(points: &points, count: points.count)   //デバッグ用に始点から現在地を線で結ぶ
+            if fabs(yPos) > fabs(xPos)
+            {
+                if yPos > 0                                                 //下スワイプ
+                {
+                    guardPower -= 100
+                    guardAction(endFlg: false)
+                    touchPath.strokeColor = UIColor.blue
+                }
+                else if yPos < 0                                           //上スワイプ
+                {
+                    touchPath.strokeColor = UIColor.white
+                }
+            }
+            else
+            {
+                if xPos > 100                                             //左スワイプ
+                {
+                    touchPath.strokeColor = UIColor.white
+                }
+                else if xPos < -100                                       //右スワイプ
+                {
+                    touchPath.strokeColor = UIColor.white
+                }
+            }
+            if( debug )
+            {
+                baseNode.addChild(touchPath)
+            }
+            */
+         }
     }
     
     //MARK: タッチアップされたときに呼ばれる関数
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
     {
-        if( ultraAttackState == .none )
+        guard ( ultraAttackState == .none ) else { //必殺技中でなければ次の処理に進む
+            return
+        }
+        guard ( gameoverFlg == false ) else {  //ゲームオーバでなければ次の処理に進む
+            return
+        }
+        
+        for touch: AnyObject in touches
         {
-            for touch: AnyObject in touches
-            {
-                let endPos = touch.location(in: self)
-                
-                let node:SKSpriteNode? = self.atPoint(endPos) as? SKSpriteNode;
+            let endPosOnView = CGPoint(x: touch.location(in: view).x,
+                                       y: frame.maxY - touch.location(in: view).y )
+            let endPos = touch.location(in: self)
+            //ボタンタップ判定
+            let node:SKSpriteNode? = self.atPoint(endPos) as? SKSpriteNode;
+            if( node == touchNode ) { // タッチ開始時と同じノードで離した
                 //print("---タップを離したノード=\(String(describing: node?.name))---")
-                if node == ultraOkButton //必殺技ボタン
-                {
+                var buttonPushFlg = true
+                switch node{ //押したボタン別処理
+                case let node where node == start0Node :
+                    startButtonAction()
+                case let node where node == ultraOkButton :
                     ultraAttack()
-                    return
+                default:
+                    buttonPushFlg = false
                 }
-                let cameraMoveY = ( (camera?.position.y)! -  beganPyPos )   //前回からのカメラの移動量を求める
-                beganPos.y += cameraMoveY                                   //カメラが動いた分だけタッチ開始点も動かす
-                let xPos = beganPos.x - endPos.x
-                let floatYPos = beganPos.y - endPos.y
-                let yPos = round(floatYPos)
-                print("yPos : \(floatYPos),flooryPos : \(round(yPos))")
-                if( touchPath != nil )
-                { //すでにタッチの軌跡が描かれていれば削除
-                    touchPath.removeFromParent()
-                }
-                var points = [beganPos,endPos]
-                touchPath = SKShapeNode(points: &points, count: points.count) //デバッグに始点から現在地を線で結ぶ
-                if gameoverFlg == true
+                // ボタンが押されていればスワイプ処理はしないので抜ける
+                if buttonPushFlg == true
                 {
                     return
                 }
-                else if (self.playerBaseNode.position.y > self.oneScreenSize.height/2)
-                {
-                    if ( jumping == true || falling == true) && (-10...10 ~= yPos) && (-10...10 ~= xPos) && (guardFlg == false)
-                    {
-                        attackAction()
-                        touchPath.strokeColor = UIColor.red
-                        //print("---jump中にattackAction(),yPos=\(yPos)---")
-                    }
-                    else if (jumping == true || falling == true) && (yPos > 10) || (guardFlg == true)
-                    {
-                        guardAction(endFlg: true)
-                        touchPath.strokeColor = UIColor.blue
-                        print("---jump中にguardAction(),yPos=\(yPos)---")
-                    }
-                }
-                else if (self.playerBaseNode.position.y < self.oneScreenSize.height/2)
-                {
-                    if (jumping == false || falling == false) && (fabs(yPos) == fabs(xPos)) && (guardFlg == false)
-                    {
-                        attackAction()
-                        touchPath.strokeColor = UIColor.red
-                        //print("---groundアタック---")
-                    }
-                    else if (yPos > 50) || (guardFlg == true)
-                    {
-                        self.guardAction(endFlg: true)
-                        touchPath.strokeColor = UIColor.blue
-                        //print("---groundガード---")
-                    }
-                    else if yPos < -50
-                    {
-                        self.jumpingAction()
-                        touchPath.strokeColor = UIColor.green
-                    }
-                    else if xPos > 50
-                    {
-                        self.moveToLeft()
-                        touchPath.strokeColor = UIColor.white
-                        print("---左スワイプ---")
-                    }
-                    else if xPos < -50
-                    {
-                        self.moveToRight()
-                        touchPath.strokeColor = UIColor.white
-                        print("---右スワイプ---")
-                    }
-                }
-                if( debug )
-                {
-                    baseNode.addChild(touchPath)
-                }
+            }
+            //スワイプ判定
+            drawTouchPath(begin: beganPosOnView, end: endPosOnView)
+            switch getTouchAction(begin: beganPosOnView, end: endPosOnView) {
+            case .tap:
+                attackAction()
+            case .swipeDown:
+                guardAction(endFlg: true)
+            case .swipeUp where jumping == false: //ジャンプしてない場合のみ
+                jumpingAction()
+            case .swipeLeft where jumping == false: //ジャンプしてない場合のみ
+                moveToLeft()
+            case .swipeRight where jumping == false://ジャンプしてない場合のみ
+                moveToRight()
+            default:
+                break   //何もしない
             }
         }
     }
+    func getTouchAction(begin: CGPoint, end:CGPoint) ->TouchAction
+    {
+        let moveX = end.x - begin.x
+        let moveY = end.y - begin.y
+        let margin:CGFloat = 50
+        //移動量が少なかったらタップ
+        if( fabs(moveX) < margin && fabs(moveY) < margin ){
+            return TouchAction.tap
+        }
+        // 絶対値が大きいほうの動作を優先、値の正負で方向を判定する
+        switch( moveX,moveY ){
+        case (let x, let y) where fabs(x) > fabs(y) && x > 0:
+            return TouchAction.swipeRight
+        case (let x, let y) where fabs(x) > fabs(y) && x < 0:
+            return TouchAction.swipeLeft
+        case (let x, let y) where fabs(x) <= fabs(y) && y > 0:
+            return TouchAction.swipeUp
+        case (let x, let y) where fabs(x) <= fabs(y) && y < 0:
+            return TouchAction.swipeDown
+        default:
+            break
+        }
+        //ここは通らないはず
+        print("ありえないTouchAction x:\(moveX),y:\(moveY)")
+        return TouchAction.tap
+    }
+    var touchPath: SKShapeNode! = nil
+    func drawTouchPath(begin: CGPoint, end:CGPoint){
+        //カメラが存在するかどうかのチェック
+        guard let camera = camera else{
+            return
+        }
+        //すでにタッチの軌跡が描かれていれば削除
+        if( touchPath != nil ){
+            touchPath.removeFromParent()
+        }
+        //カメラの移動分平行移動する
+        let moveX = camera.position.x - oneScreenSize.width / 2
+        let moveY = camera.position.y - oneScreenSize.height / 2
+        var points = [ CGPoint( x: begin.x + moveX, y: begin.y + moveY ),
+                       CGPoint( x: end.x + moveX, y: end.y + moveY ) ]
+        //線の作成
+        touchPath = SKShapeNode(points: &points, count: points.count)
+        //色の設定
+        switch getTouchAction(begin: begin, end: end){
+        case .tap:
+            touchPath.strokeColor = UIColor.red
+        case .swipeUp:
+            touchPath.strokeColor = UIColor.green
+        case .swipeDown:
+            touchPath.strokeColor = UIColor.blue
+        case .swipeLeft:
+            touchPath.strokeColor = UIColor.yellow
+        case .swipeRight:
+            touchPath.strokeColor = UIColor.yellow
+        }
+        //線の描画
+        baseNode.addChild(touchPath)
+    }
+    
     //MARK: - 移動
     let moveL = SKAction.moveTo(x: 93.75, duration: 0.15)
     let moveC = SKAction.moveTo(x: 187.5, duration: 0.15)
@@ -657,7 +768,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: - 右移動
     func moveCtoR()
     {
-        if (jumping == false) && (falling == false)
+        if jumping == false
         {
             self.centerPosFlg = false
             self.leftPosFlg = false
@@ -675,7 +786,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     func moveLtoC()
     {
-        if (jumping == false) && (falling == false)
+        if jumping == false
         {
             self.centerPosFlg = true
             self.leftPosFlg = false
@@ -705,7 +816,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: - 左移動
     func moveCtoL()
     {
-        if (jumping == false) && (falling == false)
+        if jumping == false
         {
             self.centerPosFlg = false
             self.leftPosFlg = true
@@ -722,7 +833,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     func moveRtoC()
     {
-        if (self.jumping == false) && (self.falling == false)
+        if jumping == false
         {
             self.centerPosFlg = true
             self.leftPosFlg = false
@@ -752,7 +863,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: - 停止
     func moveStop() {
         moving = false
-        if (jumping == false) && (self.falling == false) {
+        if jumping == false {
             self.player.physicsBody!.velocity = CGVector(dx: 0, dy: 0)
         }
         let names = ["stand01","stand02"]
@@ -761,7 +872,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //MARK: - ジャンプ
     func jumpingAction() {
-        if (jumping == false) && (falling == false) {
+        if jumping == false {
             moving = false
             jumping = true
             playerSpeed = pleyerJumpSpeed
@@ -823,7 +934,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             //print("---Playerと地面が接触しました---")
             jumping = false
-            falling = false
             playSound(soundName: "tyakuti")
             landingAction()
             self.playerSpeed = 0.0
@@ -863,8 +973,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var meteorInt: Int = 0
     var meteorDouble: Double = 70.0
     var meteores: [SKSpriteNode] = []
-    var attackShapes: [SKShapeNode] = []
-    var guardShapes: [SKShapeNode] = []
     
     //MARK: 隕石落下
     func buildMeteor(size: Double, meteorString: String, meteorZ: Double){
@@ -878,7 +986,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         meteor.yScale = CGFloat(size)
         if meteores.isEmpty
         {
-            meteor.position = CGPoint(x: 187, y: self.meteorPos + (meteor.size.height)/2)
+            //meteor.position = CGPoint(x: 187, y: self.meteorPos + (meteor.size.height)/2)
+            meteor.position = CGPoint(x:187, y: self.playerBaseNode.position.y + 700 + (meteor.size.height) / 2)
         } else
         {
             meteor.position = CGPoint(x: 187, y: (meteores.first?.position.y)!)
@@ -941,7 +1050,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             meteorInt += 1
             meteorDouble = 20.0
             self.meteorSpeed = 0.0
-            self.meteorGravityCoefficient = CGFloat(0.06 + 0.01 * Double(meteorInt))
+            self.meteorGravityCoefficient = CGFloat(0.05 + 0.01 * Double(meteorInt))
             //print("--meteorGravityCoeffient\(meteorGravityCoefficient)--")
             for i in (0...meteorInt).reversed()
             {
@@ -960,10 +1069,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func attackShapeMake()
     {
         let attackShape = SKShapeNode(rect: CGRect(x: 0.0 - self.player.size.width/2, y: 0.0 - self.player.size.height/2, width: self.player.size.width, height: self.player.size.height))
-        attackShape.name = "attackShape"
+        attackShape.name = attackShapeName
         let physicsBody = SKPhysicsBody(rectangleOf: attackShape.frame.size)
         attackShape.position = CGPoint(x: 0, y: player.size.height)
         attackShape.fillColor = UIColor.clear
+        attackShape.strokeColor = UIColor.clear
         attackShape.zPosition = 1
         attackShape.physicsBody = physicsBody
         attackShape.physicsBody?.affectedByGravity = false      //重力判定を無視
@@ -971,9 +1081,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         attackShape.physicsBody?.categoryBitMask = 0b10000      //接触判定用マスク設定
         attackShape.physicsBody?.collisionBitMask = 0b0000      //接触対象をなしに設定
         attackShape.physicsBody?.contactTestBitMask = 0b1000    //接触対象をmeteorに設定
-        self.playerBaseNode.addChild(attackShape)
         //print("---attackShapeを生成しました---")
-        self.attackShapes.append(attackShape)
+        self.attackShape = attackShape
     }
     
     func attackAction()
@@ -982,26 +1091,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             return
         }
-        else
+        if attackFlg == false
         {
             //print("---アタックフラグをON---")
             self.attackFlg = true
             let names = ["attack01","attack02","player00"]
             self.attackTextureAnimation(self.player, names: names)
             playSound(soundName: "slash")
-            attackShapeMake()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
-                {
+            if playerBaseNode.childNode(withName: attackShapeName) == nil {
+                self.playerBaseNode.addChild(attackShape)
+                let action1 = SKAction.wait(forDuration: 0.3)
+                let action2 = SKAction.removeFromParent()
+                let action3 = SKAction.run{
                     self.attackFlg = false
-                    self.attackShapes[0].removeFromParent()
-                    self.attackShapes.remove(at: 0)
                     //print("---アタックフラグをOFF---")
                 }
+                let actions = SKAction.sequence([action1,action2,action3])
+                attackShape.run(actions)
+            }
         }
     }
     
     func attackMeteor()
     {
+        if gameoverFlg == true
+        {
+            return
+        }
         if attackFlg == true
         {
             //print("---隕石を攻撃---")
@@ -1009,8 +1125,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
                 if ultraAttackState == .none //必殺技のときは続けて攻撃するため
                 {
-                    attackShapes[0].physicsBody?.categoryBitMask = 0
-                    attackShapes[0].physicsBody?.categoryBitMask = 0
+                    if let attackNode = playerBaseNode.childNode(withName: attackShapeName)
+                    {
+                        attackNode.removeAllActions()
+                        attackNode.removeFromParent()
+                    }
+                    attackFlg = false
+                    //print("---アタックフラグをOFF---")
                 }
                 meteores[0].physicsBody?.categoryBitMask = 0
                 meteores[0].physicsBody?.contactTestBitMask = 0
@@ -1019,7 +1140,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 let particle = SKEmitterNode(fileNamed: "MeteorBroken.sks")
                 //接触座標にパーティクルを放出するようにする。
                 particle!.position = CGPoint(x: playerBaseNode.position.x,
-                                             y: playerBaseNode.position.y + (attackShapes[0].position.y))
+                                             y: playerBaseNode.position.y + (attackShape.position.y))
                 //0.7秒後にシーンから消すアクションを作成する。
                 let action1 = SKAction.wait(forDuration: 0.5)
                 let action2 = SKAction.removeFromParent()
@@ -1049,6 +1170,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     }
                 }
                 playSound(soundName: "hakai")
+                vibrate()
                 //隕石と接触していたら速度を0にする
                 if( meteorCollisionFlg )
                 {
@@ -1076,7 +1198,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         UltraPower = 0
         //入力を受け付けないようにフラグを立てる
         ultraAttackState = .landing
-        if( jumping || falling ) //空中にいる場合
+        if( jumping ) //空中にいる場合
         {
             //地面に戻る
             playerSpeed = -2000
@@ -1092,7 +1214,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func ultraAttackJump(){
         //攻撃Shapeを出す
         self.attackFlg = true
-        attackShapeMake()
+        if let attackNode = playerBaseNode.childNode(withName: attackShapeName) {
+            attackNode.removeAllActions()
+            attackNode.removeFromParent()
+        }
+        else{
+            self.playerBaseNode.addChild(attackShape)
+        }
         //大ジャンプ
         moving = false
         jumping = true
@@ -1103,8 +1231,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func ultraAttackEnd(){
         self.attackFlg = false
         //attackShapeを消す
-        self.attackShapes[0].removeFromParent()
-        self.attackShapes.remove(at: 0)
+        if let attackNode = playerBaseNode.childNode(withName: attackShapeName)
+        {
+            attackNode.removeFromParent()
+        }
         //フラグを落とす
         ultraAttackState = .none
         if( meteores.isEmpty ){ //全て壊せているはずだが一応チェックする
@@ -1118,17 +1248,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let guardShape = SKShapeNode(rect: CGRect(x: 0.0 - self.player.size.width/2, y: 0.0 - self.player.size.height/2, width: self.player.size.width, height: self.player.size.height + 10))
         guardShape.name = "guardShape"
         let physicsBody = SKPhysicsBody(rectangleOf: guardShape.frame.size)
-        if jumping == true
-        {
-            guardShape.position = CGPoint(x: 0, y: 0)
-        } else if falling == true
-        {
-            guardShape.position = CGPoint(x: 0, y: 0)
-        } else
-        {
-            guardShape.position = CGPoint(x: 0, y: 0)
-        }
+        guardShape.position = CGPoint(x: 0, y: 0)
         guardShape.fillColor = UIColor.clear
+        guardShape.strokeColor = UIColor.clear
         guardShape.zPosition = 1
         guardShape.physicsBody = physicsBody
         guardShape.physicsBody?.affectedByGravity = false      //重力判定を無視
@@ -1136,9 +1258,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guardShape.physicsBody?.categoryBitMask = 0b100000     //接触判定用マスク設定
         guardShape.physicsBody?.collisionBitMask = 0b0000      //接触対象をなしに設定
         guardShape.physicsBody?.contactTestBitMask = 0b1000    //接触対象をmeteorに設定
-        self.playerBaseNode.addChild(guardShape)
+        self.guardShape = guardShape
         //print("---guardShapeを生成しました---")
-        self.guardShapes.append(guardShape)
     }
     
     func guardAction(endFlg: Bool)
@@ -1147,26 +1268,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             return
         }
-        else if (guardPower >= 0)
+        else if (guardStatus != .disable)
         {
-            if( guardFlg == false )
+            if( guardStatus != .guarding )
             {   //ガード開始
                 //print("---ガードフラグをON---")
-                self.guardFlg = true
+                self.guardStatus = .guarding
+                print(self.guardStatus)
                 let names = ["guard01","player00"]
                 self.guardTextureAnimation(self.player, names: names)
-                guardShapeMake()
+                playerBaseNode.addChild( guardShape )
             }
             if( endFlg == true )
             {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)
-                {
-                    self.guardFlg = false
-                    if( !self.guardShapes.isEmpty ){
-                        self.guardShapes[0].removeFromParent()
-                        self.guardShapes.remove(at: 0)
+                if let guardNode = playerBaseNode.childNode(withName: guardShapeName) {
+                    let action1 = SKAction.wait(forDuration: 0.1)
+                    let action2 = SKAction.removeFromParent()
+                    let action3 = SKAction.run{
+                        if( self.guardStatus != .disable ){
+                            self.guardStatus = .enable
+                            //print("---ガードフラグをOFF---")
+                        }
                     }
-                    //print("---ガードフラグをOFF---")
+                    let actions = SKAction.sequence([action1,action2,action3])
+                    guardNode.run(actions)
                 }
             }
         }
@@ -1174,15 +1299,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     func guardMeteor()
     {
-        if (guardFlg == true)
+        if gameoverFlg == true
+        {
+            return
+        }
+        if (guardStatus == .guarding)
         {
             //print("---隕石をガード---")
             playSound(soundName: "bougyo")
             guardPower -= 1500
+            if( guardPower < 0 ){
+                print( "guardBroken!!" )
+                guardStatus = .disable
+                print(self.guardStatus)
+            }
+            //ガードシェイプ削除
+            if let guardNode = playerBaseNode.childNode(withName: guardShapeName) {
+                guardNode.removeFromParent()
+            }
+            if( guardStatus != .disable ){
+                guardStatus = .enable
+            }
             for i in meteores
             {
                 i.removeAllActions()
-                if( jumping == true || falling == true ){
+                if jumping == true {
                     self.playerSpeed = self.speedFromMeteorAtGuard  //プレイヤーの速度が上がる
                     let meteor = self.meteores.first
                     let meteorMinY = (meteor?.position.y)! - ((meteor?.size.height)!/2)
@@ -1205,7 +1346,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     {
         if( !gameoverFlg ){ //既にGameOverの場合はなにもしない
             self.gameoverFlg = true
-            self.isPaused = true
             self.meteorTimer?.invalidate()
             pauseButton.isHidden = true//ポーズボタンを非表示にする
             //ハイスコア更新
@@ -1218,76 +1358,53 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             print("------------gameover------------")
             stop()
-            gameOverView()
+            //墜落演出
+            let circle = SKShapeNode(circleOfRadius:1)
+            circle.position = playerBaseNode.position
+            circle.zPosition = 1500.0
+            circle.fillColor = UIColor.white
+            self.addChild(circle)
+            let actions = SKAction.sequence(
+                [ SKAction.scale(to: 1000, duration: 1.0),
+                  SKAction.wait(forDuration: 0.5),
+                  SKAction.fadeOut(withDuration: 1),
+                  SKAction.removeFromParent(),
+                  SKAction.run{self.isPaused = true},
+                  SKAction.run(gameOverViewCreate)])
+            circle.run(actions)
         }
     }
     
-    var backGroundView: UIView!
-    func gameOverView(){
+    var gameOverView: GameOverView!
+    func gameOverViewCreate(){
         
         print("gameOverViewCreate")
-        //背景兼ベース
-        backGroundView = UIView(frame: CGRect(x: self.view!.frame.size.width * 0.05,
-                                                  y: self.view!.frame.size.height * 0.05,
-                                                  width: self.view!.frame.size.width * 0.9,
-                                                  height: self.view!.frame.size.height * 0.9))
-        backGroundView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        //ゲームオーバー画面
+        gameOverView = GameOverView(score: self.score, highScore: self.highScore )
         var buttonX:CGFloat = 10    //左端の余白
-        var buttonY = backGroundView.frame.size.height - 10    //下端の余白
+        var buttonY = gameOverView.frame.size.height - 10    //下端の余白
         //Titleボタン
-        let newGameBtn = buttonIcon(image:"home", color:UIColor(red: 0.1, green: 0.8, blue: 0.6, alpha: 1))
+        let newGameBtn = IconButton(image:"home", color:UIColor(red: 0.1, green: 0.8, blue: 0.6, alpha: 1))
         newGameBtn.layer.position = CGPoint(x: buttonX, y: buttonY )
         newGameBtn.addTarget(self, action: #selector(self.newGameButtonAction), for: .touchUpInside)
-        backGroundView.addSubview(newGameBtn)
+        gameOverView.addSubview(newGameBtn)
         buttonX += newGameBtn.frame.size.width + 10
         //Retryボタン
-        let retryBtn = buttonIcon(image: "restart", color: UIColor(red: 0.2, green: 0.6, blue: 0.8, alpha: 1))
+        let retryBtn = IconButton(image: "restart", color: UIColor(red: 0.2, green: 0.6, blue: 0.8, alpha: 1))
         retryBtn.layer.position = CGPoint(x: buttonX, y: buttonY)
         retryBtn.addTarget(self, action: #selector(self.retryButtonAction), for: .touchUpInside)
-        backGroundView.addSubview(retryBtn)
-        //スコアラベル
-        let scoreLabel = UILabel( )
-        scoreLabel.text = "Score: " + String( self.score )
-        scoreLabel.sizeToFit()
-        scoreLabel.textColor = UIColor.white
-        scoreLabel.layer.position.y = backGroundView.frame.size.height/4
-        scoreLabel.layer.position.x = backGroundView.frame.size.width/2
-        backGroundView.addSubview(scoreLabel)
-        //ハイスコアラベル
-        let highScoreLabel = UILabel( )
-        highScoreLabel.text = "High Score: " + String( self.highScore )
-        highScoreLabel.sizeToFit()
-        highScoreLabel.textColor = UIColor.white
-        highScoreLabel.layer.position.y = backGroundView.frame.size.height/4 + scoreLabel.frame.size.height
-        highScoreLabel.layer.position.x = backGroundView.frame.size.width/2
-        backGroundView.addSubview(highScoreLabel)
-        self.view!.addSubview(backGroundView)
+        gameOverView.addSubview(retryBtn)
+        self.view!.addSubview(gameOverView)
     }
-    
-    //ボタンの見た目を揃えるための関数
-    func buttonIcon(image:String,color:UIColor) -> UIButton{
-        let btn = UIButton(type: UIButtonType.roundedRect)              //角丸四角のボタンをつくる
-        btn.frame = CGRect(x: 0, y: 0, width: 75, height: 75)           //ボタンのサイズ
-        btn.setImage(UIImage(named:image), for: .normal)                //画像
-        btn.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)          //余白
-        btn.imageView?.contentMode = UIViewContentMode.scaleAspectFit   //ボタンのサイズに画像を合わせる
-        btn.backgroundColor = color                                     //背景色
-        btn.tintColor = UIColor.white                                   //画像の色
-        btn.layer.cornerRadius = 10.0                                   //角の丸み
-        //btn.layer.borderColor = UIColor.white.cgColor                   //枠線の色
-        //btn.layer.borderWidth = 5                                       //枠線の太さ
-        btn.layer.anchorPoint = CGPoint(x: 0, y: 1)                     //アンカーポイントを左下にする
-        return btn
-    }
-    
+
     @objc func newGameButtonAction(_ sender: UIButton ){
         removeParamSlider()
-        backGroundView.removeFromSuperview()
+        gameOverView.removeFromSuperview()
         newGame()
     }
     @objc func retryButtonAction(_ sender: UIButton ){
         removeParamSlider()
-        backGroundView.removeFromSuperview()
+        gameOverView.removeFromSuperview()
         let scene = GameScene(size: self.scene!.size)
         scene.scaleMode = SKSceneScaleMode.aspectFill
         scene.retryFlg = true
@@ -1329,6 +1446,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     {
         audioPlayer.stop()
         audioPlayer.currentTime = 0
+    }
+    
+    func vibrate() {
+        AudioServicesPlaySystemSound(1519)
+        AudioServicesDisposeSystemSoundID(1519)
     }
 
     //==========================================================
@@ -1444,6 +1566,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var collisionLine : SKShapeNode!
     //追加
     func addParamSlider(){
+        /*
         //デバッグ表示関連はすべてdebugViewに追加する
         debugView.frame.size = self.frame.size
         debugView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
@@ -1494,17 +1617,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                                      y: frame.maxY - btn.frame.size.height)
         btn.addTarget(self, action: #selector(self.setDefaultParam), for: .touchUpInside)
         debugView.addSubview(btn)
-        //　ポーズボタン
-        pauseButton = UIButton( type: UIButtonType.custom )
-        pauseButton.frame = CGRect(x: 0, y: 0, width: 50, height: 50) //ボタンのサイズをここで決めている
-        pauseButton.setImage(UIImage(named:"pause"), for: .normal)
-        pauseButton.imageView?.contentMode = UIViewContentMode.scaleAspectFit  //上記サイズに画像を合わせる
-        pauseButton.backgroundColor = UIColor.clear    //背景は透明
-        pauseButton.layer.anchorPoint = CGPoint(x: 1, y: 0)//右上
-        pauseButton.layer.position = CGPoint(x: frame.maxX - 10, y: 25)
-        pauseButton.addTarget(self, action: #selector(self.sliderSwitchHidden), for: .touchUpInside)
-        pauseButton.isHidden = true     //タイトル画面では非表示
-        self.view!.addSubview(pauseButton)
+         */
         //デフォルト非表示
         debugView.isHidden = true
     }
@@ -1516,15 +1629,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     @objc func sliderSwitchHidden( ){
         sliderHidden = !sliderHidden
         debugView.isHidden = sliderHidden
-        self.view!.scene?.isPaused = !sliderHidden
-        if( sliderHidden == true )
-        {
-            pauseButton.setImage(UIImage(named:"pause"), for: .normal)
-        }
-        else
-        {
-            pauseButton.setImage(UIImage(named:"restart"), for: .normal)
-        }
     }
     @objc func setDefaultParam(){
         //調整用パラメータ
