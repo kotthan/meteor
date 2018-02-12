@@ -48,6 +48,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: 画面
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
 	let oneScreenSize = CGSize(width: 375, height: 667)             //１画面サイズ
+    static let ScreenSize = CGSize(width: 375, height: 667) //テスト
+    let pauseView = PauseView()                                     //ポース画面
     
     //MARK: タイマー
     var meteorTimer: Timer?                                         //隕石用タイマー
@@ -369,6 +371,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         )
         self.highScoreLabel.zPosition = -1                  //プレイヤーの後ろ
         self.baseNode.addChild(self.highScoreLabel)         //背景に固定のつもりでbaseNodeに追加
+        //===================
+        //MARK: ポーズ画面
+        //===================
+        pauseView.isHidden = true
+        self.view!.addSubview(pauseView)
+        
         // アプリがバックグラウンドから復帰した際に呼ぶ関数の登録
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(becomeActive(_:)),
@@ -1541,6 +1549,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var collisionLine : SKShapeNode!
     //追加
     func addParamSlider(){
+        /*
         //デバッグ表示関連はすべてdebugViewに追加する
         debugView.frame.size = self.frame.size
         debugView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
@@ -1591,6 +1600,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                                      y: frame.maxY - btn.frame.size.height)
         btn.addTarget(self, action: #selector(self.setDefaultParam), for: .touchUpInside)
         debugView.addSubview(btn)
+         */
         //　ポーズボタン
         pauseButton = PauseButton()
         pauseButton.layer.anchorPoint = CGPoint(x: 1, y: 0)//右上
@@ -1608,7 +1618,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var sliderHidden: Bool = true
     @objc func sliderSwitchHidden( ){
         sliderHidden = !sliderHidden
-        debugView.isHidden = sliderHidden
+        //debugView.isHidden = sliderHidden
+        pauseView.isHidden = sliderHidden
         self.view!.scene?.isPaused = !sliderHidden
         if( sliderHidden == true )
         {
