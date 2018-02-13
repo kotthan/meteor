@@ -561,6 +561,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guard ( gameoverFlg == false ) else {  //ゲームオーバでなければ次の処理に進む
             return
         }
+        //ポーズでなければ次の処理に進む
+        guard ( self.view!.scene?.isPaused == false ) else {
+            return
+        }
         
         if let touch = touches.first as UITouch?
         {
@@ -584,6 +588,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             return
         }
         guard ( gameoverFlg == false ) else {  //ゲームオーバでなければ次の処理に進む
+            return
+        }
+        //ポーズでなければ次の処理に進む
+        guard ( self.view!.scene?.isPaused == false ) else {
             return
         }
         
@@ -656,6 +664,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             return
         }
         guard ( gameoverFlg == false ) else {  //ゲームオーバでなければ次の処理に進む
+            return
+        }
+        //ポーズでなければ次の処理に進む
+        guard ( self.view!.scene?.isPaused == false ) else {
             return
         }
         
