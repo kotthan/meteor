@@ -409,7 +409,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         isPaused = true     //ポーズ状態にする
         if( sliderHidden == true ){ //ポーズボタンが押されていなかった
             if( gameoverFlg == false ){ //ゲームオーバになっていない時
-                sliderSwitchHidden()    //ポーズ画面を表示する
+                pauseButton.pauseAction()
             }
         }
     }
