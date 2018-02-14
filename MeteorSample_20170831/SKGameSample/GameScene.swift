@@ -50,6 +50,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	let oneScreenSize = CGSize(width: 375, height: 667)             //１画面サイズ
     static let ScreenSize = CGSize(width: 375, height: 667) //テスト
     let pauseView = PauseView()                                     //ポース画面
+    var hudView = HUDView()                                         //HUD
     
     //MARK: タイマー
     var meteorTimer: Timer?                                         //隕石用タイマー
@@ -372,6 +373,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         )
         self.highScoreLabel.zPosition = -1                  //プレイヤーの後ろ
         self.baseNode.addChild(self.highScoreLabel)         //背景に固定のつもりでbaseNodeに追加
+        //===================
+        //MARK: HUD
+        //===================
+        self.hudView = HUDView(frame: self.frame)
+        self.view.addSubview(hudView)
         //===================
         //MARK: ポーズ画面
         //===================
