@@ -1264,8 +1264,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 //print("---ガードフラグをON---")
                 self.guardStatus = .guarding
                 print(self.guardStatus)
-                let names = ["guard01","player00"]
-                self.guardTextureAnimation(self.player, names: names)
                 playerBaseNode.addChild( guardShape )
             }
             if( endFlg == true )
@@ -1282,6 +1280,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     let actions = SKAction.sequence([action1,action2,action3])
                     guardNode.run(actions)
                 }
+                //アニメーション
+                let names = ["guard01","player00"]
+                self.guardTextureAnimation(self.player, names: names)
+            }
+            else{
+                //アニメーション
+                let names = ["guard01"]
+                self.guardTextureAnimation(self.player, names: names)
             }
         }
     }
