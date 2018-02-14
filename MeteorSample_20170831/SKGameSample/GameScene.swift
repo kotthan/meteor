@@ -36,7 +36,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var guardShapeName: String = "guardShape"
     var guardGage = SKSpriteNode()                                     //ガードゲージ
     var start0Node: SKSpriteNode!
-    let scoreLabel = SKLabelNode()                                  //スコア表示ラベル
+    let scoreLabel = UILabel()                                      //スコア表示ラベル
     var score = 0                                                   //スコア
     let comboLabel = SKLabelNode()                                  //スコア表示ラベル
     var combo = 0                                                   //スコア
@@ -283,10 +283,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //===================
             self.scoreLabel.text = String( self.score )         //スコアを表示する
             self.scoreLabel.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
-                x: self.player.size.width/2,
-                y: self.player.size.height/2
+                x: 10, //ちょっと余白
+                y: 10,
             )
-            self.playerBaseNode.addChild(self.scoreLabel)               //playerにaddchiledすることでplayerに追従させる
+            self.view!.addSubview(self.scoreLabel)               //playerにaddchiledすることでplayerに追従させる
             //===================
             //MARK: コンボ
             //===================
