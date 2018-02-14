@@ -282,10 +282,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //MARK: スコア
             //===================
             self.scoreLabel.text = String( self.score )         //スコアを表示する
-            self.scoreLabel.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
+            self.scoreLabel.layer.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
                 x: 10, //ちょっと余白
-                y: 10,
+                y: 10
             )
+            scoreLabel.sizeToFit()
             self.view!.addSubview(self.scoreLabel)               //playerにaddchiledすることでplayerに追従させる
             //===================
             //MARK: コンボ
