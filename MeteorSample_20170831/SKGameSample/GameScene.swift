@@ -378,6 +378,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //===================
         self.hudView = HUDView(frame: self.frame)
         self.view.addSubview(hudView)
+        self.hudView.drawScore(score: self.score)
         //===================
         //MARK: ポーズ画面
         //===================
@@ -1152,6 +1153,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 //スコア
                 self.score += 1;
                 self.scoreLabel.text = String( self.score )
+                self.hudView.drawScore( self.score )
                 //コンボ
                 self.combo += 1;
                 self.comboLabel.text = String( self.combo )

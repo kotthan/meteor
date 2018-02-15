@@ -21,6 +21,11 @@ class HUDView: UIView {
                                             y: self.frame.height / 2 )
         addSubview(scoreLabel)
     }
+
+    func drawScore(score: Int){
+        scoreLabel.text = "SCORE:" + String(score)
+        scoreLabel.sizeToFit()
+    }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
