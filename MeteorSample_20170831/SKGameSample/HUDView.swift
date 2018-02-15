@@ -17,8 +17,8 @@ class HUDView: UIView {
         scoreLabel.textColor = UIColor.white
         scoreLabel.text = "SCORE:"
         scoreLabel.sizeToFit()
-        scoreLabel.layer.position = CGPoint(x: 0,
-                                            y: self.frame.height / 2 )
+        scoreLabel.layer.anchorPoint = CGPoint(x: 0, y: 0)//左上
+        scoreLabel.layer.position = CGPoint(x: 10, y: 25 )//適当な余白
         addSubview(scoreLabel)
     }
 

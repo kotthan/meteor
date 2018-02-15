@@ -36,7 +36,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var guardShapeName: String = "guardShape"
     var guardGage = SKSpriteNode()                                     //ガードゲージ
     var start0Node: SKSpriteNode!
-    let scoreLabel = UILabel()                                      //スコア表示ラベル
     var score = 0                                                   //スコア
     let comboLabel = SKLabelNode()                                  //スコア表示ラベル
     var combo = 0                                                   //スコア
@@ -279,16 +278,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     self.baseNode.addChild(titleLogo)
                     //print("---SKSファイルより背景＝\(titleLogo)を読み込みました---")
             })
-            //===================
-            //MARK: スコア
-            //===================
-            self.scoreLabel.text = String( self.score )         //スコアを表示する
-            self.scoreLabel.layer.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
-                x: 10, //ちょっと余白
-                y: 10
-            )
-            scoreLabel.sizeToFit()
-            self.view!.addSubview(self.scoreLabel)               //playerにaddchiledすることでplayerに追従させる
             //===================
             //MARK: コンボ
             //===================
@@ -1153,7 +1142,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 //self.meteorGravityCoefficient -= 0.06                   //数が減るごとに隕石の速度を遅くする
                 //スコア
                 self.score += 1;
-                self.scoreLabel.text = String( self.score )
                 self.hudView.drawScore( score: self.score )
                 //コンボ
                 self.combo += 1;
