@@ -49,7 +49,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
 	let oneScreenSize = CGSize(width: 375, height: 667)             //１画面サイズ
     static let ScreenSize = CGSize(width: 375, height: 667) //テスト
-    let pauseView = PauseView(frame: self.frame)                    //ポース画面
+    var pauseView: PauseView!                                     //ポーズ画面
     var hudView = HUDView()                                         //HUD
     
     //MARK: タイマー
@@ -377,11 +377,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //MARK: HUD
         //===================
         self.hudView = HUDView(frame: self.frame)
-        self.view.addSubview(hudView)
+        self.view!.addSubview(hudView)
         self.hudView.drawScore(score: self.score)
         //===================
         //MARK: ポーズ画面
         //===================
+        pauseView = PauseView(frame: self.frame)
         pauseView.isHidden = true
         self.view!.addSubview(pauseView)
         //　ポーズボタン
@@ -1153,7 +1154,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 //スコア
                 self.score += 1;
                 self.scoreLabel.text = String( self.score )
-                self.hudView.drawScore( self.score )
+                self.hudView.drawScore( score: self.score )
                 //コンボ
                 self.combo += 1;
                 self.comboLabel.text = String( self.combo )
@@ -1384,7 +1385,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         print("gameOverViewCreate")
         //ゲームオーバー画面
-        gameOverView = GameOverView(frame: self.frme, score: self.score, highScore: self.highScore )
+        gameOverView = GameOverView(frame: self.frame, score: self.score, highScore: self.highScore )
         var buttonX:CGFloat = 10    //左端の余白
         var buttonY = gameOverView.frame.size.height - 10    //下端の余白
         //Titleボタン
