@@ -49,7 +49,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
 	let oneScreenSize = CGSize(width: 375, height: 667)             //１画面サイズ
     static let ScreenSize = CGSize(width: 375, height: 667) //テスト
-    let pauseView = PauseView()                                     //ポース画面
+    let pauseView = PauseView(frame: self.frame)                    //ポース画面
     var hudView = HUDView()                                         //HUD
     
     //MARK: タイマー
@@ -1384,7 +1384,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         print("gameOverViewCreate")
         //ゲームオーバー画面
-        gameOverView = GameOverView(score: self.score, highScore: self.highScore )
+        gameOverView = GameOverView(frame: self.frme, score: self.score, highScore: self.highScore )
         var buttonX:CGFloat = 10    //左端の余白
         var buttonY = gameOverView.frame.size.height - 10    //下端の余白
         //Titleボタン
