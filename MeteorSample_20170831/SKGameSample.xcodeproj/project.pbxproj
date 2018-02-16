@@ -83,7 +83,6 @@
 			isa = PBXGroup;
 			children = (
 				54F6B14A1C3CEEFF00B1D569 /* SKGameSample */,
-				54F6B1491C3CEEFF00B1D569 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -93,30 +92,22 @@
 				54F6B1481C3CEEFF00B1D569 /* SKGameSample.app */,
 			);
 			name = Products;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		54F6B14A1C3CEEFF00B1D569 /* SKGameSample */ = {
 			isa = PBXGroup;
 			children = (
-				54F6B14D1C3CEEFF00B1D569 /* ViewController.swift */,
+				54F6B1491C3CEEFF00B1D569 /* Products */,
 				B63CFD4D203702BF00F0F90E /* Resources */,
-				54F6B15E1C3CEFA000B1D569 /* GameView.swift */,
-				54F6B15D1C3CEFA000B1D569 /* GameScene.swift */,
-				A304F1FC202FE8DD0086BED8 /* PauseButton.swift */,
-				B6ED2EC91F4417C600567728 /* TitleScene.swift */,
+				B63CFD50203705A600F0F90E /* Supporting\ Files */,
+				B63CFD522037065900F0F90E /* Sources */,
+				B63CFD552037074E00F0F90E /* Particle */,
 				B61C66662031C12C00FE167A /* GuardPod.swift */,
-				A304F1FE203095E10086BED8 /* PauseView.swift */,
-				A304F202203175310086BED8 /* GameOverView.swift */,
+				B6ED2EC91F4417C600567728 /* TitleScene.swift */,
 				A304F2042031795C0086BED8 /* IconButton.swift */,
-				A3B2A1842013036B004E6F75 /* MeteorBroken.sks */,
-				B6ED2EC71F44115D00567728 /* TitleScene.sks */,
-				54F6B15F1C3CEFA000B1D569 /* GameViewController.swift */,
-				548199491C3F3FB00017838C /* GameScene.sks */,
-				54F6B14F1C3CEEFF00B1D569 /* Main.storyboard */,
-				B6BBD4691F5A777500DEC894 /* GameViewController.xib */,
-				54F6B1541C3CEEFF00B1D569 /* LaunchScreen.storyboard */,
-				54F6B14B1C3CEEFF00B1D569 /* AppDelegate.swift */,
-				54F6B1571C3CEEFF00B1D569 /* Info.plist */,
+				A304F1FC202FE8DD0086BED8 /* PauseButton.swift */,
+				54F6B15D1C3CEFA000B1D569 /* GameScene.swift */,
 			);
 			path = SKGameSample;
 			sourceTree = "<group>";
@@ -152,6 +143,56 @@
 				B6BE9F2E1F6800DE00348B5E /* bgm.mid */,
 			);
 			path = Sounds;
+			sourceTree = "<group>";
+		};
+		B63CFD50203705A600F0F90E /* Supporting\ Files */ = {
+			isa = PBXGroup;
+			children = (
+				54F6B1541C3CEEFF00B1D569 /* LaunchScreen.storyboard */,
+				B6BBD4691F5A777500DEC894 /* GameViewController.xib */,
+				54F6B14F1C3CEEFF00B1D569 /* Main.storyboard */,
+				54F6B1571C3CEEFF00B1D569 /* Info.plist */,
+			);
+			path = "Supporting\\ Files";
+			sourceTree = "<group>";
+		};
+		B63CFD522037065900F0F90E /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				B63CFD54203706A200F0F90E /* Views */,
+				B63CFD532037067600F0F90E /* Defaults */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		B63CFD532037067600F0F90E /* Defaults */ = {
+			isa = PBXGroup;
+			children = (
+				54F6B14B1C3CEEFF00B1D569 /* AppDelegate.swift */,
+			);
+			path = Defaults;
+			sourceTree = "<group>";
+		};
+		B63CFD54203706A200F0F90E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				54F6B14D1C3CEEFF00B1D569 /* ViewController.swift */,
+				54F6B15F1C3CEFA000B1D569 /* GameViewController.swift */,
+				A304F1FE203095E10086BED8 /* PauseView.swift */,
+				A304F202203175310086BED8 /* GameOverView.swift */,
+				54F6B15E1C3CEFA000B1D569 /* GameView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		B63CFD552037074E00F0F90E /* Particle */ = {
+			isa = PBXGroup;
+			children = (
+				A3B2A1842013036B004E6F75 /* MeteorBroken.sks */,
+				B6ED2EC71F44115D00567728 /* TitleScene.sks */,
+				548199491C3F3FB00017838C /* GameScene.sks */,
+			);
+			path = Particle;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
