@@ -98,36 +98,60 @@
 		54F6B14A1C3CEEFF00B1D569 /* SKGameSample */ = {
 			isa = PBXGroup;
 			children = (
-				54F6B15D1C3CEFA000B1D569 /* GameScene.swift */,
 				54F6B14D1C3CEEFF00B1D569 /* ViewController.swift */,
+				B63CFD4D203702BF00F0F90E /* Resources */,
 				54F6B15E1C3CEFA000B1D569 /* GameView.swift */,
-				B6ED2EC91F4417C600567728 /* TitleScene.swift */,
+				54F6B15D1C3CEFA000B1D569 /* GameScene.swift */,
 				A304F1FC202FE8DD0086BED8 /* PauseButton.swift */,
+				B6ED2EC91F4417C600567728 /* TitleScene.swift */,
 				B61C66662031C12C00FE167A /* GuardPod.swift */,
 				A304F1FE203095E10086BED8 /* PauseView.swift */,
 				A304F202203175310086BED8 /* GameOverView.swift */,
 				A304F2042031795C0086BED8 /* IconButton.swift */,
-				B6BE9F301F680D4F00348B5E /* bgmn.mp3 */,
 				A3B2A1842013036B004E6F75 /* MeteorBroken.sks */,
-				B6B4877A1F66BA1A00E41389 /* slash.wav */,
-				B6BE9F2E1F6800DE00348B5E /* bgm.mid */,
 				B6ED2EC71F44115D00567728 /* TitleScene.sks */,
-				B6B4877E1F66BC0C00E41389 /* jump.wav */,
 				54F6B15F1C3CEFA000B1D569 /* GameViewController.swift */,
-				B6E5B0F1200A9B8200A68D1E /* shining_star.mp3 */,
-				B6B487801F66BDC400E41389 /* move.wav */,
-				B6B487861F66BF8900E41389 /* bougyo.wav */,
-				B6B487841F66BEE700E41389 /* tyakuti.wav */,
-				B6B487821F66BE4800E41389 /* hakai.wav */,
 				548199491C3F3FB00017838C /* GameScene.sks */,
 				54F6B14F1C3CEEFF00B1D569 /* Main.storyboard */,
 				B6BBD4691F5A777500DEC894 /* GameViewController.xib */,
 				54F6B1541C3CEEFF00B1D569 /* LaunchScreen.storyboard */,
 				54F6B14B1C3CEEFF00B1D569 /* AppDelegate.swift */,
-				B6E07F0C1F41CCEC007EB82F /* Assets.xcassets */,
 				54F6B1571C3CEEFF00B1D569 /* Info.plist */,
 			);
 			path = SKGameSample;
+			sourceTree = "<group>";
+		};
+		B63CFD4D203702BF00F0F90E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B63CFD4F203703F400F0F90E /* Sounds */,
+				B63CFD4E203703D300F0F90E /* Images */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B63CFD4E203703D300F0F90E /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				B6E07F0C1F41CCEC007EB82F /* Assets.xcassets */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		B63CFD4F203703F400F0F90E /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				B6B4877A1F66BA1A00E41389 /* slash.wav */,
+				B6B487861F66BF8900E41389 /* bougyo.wav */,
+				B6B487841F66BEE700E41389 /* tyakuti.wav */,
+				B6B487801F66BDC400E41389 /* move.wav */,
+				B6E5B0F1200A9B8200A68D1E /* shining_star.mp3 */,
+				B6BE9F301F680D4F00348B5E /* bgmn.mp3 */,
+				B6B4877E1F66BC0C00E41389 /* jump.wav */,
+				B6B487821F66BE4800E41389 /* hakai.wav */,
+				B6BE9F2E1F6800DE00348B5E /* bgm.mid */,
+			);
+			path = Sounds;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

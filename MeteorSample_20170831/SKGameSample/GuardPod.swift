@@ -5,7 +5,7 @@
 //  Created by Kazuaki Oe on 2018/02/12.
 //  Copyright © 2018年 STUDIO SHIN. All rights reserved.
 //
-
+/*
 import SpriteKit
 
 class GuardPod: SKSpriteNode {
@@ -68,3 +68,4 @@ class GuardPod: SKSpriteNode {
     }
     
 }
+ */
