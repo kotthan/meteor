@@ -332,6 +332,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //===================
             //MARK: start0Node
             //===================
+            start0Node = SKSpriteNode(imageNamed: "ロゴ　312　スタート入り")
+            self.start0Node.position = CGPoint(                          //表示位置をplayerのサイズ分左に
+                x: 189.836,
+                y: 1003.673
+            )
+            //self.ultraButton.xScale = 1 / 18
+            //self.ultraButton.yScale = 1 / 18
+            self.ultraButton.zPosition = 10
+            self.baseNode.addChild(self.start0Node)               //playerにaddchiledすることでplayerに追従
+            /*
             scene.enumerateChildNodes(withName: "start0Node", using:
             { (node, stop) -> Void in
                 let start0Node = node as! SKSpriteNode
@@ -340,7 +350,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 start0Node.removeFromParent()
                 self.start0Node = start0Node
                 self.baseNode.addChild(start0Node)
-            })
+            })*/
 		}
         //攻撃判定用シェイプ
         attackShapeMake()
@@ -413,6 +423,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         { //リトライ時はそのままスタートする
             startButtonAction()
         }
+        scaleLoopAction(start0Node)
 	}
     
     //アプリがバックグラウンドから復帰した際に呼ばれる関数
@@ -1480,6 +1491,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         node.run(SKAction.repeat(action, count:1), withKey: "textureAnimation")
     }
     
+    func scaleLoopAction(_ node: SKSpriteNode){
+        let actions = SKAction.sequence(
+            [ SKAction.scale(to: 1.1, duration: 1.0),
+              //SKAction.wait(forDuration: 0.1),
+              SKAction.scale(to: 1.0, duration: 1.0),
+              //SKAction.wait(forDuration: 0.1),
+              SKAction.scale(to: 0.9, duration: 1.0),
+              //SKAction.wait(forDuration: 0.1),
+              SKAction.scale(to: 1.0, duration: 1.0)
+              //SKAction.run{self.isPaused = true},
+            ])
+        let loopAction = SKAction.repeatForever(actions)
+        node.run(loopAction)
+    }
     //MARK:デバッグ用
     //SKShapeNodeのサイズの四角を追加する
     func addBodyFrame(node: SKSpriteNode){

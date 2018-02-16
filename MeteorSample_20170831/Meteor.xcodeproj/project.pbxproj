@@ -21,7 +21,6 @@
 		A304F2052031795C0086BED8 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A304F2042031795C0086BED8 /* IconButton.swift */; };
 		A3B2A1852013036B004E6F75 /* MeteorBroken.sks in Resources */ = {isa = PBXBuildFile; fileRef = A3B2A1842013036B004E6F75 /* MeteorBroken.sks */; };
 		B61C66672031C12C00FE167A /* GuardPod.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61C66662031C12C00FE167A /* GuardPod.swift */; };
-		B63CFD572037084000F0F90E /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63CFD562037084000F0F90E /* File.swift */; };
 		B6B4877B1F66BA1A00E41389 /* slash.wav in Resources */ = {isa = PBXBuildFile; fileRef = B6B4877A1F66BA1A00E41389 /* slash.wav */; };
 		B6B4877F1F66BC0C00E41389 /* jump.wav in Resources */ = {isa = PBXBuildFile; fileRef = B6B4877E1F66BC0C00E41389 /* jump.wav */; };
 		B6B487811F66BDC400E41389 /* move.wav in Resources */ = {isa = PBXBuildFile; fileRef = B6B487801F66BDC400E41389 /* move.wav */; };
@@ -34,7 +33,6 @@
 		B6E07F0D1F41CCEC007EB82F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6E07F0C1F41CCEC007EB82F /* Assets.xcassets */; };
 		B6E5B0F2200A9B8200A68D1E /* shining_star.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B6E5B0F1200A9B8200A68D1E /* shining_star.mp3 */; };
 		B6ED2EC81F44115D00567728 /* TitleScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = B6ED2EC71F44115D00567728 /* TitleScene.sks */; };
-		B6ED2ECA1F4417C600567728 /* TitleScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6ED2EC91F4417C600567728 /* TitleScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,7 +52,6 @@
 		A304F2042031795C0086BED8 /* IconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
 		A3B2A1842013036B004E6F75 /* MeteorBroken.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MeteorBroken.sks; sourceTree = "<group>"; };
 		B61C66662031C12C00FE167A /* GuardPod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuardPod.swift; sourceTree = "<group>"; };
-		B63CFD562037084000F0F90E /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		B6B4877A1F66BA1A00E41389 /* slash.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = slash.wav; sourceTree = "<group>"; };
 		B6B4877E1F66BC0C00E41389 /* jump.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = jump.wav; sourceTree = "<group>"; };
 		B6B487801F66BDC400E41389 /* move.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = move.wav; sourceTree = "<group>"; };
@@ -67,7 +64,6 @@
 		B6E07F0C1F41CCEC007EB82F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B6E5B0F1200A9B8200A68D1E /* shining_star.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = shining_star.mp3; sourceTree = "<group>"; };
 		B6ED2EC71F44115D00567728 /* TitleScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TitleScene.sks; sourceTree = "<group>"; };
-		B6ED2EC91F4417C600567728 /* TitleScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,11 +102,10 @@
 				B63CFD522037065900F0F90E /* Sources */,
 				B63CFD552037074E00F0F90E /* Particle */,
 				B61C66662031C12C00FE167A /* GuardPod.swift */,
-				B6ED2EC91F4417C600567728 /* TitleScene.swift */,
 				A304F2042031795C0086BED8 /* IconButton.swift */,
-				B63CFD562037084000F0F90E /* File.swift */,
 				A304F1FC202FE8DD0086BED8 /* PauseButton.swift */,
 				54F6B15D1C3CEFA000B1D569 /* GameScene.swift */,
+				548199491C3F3FB00017838C /* GameScene.sks */,
 			);
 			path = Meteor;
 			sourceTree = "<group>";
@@ -193,7 +188,6 @@
 			children = (
 				A3B2A1842013036B004E6F75 /* MeteorBroken.sks */,
 				B6ED2EC71F44115D00567728 /* TitleScene.sks */,
-				548199491C3F3FB00017838C /* GameScene.sks */,
 			);
 			path = Particle;
 			sourceTree = "<group>";
@@ -285,9 +279,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A304F203203175310086BED8 /* GameOverView.swift in Sources */,
-				B63CFD572037084000F0F90E /* File.swift in Sources */,
 				54F6B1631C3CEFA000B1D569 /* GameViewController.swift in Sources */,
-				B6ED2ECA1F4417C600567728 /* TitleScene.swift in Sources */,
 				54F6B1611C3CEFA000B1D569 /* GameScene.swift in Sources */,
 				A304F1FF203095E10086BED8 /* PauseView.swift in Sources */,
 				54F6B14E1C3CEEFF00B1D569 /* ViewController.swift in Sources */,
