@@ -36,7 +36,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var guardShapeName: String = "guardShape"
     var guardGage = SKSpriteNode()                                     //ガードゲージ
     var start0Node: SKSpriteNode!
-    let scoreLabel = SKLabelNode()                                  //スコア表示ラベル
     var score = 0                                                   //スコア
     let comboLabel = SKLabelNode()                                  //スコア表示ラベル
     var combo = 0                                                   //スコア
@@ -49,7 +48,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var allScreenSize = CGSize(width: 0, height: 0)                 //全画面サイズ
 	let oneScreenSize = CGSize(width: 375, height: 667)             //１画面サイズ
     static let ScreenSize = CGSize(width: 375, height: 667) //テスト
-    let pauseView = PauseView()                                     //ポース画面
+    var pauseView: PauseView!                                     //ポーズ画面
+    var hudView = HUDView()                                         //HUD
     
     //MARK: タイマー
     var meteorTimer: Timer?                                         //隕石用タイマー
@@ -278,15 +278,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     //print("---SKSファイルより背景＝\(titleLogo)を読み込みました---")
             })
             //===================
-            //MARK: スコア
-            //===================
-            self.scoreLabel.text = String( self.score )         //スコアを表示する
-            self.scoreLabel.position = CGPoint(                 //表示位置をplayerのサイズ分右上に
-                x: self.player.size.width/2,
-                y: self.player.size.height/2
-            )
-            self.playerBaseNode.addChild(self.scoreLabel)               //playerにaddchiledすることでplayerに追従させる
-            //===================
             //MARK: コンボ
             //===================
             self.comboLabel.text = String( self.combo )         //スコアを表示する
@@ -381,8 +372,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.highScoreLabel.zPosition = -1                  //プレイヤーの後ろ
         self.baseNode.addChild(self.highScoreLabel)         //背景に固定のつもりでbaseNodeに追加
         //===================
+        //MARK: HUD
+        //===================
+        self.hudView = HUDView(frame: self.frame)
+        self.view!.addSubview(hudView)
+        self.hudView.drawScore(score: self.score)
+        //===================
         //MARK: ポーズ画面
         //===================
+        pauseView = PauseView(frame: self.frame)
         pauseView.isHidden = true
         self.view!.addSubview(pauseView)
         //　ポーズボタン
@@ -437,7 +435,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         isPaused = true     //ポーズ状態にする
         if( sliderHidden == true ){ //ポーズボタンが押されていなかった
             if( gameoverFlg == false ){ //ゲームオーバになっていない時
-                sliderSwitchHidden()    //ポーズ画面を表示する
+                pauseButton.pauseAction()
             }
         }
     }
@@ -571,6 +569,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guard ( gameoverFlg == false ) else {  //ゲームオーバでなければ次の処理に進む
             return
         }
+        //ポーズでなければ次の処理に進む
+        guard ( self.view!.scene?.isPaused == false ) else {
+            return
+        }
         
         if let touch = touches.first as UITouch?
         {
@@ -594,6 +596,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             return
         }
         guard ( gameoverFlg == false ) else {  //ゲームオーバでなければ次の処理に進む
+            return
+        }
+        //ポーズでなければ次の処理に進む
+        guard ( self.view!.scene?.isPaused == false ) else {
             return
         }
         
@@ -666,6 +672,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             return
         }
         guard ( gameoverFlg == false ) else {  //ゲームオーバでなければ次の処理に進む
+            return
+        }
+        //ポーズでなければ次の処理に進む
+        guard ( self.view!.scene?.isPaused == false ) else {
             return
         }
         
@@ -1142,7 +1152,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 //self.meteorGravityCoefficient -= 0.06                   //数が減るごとに隕石の速度を遅くする
                 //スコア
                 self.score += 1;
-                self.scoreLabel.text = String( self.score )
+                self.hudView.drawScore( score: self.score )
                 //コンボ
                 self.combo += 1;
                 self.comboLabel.text = String( self.combo )
@@ -1262,8 +1272,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 //print("---ガードフラグをON---")
                 self.guardStatus = .guarding
                 print(self.guardStatus)
-                let names = ["guard01","player00"]
-                self.guardTextureAnimation(self.player, names: names)
                 playerBaseNode.addChild( guardShape )
             }
             if( endFlg == true )
@@ -1280,6 +1288,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     let actions = SKAction.sequence([action1,action2,action3])
                     guardNode.run(actions)
                 }
+                //アニメーション
+                let names = ["guard01","player00"]
+                self.guardTextureAnimation(self.player, names: names)
+            }
+            else{
+                //アニメーション
+                let names = ["guard01"]
+                self.guardTextureAnimation(self.player, names: names)
             }
         }
     }
@@ -1367,7 +1383,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         print("gameOverViewCreate")
         //ゲームオーバー画面
-        gameOverView = GameOverView(score: self.score, highScore: self.highScore )
+        gameOverView = GameOverView(frame: self.frame, score: self.score, highScore: self.highScore )
         var buttonX:CGFloat = 10    //左端の余白
         var buttonY = gameOverView.frame.size.height - 10    //下端の余白
         //Titleボタン

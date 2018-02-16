@@ -13,8 +13,6 @@ class PauseView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        //画面と同じサイズ
-        self.frame = CGRect(origin: CGPoint.zero, size: GameScene.ScreenSize)
         //背景色
         self.backgroundColor = UIColor.black.withAlphaComponent(0.3)
     }

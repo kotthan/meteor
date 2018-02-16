@@ -40,6 +40,17 @@ class PauseButton: UIButton {
     func setResumeFunc(action: @escaping () -> Void) {
         self.resume = action
     }
+
+    func pauseAction(){
+        isPaused = true
+        self.setImage(restartImage, for: .normal)
+        self.pause?()
+    }
+    func resumeAction(){
+        isPaused = false
+        self.setImage(pauseImage, for: .normal)
+        self.resume?()
+    }
     
     @objc func tapped(sender: PauseButton) {
         isPaused = !isPaused

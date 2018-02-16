@@ -10,10 +10,9 @@ import UIKit
 
 @available(iOS 9.0, *)
 class GameOverView: UIView {
-    
-    init(score:Int, highScore:Int) {
-        //画面と同じサイズで作成
-        super.init(frame: CGRect(origin: CGPoint.zero, size: GameScene.ScreenSize))
+   
+    init(frame: CGRect, score:Int, highScore:Int) {
+        super.init(frame: frame)
         //背景色
         self.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         //スコアラベル
