@@ -19,6 +19,8 @@
 		A304F1FF203095E10086BED8 /* PauseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A304F1FE203095E10086BED8 /* PauseView.swift */; };
 		A304F203203175310086BED8 /* GameOverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A304F202203175310086BED8 /* GameOverView.swift */; };
 		A304F2052031795C0086BED8 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A304F2042031795C0086BED8 /* IconButton.swift */; };
+		A3715BCF2031F5CC0032A6A3 /* GuardPod.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3715BCE2031F5CC0032A6A3 /* GuardPod.swift */; };
+		A3715BD12034909B0032A6A3 /* HUDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3715BD02034909B0032A6A3 /* HUDView.swift */; };
 		A3B2A1852013036B004E6F75 /* MeteorBroken.sks in Resources */ = {isa = PBXBuildFile; fileRef = A3B2A1842013036B004E6F75 /* MeteorBroken.sks */; };
 		B61C66672031C12C00FE167A /* GuardPod.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61C66662031C12C00FE167A /* GuardPod.swift */; };
 		B6B4877B1F66BA1A00E41389 /* slash.wav in Resources */ = {isa = PBXBuildFile; fileRef = B6B4877A1F66BA1A00E41389 /* slash.wav */; };
@@ -50,6 +52,8 @@
 		A304F1FE203095E10086BED8 /* PauseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PauseView.swift; sourceTree = "<group>"; };
 		A304F202203175310086BED8 /* GameOverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverView.swift; sourceTree = "<group>"; };
 		A304F2042031795C0086BED8 /* IconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
+		A3715BCE2031F5CC0032A6A3 /* GuardPod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuardPod.swift; sourceTree = "<group>"; };
+		A3715BD02034909B0032A6A3 /* HUDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUDView.swift; sourceTree = "<group>"; };
 		A3B2A1842013036B004E6F75 /* MeteorBroken.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MeteorBroken.sks; sourceTree = "<group>"; };
 		B61C66662031C12C00FE167A /* GuardPod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuardPod.swift; sourceTree = "<group>"; };
 		B6B4877A1F66BA1A00E41389 /* slash.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = slash.wav; sourceTree = "<group>"; };
@@ -105,6 +109,7 @@
 				A304F2042031795C0086BED8 /* IconButton.swift */,
 				A304F1FC202FE8DD0086BED8 /* PauseButton.swift */,
 				54F6B15D1C3CEFA000B1D569 /* GameScene.swift */,
+<<<<<<< HEAD:MeteorSample_20170831/Meteor.xcodeproj/project.pbxproj
 				548199491C3F3FB00017838C /* GameScene.sks */,
 			);
 			path = Meteor;
@@ -130,6 +135,11 @@
 		B63CFD4F203703F400F0F90E /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+=======
+				A304F202203175310086BED8 /* GameOverView.swift */,
+				A3715BCE2031F5CC0032A6A3 /* GuardPod.swift */,
+				B6BE9F301F680D4F00348B5E /* bgmn.mp3 */,
+>>>>>>> master:MeteorSample_20170831/SKGameSample.xcodeproj/project.pbxproj
 				B6B4877A1F66BA1A00E41389 /* slash.wav */,
 				B6B487861F66BF8900E41389 /* bougyo.wav */,
 				B6B487841F66BEE700E41389 /* tyakuti.wav */,
@@ -150,6 +160,11 @@
 				B6BBD4691F5A777500DEC894 /* GameViewController.xib */,
 				54F6B14F1C3CEEFF00B1D569 /* Main.storyboard */,
 				54F6B1571C3CEEFF00B1D569 /* Info.plist */,
+<<<<<<< HEAD:MeteorSample_20170831/Meteor.xcodeproj/project.pbxproj
+=======
+				A304F2042031795C0086BED8 /* IconButton.swift */,
+				A3715BD02034909B0032A6A3 /* HUDView.swift */,
+>>>>>>> master:MeteorSample_20170831/SKGameSample.xcodeproj/project.pbxproj
 			);
 			path = "Supporting\\ Files";
 			sourceTree = "<group>";
@@ -282,8 +297,14 @@
 				54F6B1631C3CEFA000B1D569 /* GameViewController.swift in Sources */,
 				54F6B1611C3CEFA000B1D569 /* GameScene.swift in Sources */,
 				A304F1FF203095E10086BED8 /* PauseView.swift in Sources */,
+<<<<<<< HEAD:MeteorSample_20170831/Meteor.xcodeproj/project.pbxproj
+=======
+				B6BBD46C1F5A872700DEC894 /* reStartButton.swift in Sources */,
+				A3715BD12034909B0032A6A3 /* HUDView.swift in Sources */,
+>>>>>>> master:MeteorSample_20170831/SKGameSample.xcodeproj/project.pbxproj
 				54F6B14E1C3CEEFF00B1D569 /* ViewController.swift in Sources */,
 				54F6B1621C3CEFA000B1D569 /* GameView.swift in Sources */,
+				A3715BCF2031F5CC0032A6A3 /* GuardPod.swift in Sources */,
 				A304F2052031795C0086BED8 /* IconButton.swift in Sources */,
 				A304F1FD202FE8DD0086BED8 /* PauseButton.swift in Sources */,
 				B61C66672031C12C00FE167A /* GuardPod.swift in Sources */,
