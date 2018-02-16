@@ -1257,9 +1257,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             return
         }
-        else if (guardStatus != .disable)
+        if ( self.guardPod.guardStatus != .disable )
         {
-            if( guardStatus != .guarding )
+            if( self.guardPod.guardStatus != .guarding )
             {   //ガード開始
                 //print("---ガードフラグをON---")
                 self.guardStatus = .guarding
@@ -1298,14 +1298,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             return
         }
-        let success = guardPod.guardMeteor()
-        if success == true { //ガード成功
-        }
-        else{   //ガード失敗
-        }
         if (guardStatus == .guarding)
         {
             //print("---隕石をガード---")
+            self.guardPod.subCount()
             playSound(soundName: "bougyo")
             guardPower -= 1500
             if( guardPower < 0 ){
