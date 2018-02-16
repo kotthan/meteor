@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  SKGameSample
+//  Meteor
 //
 //  Created by Kazuaki Oe on 2017/06/05.
 //  Copyright © 2017年 Kazuaki Oe. All rights reserved.

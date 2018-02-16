@@ -1,9 +1,9 @@
 //
 //  PauseButton.swift
-//  SKGameSample
+//  Meteor
 //
 //  Created by Ryota on 2018/02/11.
-//  Copyright © 2018年 STUDIO SHIN. All rights reserved.
+//  Copyright © 2018年 Kazuaki Oe. All rights reserved.
 //
 
 import UIKit

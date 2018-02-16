@@ -1,9 +1,9 @@
 //
 //  File.swift
-//  SKGameSample
+//  Meteor
 //
 //  Created by Kazuaki Oe on 2017/08/16.
-//  Copyright © 2017年 STUDIO SHIN. All rights reserved.
+//  Copyright © 2017年 Kazuaki Oe. All rights reserved.
 //
 
 import Foundation

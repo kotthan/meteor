@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:SKGameSample.xcodeproj">
+      location = "self:/Users/kacbookpro13/Documents/GitHub/meteor/MeteorSample_20170831/Meteor.xcodeproj">
    </FileRef>
 </Workspace>

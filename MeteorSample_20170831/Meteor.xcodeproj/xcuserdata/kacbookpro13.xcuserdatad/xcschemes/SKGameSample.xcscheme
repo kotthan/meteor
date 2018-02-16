@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "54F6B1471C3CEEFF00B1D569"
-               BuildableName = "SKGameSample.app"
-               BlueprintName = "SKGameSample"
-               ReferencedContainer = "container:SKGameSample.xcodeproj">
+               BuildableName = "Meteor.app"
+               BlueprintName = "Meteor"
+               ReferencedContainer = "container:Meteor.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,9 +34,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "54F6B1471C3CEEFF00B1D569"
-            BuildableName = "SKGameSample.app"
-            BlueprintName = "SKGameSample"
-            ReferencedContainer = "container:SKGameSample.xcodeproj">
+            BuildableName = "Meteor.app"
+            BlueprintName = "Meteor"
+            ReferencedContainer = "container:Meteor.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -58,9 +58,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "54F6B1471C3CEEFF00B1D569"
-            BuildableName = "SKGameSample.app"
-            BlueprintName = "SKGameSample"
-            ReferencedContainer = "container:SKGameSample.xcodeproj">
+            BuildableName = "Meteor.app"
+            BlueprintName = "Meteor"
+            ReferencedContainer = "container:Meteor.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -77,9 +77,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "54F6B1471C3CEEFF00B1D569"
-            BuildableName = "SKGameSample.app"
-            BlueprintName = "SKGameSample"
-            ReferencedContainer = "container:SKGameSample.xcodeproj">
+            BuildableName = "Meteor.app"
+            BlueprintName = "Meteor"
+            ReferencedContainer = "container:Meteor.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

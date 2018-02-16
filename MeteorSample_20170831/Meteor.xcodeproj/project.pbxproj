@@ -21,6 +21,7 @@
 		A304F2052031795C0086BED8 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A304F2042031795C0086BED8 /* IconButton.swift */; };
 		A3B2A1852013036B004E6F75 /* MeteorBroken.sks in Resources */ = {isa = PBXBuildFile; fileRef = A3B2A1842013036B004E6F75 /* MeteorBroken.sks */; };
 		B61C66672031C12C00FE167A /* GuardPod.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61C66662031C12C00FE167A /* GuardPod.swift */; };
+		B63CFD572037084000F0F90E /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63CFD562037084000F0F90E /* File.swift */; };
 		B6B4877B1F66BA1A00E41389 /* slash.wav in Resources */ = {isa = PBXBuildFile; fileRef = B6B4877A1F66BA1A00E41389 /* slash.wav */; };
 		B6B4877F1F66BC0C00E41389 /* jump.wav in Resources */ = {isa = PBXBuildFile; fileRef = B6B4877E1F66BC0C00E41389 /* jump.wav */; };
 		B6B487811F66BDC400E41389 /* move.wav in Resources */ = {isa = PBXBuildFile; fileRef = B6B487801F66BDC400E41389 /* move.wav */; };
@@ -38,7 +39,7 @@
 
 /* Begin PBXFileReference section */
 		548199491C3F3FB00017838C /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
-		54F6B1481C3CEEFF00B1D569 /* SKGameSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SKGameSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		54F6B1481C3CEEFF00B1D569 /* Meteor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Meteor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		54F6B14B1C3CEEFF00B1D569 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		54F6B14D1C3CEEFF00B1D569 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		54F6B1501C3CEEFF00B1D569 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -53,6 +54,7 @@
 		A304F2042031795C0086BED8 /* IconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
 		A3B2A1842013036B004E6F75 /* MeteorBroken.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MeteorBroken.sks; sourceTree = "<group>"; };
 		B61C66662031C12C00FE167A /* GuardPod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuardPod.swift; sourceTree = "<group>"; };
+		B63CFD562037084000F0F90E /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		B6B4877A1F66BA1A00E41389 /* slash.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = slash.wav; sourceTree = "<group>"; };
 		B6B4877E1F66BC0C00E41389 /* jump.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = jump.wav; sourceTree = "<group>"; };
 		B6B487801F66BDC400E41389 /* move.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = move.wav; sourceTree = "<group>"; };
@@ -82,20 +84,20 @@
 		54F6B13F1C3CEEFF00B1D569 = {
 			isa = PBXGroup;
 			children = (
-				54F6B14A1C3CEEFF00B1D569 /* SKGameSample */,
+				54F6B14A1C3CEEFF00B1D569 /* Meteor */,
 			);
 			sourceTree = "<group>";
 		};
 		54F6B1491C3CEEFF00B1D569 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				54F6B1481C3CEEFF00B1D569 /* SKGameSample.app */,
+				54F6B1481C3CEEFF00B1D569 /* Meteor.app */,
 			);
 			name = Products;
 			path = ..;
 			sourceTree = "<group>";
 		};
-		54F6B14A1C3CEEFF00B1D569 /* SKGameSample */ = {
+		54F6B14A1C3CEEFF00B1D569 /* Meteor */ = {
 			isa = PBXGroup;
 			children = (
 				54F6B1491C3CEEFF00B1D569 /* Products */,
@@ -106,10 +108,11 @@
 				B61C66662031C12C00FE167A /* GuardPod.swift */,
 				B6ED2EC91F4417C600567728 /* TitleScene.swift */,
 				A304F2042031795C0086BED8 /* IconButton.swift */,
+				B63CFD562037084000F0F90E /* File.swift */,
 				A304F1FC202FE8DD0086BED8 /* PauseButton.swift */,
 				54F6B15D1C3CEFA000B1D569 /* GameScene.swift */,
 			);
-			path = SKGameSample;
+			path = Meteor;
 			sourceTree = "<group>";
 		};
 		B63CFD4D203702BF00F0F90E /* Resources */ = {
@@ -198,9 +201,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		54F6B1471C3CEEFF00B1D569 /* SKGameSample */ = {
+		54F6B1471C3CEEFF00B1D569 /* Meteor */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 54F6B15A1C3CEEFF00B1D569 /* Build configuration list for PBXNativeTarget "SKGameSample" */;
+			buildConfigurationList = 54F6B15A1C3CEEFF00B1D569 /* Build configuration list for PBXNativeTarget "Meteor" */;
 			buildPhases = (
 				54F6B1441C3CEEFF00B1D569 /* Sources */,
 				54F6B1451C3CEEFF00B1D569 /* Frameworks */,
@@ -210,9 +213,9 @@
 			);
 			dependencies = (
 			);
-			name = SKGameSample;
+			name = Meteor;
 			productName = SKGameSample;
-			productReference = 54F6B1481C3CEEFF00B1D569 /* SKGameSample.app */;
+			productReference = 54F6B1481C3CEEFF00B1D569 /* Meteor.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -232,7 +235,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 54F6B1431C3CEEFF00B1D569 /* Build configuration list for PBXProject "SKGameSample" */;
+			buildConfigurationList = 54F6B1431C3CEEFF00B1D569 /* Build configuration list for PBXProject "Meteor" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -245,7 +248,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				54F6B1471C3CEEFF00B1D569 /* SKGameSample */,
+				54F6B1471C3CEEFF00B1D569 /* Meteor */,
 			);
 		};
 /* End PBXProject section */
@@ -282,6 +285,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A304F203203175310086BED8 /* GameOverView.swift in Sources */,
+				B63CFD572037084000F0F90E /* File.swift in Sources */,
 				54F6B1631C3CEFA000B1D569 /* GameViewController.swift in Sources */,
 				B6ED2ECA1F4417C600567728 /* TitleScene.swift in Sources */,
 				54F6B1611C3CEFA000B1D569 /* GameScene.swift in Sources */,
@@ -421,10 +425,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = 5L6RZ6S9L7;
-				INFOPLIST_FILE = SKGameSample/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Meteor/Supporting\\ Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = your.company.SKGameSample;
+				PRODUCT_BUNDLE_IDENTIFIER = Meteor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
@@ -437,10 +441,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = 5L6RZ6S9L7;
-				INFOPLIST_FILE = SKGameSample/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Meteor/Supporting\\ Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = your.company.SKGameSample;
+				PRODUCT_BUNDLE_IDENTIFIER = Meteor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
@@ -450,7 +454,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		54F6B1431C3CEEFF00B1D569 /* Build configuration list for PBXProject "SKGameSample" */ = {
+		54F6B1431C3CEEFF00B1D569 /* Build configuration list for PBXProject "Meteor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				54F6B1581C3CEEFF00B1D569 /* Debug */,
@@ -459,7 +463,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		54F6B15A1C3CEEFF00B1D569 /* Build configuration list for PBXNativeTarget "SKGameSample" */ = {
+		54F6B15A1C3CEEFF00B1D569 /* Build configuration list for PBXNativeTarget "Meteor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				54F6B15B1C3CEEFF00B1D569 /* Debug */,
