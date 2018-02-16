@@ -58,6 +58,19 @@ class GuardPod: SKSpriteNode {
         }
     }
 
+    //ガード
+    func guardMeteor() -> bool{
+        //ガードできる状態ではない場合
+        if self.guardStatus == .enable{
+            self.subCount()
+            return true
+        }
+        else{
+            return false
+        }
+
+    }
+
     //ガード減らす
     func subCount(_ num: Int = 1){
         self.count -= num
