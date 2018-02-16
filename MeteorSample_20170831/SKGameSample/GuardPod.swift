@@ -23,6 +23,7 @@ class GuardPod: SKSpriteNode {
     let recoverCountTime:Double = 1.0 //ガードを１回復するまでの時間
     let recoverBrokenTime:Double = 3.0  //破壊状態から回復するまでの時間
     let actionKey = "recover"
+    let countLabel = SKLabelNode()  //テスト表示用 
     
     init() {
         //テクスチャアトラス作成
@@ -31,11 +32,17 @@ class GuardPod: SKSpriteNode {
         }
         super.init(texture: podTexture[maxCount], color: UIColor.clear, size: CGSize.zero)
         self.count = self.maxCount
+        //デバッグ用ラベル
+        countLabel.text = String(self.count)
+        countLabel.position = CGPoint(x: -10, y: -10) //ポッドの左下
+        countLabel.zPosition = self.zPosition + 1
+        self.addChild(countLabel)
     }
 
     //ガード回復
     @objc func addCount(_ num: Int = 1){
         self.count += num
+        countLabel.text = String(self.count)
         //最大値を超える場合は最大値にする
         if( self.count >= self.maxCount ){
             self.count = self.maxCount
@@ -47,11 +54,14 @@ class GuardPod: SKSpriteNode {
             let act1 = SKAction.wait(forDuration: self.recoverCountTime)
             let act2 = SKAction.run{self.addCount()}
             let acts = SKAction.sequence([act1,act2])
-            self.run(acts, withKey: self.actionKey)        }
+            self.run(acts, withKey: self.actionKey)
+        }
     }
+
     //ガード減らす
     func subCount(_ num: Int = 1){
         self.count -= num
+        countLabel.text = String(self.count)
         if( self.count <= 0 ){
             self.broken()
         }
@@ -68,6 +78,7 @@ class GuardPod: SKSpriteNode {
     //ガード破損
     func broken(){
         self.count = 0
+        countLabel.text = String(self.count)
         //通常の回復Actionをキャンセル
         self.removeAllActions()
         //全快までのスケジュール追加
