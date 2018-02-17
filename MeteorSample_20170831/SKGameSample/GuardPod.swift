@@ -30,13 +30,15 @@ class GuardPod: SKSpriteNode {
         for i in 0...maxCount {
             podTexture.append(SKTexture(imageNamed: imageName + String(i)))
         }
-        super.init(texture: podTexture[maxCount], color: UIColor.clear, size: CGSize.zero)
+        super.init(texture: podTexture[maxCount], color: UIColor.clear, size: CGSize(width: 100, height: 100))
+        /*
         self.count = self.maxCount
         //デバッグ用ラベル
         countLabel.text = String(self.count)
         countLabel.position = CGPoint(x: -10, y: -10) //ポッドの左下
         countLabel.zPosition = self.zPosition + 1
         self.addChild(countLabel)
+ */
     }
 
     //ガード回復
@@ -59,7 +61,7 @@ class GuardPod: SKSpriteNode {
     }
 
     //ガード
-    func guardMeteor() -> bool{
+    func guardMeteor() -> Bool{
         //ガードできる状態ではない場合
         if self.guardStatus == .enable{
             self.subCount()
